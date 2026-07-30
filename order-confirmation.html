@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <div class="card" id="confirm-card" style="text-align:center;">
+      <p class="mono">Loading…</p>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    (async () => {
+      const cardEl = document.getElementById("confirm-card");
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get("order_id");
+
+      const stored = sessionStorage.getItem("emw_last_purchase");
+      const purchase = stored ? JSON.parse(stored) : null;
+
+      if (!orderId) {
+        cardEl.innerHTML = `<p class="mono">No order specified.</p>`;
+        return;
+      }
+
+      try {
+        let downloadUrl;
+        let productName = purchase?.product_name || "your purchase";
+
+        if (purchase?.guest_email) {
+          const result = await OrdersAPI.guestDownloadLink(
+            orderId,
+            purchase.product_id,
+            purchase.guest_email
+          );
+          downloadUrl = result.download_url;
+        } else {
+          // Logged-in path — ownership_required confirms this account
+          // actually owns the order.
+          const order = await OrdersAPI.get(orderId);
+          productName = order.items[0]?.product_name || productName;
+          const productId = purchase?.product_id || order.items[0]?.product_id;
+          const result = await OrdersAPI.downloadLink(orderId, productId);
+          downloadUrl = result.download_url;
+        }
+
+        cardEl.innerHTML = `
+          <h1>Thank you!</h1>
+          <p><strong>${productName}</strong></p>
+          <p class="mono">Your purchase is ready to download.</p>
+          <a href="${absoluteApiUrl(downloadUrl)}" class="btn" style="margin-top:20px;display:inline-block;width:auto;">Download Now</a>
+        `;
+        sessionStorage.removeItem("emw_last_purchase");
+      } catch (err) {
+        cardEl.innerHTML = `
+          <h1>Order received</h1>
+          <p class="mono">${err.message || "We couldn't generate your download link right now."}</p>
+          <p class="mono">Check your email, or contact us if this persists.</p>
+        `;
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account — Empowered Me Wellness</title>
+  <meta name="description" content="Create your free Empowered Me Wellness account to book sessions, purchase products, and access wellness resources.">
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <style>
+    .auth-wrap {
+      min-height: calc(100vh - 72px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      background: radial-gradient(circle at 60% 20%, rgba(192,138,52,0.09) 0%, rgba(241,232,214,0.98) 70%);
+    }
+    .auth-card {
+      background: #fff;
+      border: 1px solid var(--sand);
+      border-radius: 20px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 8px 40px rgba(36,28,19,0.07);
+    }
+    .auth-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 32px;
+      text-decoration: none;
+    }
+    .auth-brand-text {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .auth-brand-text em {
+      color: var(--clay);
+      font-style: italic;
+      font-weight: 400;
+    }
+    .auth-card h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.7rem, 4vw, 2.2rem);
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .auth-card .auth-sub {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--ink);
+      opacity: 0.65;
+      margin-bottom: 32px;
+    }
+    .auth-card label {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 6px;
+      margin-top: 18px;
+    }
+    .auth-card input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--sand);
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      background: var(--papyrus);
+      color: var(--ink);
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .auth-card input:focus {
+      outline: none;
+      border-color: var(--clay);
+    }
+    /* Live password strength indicator */
+    .pw-rules {
+      margin-top: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+    .pw-rule {
+      color: var(--ink);
+      opacity: 0.4;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .pw-rule.pass { color: var(--moss); opacity: 1; }
+    .pw-rule::before { content: '○'; }
+    .pw-rule.pass::before { content: '✓'; }
+    .auth-card button[type="submit"] {
+      width: 100%;
+      margin-top: 28px;
+      padding: 13px;
+      background: var(--clay);
+      color: var(--papyrus);
+      border: none;
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .auth-card button[type="submit"]:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .auth-card button[type="submit"]:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .auth-links {
+      margin-top: 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-align: center;
+    }
+    .auth-links a { color: var(--clay); }
+    .auth-legal {
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-align: center;
+      color: var(--ink);
+      opacity: 0.5;
+    }
+    .auth-legal a { color: inherit; }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="auth-wrap">
+    <div class="auth-card">
+      <a href="index.html" class="auth-brand">
+        <svg viewBox="-90 -145 180 155" width="28" height="24" aria-hidden="true">
+          <path d="M 0,0 Q -49.4,-32.5 -73.6,-81.7 Q -27.1,-52.5 0,0 Z" fill="#5C6B3E"/>
+          <path d="M 0,0 Q -17,-72.8 0,-140 Q 17,-72.8 0,0 Z" fill="#C08A34"/>
+          <path d="M 0,0 Q 27.1,-52.5 73.6,-81.7 Q 49.4,-32.5 0,0 Z" fill="#5C6B3E"/>
+          <circle cx="0" cy="0" r="9" fill="#241C13"/>
+        </svg>
+        <span class="auth-brand-text">Empowered Me <em>wellness</em></span>
+      </a>
+
+      <h1>Create your account</h1>
+      <p class="auth-sub">Join the Empowered Me Wellness community</p>
+
+      <form id="register-form" novalidate>
+        <label for="full_name">Full name</label>
+        <input type="text" id="full_name" autocomplete="name" required placeholder="Your full name">
+
+        <label for="email">Email address</label>
+        <input type="email" id="email" autocomplete="email" required placeholder="you@example.com">
+
+        <label for="password">Password</label>
+        <input type="password" id="password" autocomplete="new-password" required placeholder="Create a strong password" minlength="8">
+        <div class="pw-rules" id="pw-rules" aria-live="polite">
+          <span class="pw-rule" id="rule-len">8+ characters</span>
+          <span class="pw-rule" id="rule-upper">Uppercase letter</span>
+          <span class="pw-rule" id="rule-num">Number</span>
+          <span class="pw-rule" id="rule-sym">Symbol</span>
+        </div>
+
+        <button type="submit" id="submit-btn">Create Account</button>
+        <div class="error-msg" id="error-msg"></div>
+      </form>
+
+      <div class="auth-links">
+        Already have an account? <a href="login.html">Sign in</a>
+      </div>
+      <p class="auth-legal">
+        By creating an account you agree to our
+        <a href="terms.html">Terms of Service</a> and <a href="privacy-policy.html">Privacy Policy</a>.
+      </p>
+    </div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/components/layout.js"></script>
+  <script>
+    /* Live password rule checker */
+    const pwInput = document.getElementById("password");
+    const rules = {
+      len:   { el: document.getElementById("rule-len"),   fn: v => v.length >= 8 },
+      upper: { el: document.getElementById("rule-upper"), fn: v => /[A-Z]/.test(v) },
+      num:   { el: document.getElementById("rule-num"),   fn: v => /[0-9]/.test(v) },
+      sym:   { el: document.getElementById("rule-sym"),   fn: v => /[^A-Za-z0-9]/.test(v) }
+    };
+    pwInput.addEventListener("input", () => {
+      const v = pwInput.value;
+      for (const [, r] of Object.entries(rules)) {
+        r.el.classList.toggle("pass", r.fn(v));
+      }
+    });
+
+    /* Form submission */
+    const form = document.getElementById("register-form");
+    const errorMsg = document.getElementById("error-msg");
+    const submitBtn = document.getElementById("submit-btn");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorMsg.style.display = "none";
+
+      const full_name = document.getElementById("full_name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = pwInput.value;
+
+      if (password.length < 8) {
+        errorMsg.textContent = "Password must be at least 8 characters.";
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Creating account…";
+
+      try {
+        await AuthAPI.register(email, password, full_name);
+        await AuthAPI.login(email, password);
+        window.location.href = "dashboard.html";
+      } catch (err) {
+        errorMsg.textContent = err.message;
+        errorMsg.style.display = "block";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Create Account";
+      }
+    });
+  </script>
+</body>
+</html>

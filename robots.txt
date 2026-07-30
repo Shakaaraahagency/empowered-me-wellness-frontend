@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard.html
+Disallow: /my-bookings.html
+Disallow: /my-orders.html
+Disallow: /profile.html
+Disallow: /account-settings.html
+Disallow: /admin-overview.html
+Disallow: /admin-sessions.html
+Disallow: /admin-bookings.html
+Disallow: /admin-products.html
+Disallow: /admin-orders.html
+Disallow: /admin-testimonials.html
+Disallow: /admin-contact.html
+Disallow: /admin-blog.html
+Disallow: /admin-subscribers.html
+Disallow: /booking-confirmation.html
+Disallow: /order-confirmation.html
+Disallow: /checkout.html
+Disallow: /reset-password.html
+
+Sitemap: https://empoweredmewellness.com/sitemap.xml

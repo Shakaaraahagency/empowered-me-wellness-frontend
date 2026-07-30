@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In — Empowered Me Wellness</title>
+  <meta name="description" content="Sign in to your Empowered Me Wellness account to manage bookings, downloads, and your profile.">
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    /* If already logged in, skip the login page entirely */
+    if (document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "dashboard.html";
+    }
+  </script>
+  <style>
+    .auth-wrap {
+      min-height: calc(100vh - 72px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      background: radial-gradient(circle at 60% 20%, rgba(192,138,52,0.09) 0%, rgba(241,232,214,0.98) 70%);
+    }
+    .auth-card {
+      background: #fff;
+      border: 1px solid var(--sand);
+      border-radius: 20px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 8px 40px rgba(36,28,19,0.07);
+    }
+    .auth-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 32px;
+      text-decoration: none;
+    }
+    .auth-brand-text {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .auth-brand-text em {
+      color: var(--clay);
+      font-style: italic;
+      font-weight: 400;
+    }
+    .auth-card h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.7rem, 4vw, 2.2rem);
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .auth-card .auth-sub {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--ink);
+      opacity: 0.65;
+      margin-bottom: 32px;
+    }
+    .auth-card label {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 6px;
+      margin-top: 18px;
+    }
+    .auth-card input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--sand);
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      background: var(--papyrus);
+      color: var(--ink);
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .auth-card input:focus {
+      outline: none;
+      border-color: var(--clay);
+    }
+    .auth-card button[type="submit"] {
+      width: 100%;
+      margin-top: 28px;
+      padding: 13px;
+      background: var(--clay);
+      color: var(--papyrus);
+      border: none;
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .auth-card button[type="submit"]:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .auth-card button[type="submit"]:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .auth-links {
+      margin-top: 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-align: center;
+    }
+    .auth-links a { color: var(--clay); }
+    .auth-divider {
+      text-align: center;
+      margin: 8px 0;
+      opacity: 0.5;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="auth-wrap">
+    <div class="auth-card">
+      <a href="index.html" class="auth-brand">
+        <svg viewBox="-90 -145 180 155" width="28" height="24" aria-hidden="true">
+          <path d="M 0,0 Q -49.4,-32.5 -73.6,-81.7 Q -27.1,-52.5 0,0 Z" fill="#5C6B3E"/>
+          <path d="M 0,0 Q -17,-72.8 0,-140 Q 17,-72.8 0,0 Z" fill="#C08A34"/>
+          <path d="M 0,0 Q 27.1,-52.5 73.6,-81.7 Q 49.4,-32.5 0,0 Z" fill="#5C6B3E"/>
+          <circle cx="0" cy="0" r="9" fill="#241C13"/>
+        </svg>
+        <span class="auth-brand-text">Empowered Me <em>wellness</em></span>
+      </a>
+
+      <h1>Welcome back</h1>
+      <p class="auth-sub">Sign in to your account</p>
+
+      <form id="login-form" novalidate>
+        <label for="email">Email address</label>
+        <input type="email" id="email" autocomplete="email" required placeholder="you@example.com">
+
+        <label for="password">Password</label>
+        <input type="password" id="password" autocomplete="current-password" required placeholder="••••••••">
+
+        <button type="submit" id="submit-btn">Sign In</button>
+        <div class="error-msg" id="error-msg"></div>
+      </form>
+
+      <div class="auth-links">
+        <a href="forgot-password.html">Forgot your password?</a>
+        <div class="auth-divider">·</div>
+        No account yet? <a href="register.html">Create one</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/components/layout.js"></script>
+  <script>
+    const form = document.getElementById("login-form");
+    const errorMsg = document.getElementById("error-msg");
+    const submitBtn = document.getElementById("submit-btn");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorMsg.style.display = "none";
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Signing in…";
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      try {
+        await AuthAPI.login(email, password);
+        /* Check role and redirect appropriately */
+        const user = await AuthAPI.me();
+        window.location.href = user.role === "admin" ? "admin-overview.html" : "dashboard.html";
+      } catch (err) {
+        errorMsg.textContent = err.message;
+        errorMsg.style.display = "block";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Sign In";
+      }
+    });
+  </script>
+</body>
+</html>

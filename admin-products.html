@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Products — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "admin-login.html";
+    }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero"><h1>Products</h1></section>
+    <div id="admin-nav"></div>
+
+    <div class="admin-container">
+      <div class="inline-form">
+        <form id="product-form">
+          <input type="text" id="product-name" placeholder="Product name" required>
+          <div class="inline-form-row" style="margin-bottom:12px;">
+            <input type="number" id="product-price" placeholder="Price (USD)" step="0.01" min="0" required>
+            <select id="product-category" required style="padding: 10px; border: 1px solid var(--sand); border-radius: 8px;">
+              <option value="" disabled selected>Select Category</option>
+              <option value="ebook">Ebook</option>
+              <option value="guide">Guide & Manual</option>
+            </select>
+          </div>
+          <div style="background:var(--papyrus);padding:14px;border:1px solid var(--sand);border-radius:10px;margin-bottom:14px;">
+            <label for="product-file" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Upload E-Book File (PDF, EPUB, MOBI)</label>
+            <input type="file" id="product-file" accept=".pdf,.epub,.mobi" style="width:100%;padding:6px;background:#fff;border:1px solid var(--sand);border-radius:6px;">
+            <p class="mono" style="font-size:11px;opacity:0.6;margin-top:6px;">Alternatively, enter existing file path below if file is already on server:</p>
+            <input type="text" id="product-file-path" placeholder="Existing server filename (optional if file chosen above)" style="width:100%;margin-top:4px;">
+          </div>
+          
+          <div style="background:var(--papyrus);padding:14px;border:1px solid var(--sand);border-radius:10px;margin-bottom:14px;">
+            <label for="product-cover" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Upload Cover Image (Optional)</label>
+            <input type="file" id="product-cover" accept=".png,.jpg,.jpeg,.webp" style="width:100%;padding:6px;background:#fff;border:1px solid var(--sand);border-radius:6px;">
+          </div>
+
+          <textarea id="product-description" placeholder="Description (optional)" rows="2" style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;margin-bottom:10px;"></textarea>
+          <button type="submit" id="submit-product-btn" class="btn btn-small">Add Product</button>
+          <p class="error-msg" id="product-error"></p>
+        </form>
+      </div>
+
+      <table class="admin-table" id="products-table">
+        <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>File</th><th>Status</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/admin-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    async function loadProducts() {
+      const products = await AdminAPI.listProducts();
+      const tbody = document.querySelector("#products-table tbody");
+      tbody.innerHTML = products
+        .map(
+          (p) => `
+        <tr>
+          <td>${escapeHtml(p.name)}</td>
+          <td style="text-transform: capitalize;">${escapeHtml(p.category || 'ebook')}</td>
+          <td>$${p.price}</td>
+          <td class="mono" style="font-size:12px;">${escapeHtml(p.file_path || 'None')}</td>
+          <td><span class="badge ${p.is_active === false ? "cancelled" : "approved"}">${p.is_active === false ? "inactive" : "active"}</span></td>
+          <td>
+            ${p.is_active === false
+              ? `<button class="btn btn-tiny btn-outline" data-activate="${p.id}">Activate</button>`
+              : `<button class="btn btn-tiny" data-deactivate="${p.id}">Deactivate</button>`
+            }
+          </td>
+        </tr>
+      `
+        )
+        .join("");
+
+      tbody.querySelectorAll("[data-deactivate]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          if (!confirm("Deactivate this product? It will no longer appear in the shop. Existing orders are unaffected.")) return;
+          try {
+            await AdminAPI.deleteProduct(btn.dataset.deactivate);
+            loadProducts();
+          } catch (err) {
+            alert("Error: " + (err.message || "Could not deactivate product."));
+          }
+        })
+      );
+
+      tbody.querySelectorAll("[data-activate]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          try {
+            await AdminAPI.updateProduct(btn.dataset.activate, { is_active: true });
+            loadProducts();
+          } catch (err) {
+            alert("Error: " + (err.message || "Could not activate product."));
+          }
+        })
+      );
+    }
+
+    (async () => {
+      await requireAdmin();
+      loadProducts();
+
+      document.getElementById("product-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const errorEl = document.getElementById("product-error");
+        const submitBtn = document.getElementById("submit-product-btn");
+        errorEl.style.display = "none";
+
+        const fileInput = document.getElementById("product-file");
+        let filePath = document.getElementById("product-file-path").value.trim();
+        
+        const coverInput = document.getElementById("product-cover");
+        let coverImageUrl = null;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Processing…";
+
+        try {
+          if (fileInput.files.length > 0) {
+            submitBtn.textContent = "Uploading PDF file…";
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+            const uploadRes = await AdminAPI.uploadProductFile(formData);
+            filePath = uploadRes.file_path;
+          }
+
+          if (!filePath) {
+            throw new Error("Please select a PDF file to upload or enter a server file path.");
+          }
+          
+          if (coverInput.files.length > 0) {
+            submitBtn.textContent = "Uploading cover image…";
+            const coverFormData = new FormData();
+            coverFormData.append("file", coverInput.files[0]);
+            const coverRes = await AdminAPI.uploadProductCover(coverFormData);
+            coverImageUrl = API_URL.replace('/api/v1', '') + coverRes.url;
+          }
+
+          submitBtn.textContent = "Saving product…";
+          await AdminAPI.createProduct({
+            name: document.getElementById("product-name").value.trim(),
+            price: parseFloat(document.getElementById("product-price").value),
+            category: document.getElementById("product-category").value,
+            file_path: filePath,
+            cover_image_url: coverImageUrl,
+            description: document.getElementById("product-description").value.trim(),
+          });
+          document.getElementById("product-form").reset();
+          loadProducts();
+        } catch (err) {
+          errorEl.textContent = err.message;
+          errorEl.style.display = "block";
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Add Product";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

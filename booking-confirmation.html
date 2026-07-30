@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmed — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <style>
+    .confirm-card {
+      max-width: 480px; margin: 60px auto; background: #fff;
+      border: 1px solid var(--sand); border-radius: 14px; padding: 32px; text-align: center;
+    }
+    .check { font-size: 40px; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <div class="confirm-card" id="confirm-card">
+      <p class="mono">Loading…</p>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    function formatDateTime(iso) {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, {
+        weekday: "long", month: "long", day: "numeric",
+        hour: "numeric", minute: "2-digit",
+      });
+    }
+
+    function render(booking) {
+      document.getElementById("confirm-card").innerHTML = `
+        <h1>You're booked!</h1>
+        <p><strong>${booking.session.title}</strong></p>
+        <p class="mono">${formatDateTime(booking.session.start_time)} · ${booking.session.location}</p>
+        <p style="margin-top:20px;">Confirmation sent to <strong>${booking.contact_email}</strong></p>
+        <a href="schedule.html" class="btn" style="margin-top:24px;display:inline-block;width:auto;">Back to Schedule</a>
+      `;
+    }
+
+    (async () => {
+      const params = new URLSearchParams(window.location.search);
+      const bookingId = params.get("id");
+
+      // 1. Prefer the value just saved by session-detail.html — works for
+      //    guests, who have no auth token to re-fetch with.
+      const stored = sessionStorage.getItem("emw_last_booking");
+      if (stored) {
+        const booking = JSON.parse(stored);
+        if (booking.id === bookingId) {
+          render(booking);
+          sessionStorage.removeItem("emw_last_booking");
+          return;
+        }
+      }
+
+      // 2. Fallback: logged-in user navigating here directly (e.g. from
+      //    their dashboard) — this works because ownership_required will
+      //    confirm they actually own this booking.
+      try {
+        const booking = await BookingsAPI.get(bookingId);
+        render(booking);
+      } catch (err) {
+        document.getElementById("confirm-card").innerHTML = `
+          <p class="mono">We couldn't load that booking's details. Check your email for confirmation, or view it from your dashboard if you're logged in.</p>
+        `;
+      }
+    })();
+  </script>
+</body>
+</html>

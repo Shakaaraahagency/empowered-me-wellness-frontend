@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Bookings — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "admin-login.html";
+    }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero"><h1>Bookings</h1></section>
+    <div id="admin-nav"></div>
+
+    <div class="admin-container">
+      <table class="admin-table" id="bookings-table">
+        <thead><tr><th>Session</th><th>Client</th><th>Status</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/admin-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    async function loadBookings() {
+      const bookings = await AdminAPI.listBookings();
+      const tbody = document.querySelector("#bookings-table tbody");
+
+      if (bookings.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="mono">No bookings yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = bookings
+        .map((b) => {
+          const actions =
+            b.status === "confirmed"
+              ? `
+              <button class="btn btn-tiny" data-attend="${b.id}">Mark Attended</button>
+              <button class="btn btn-tiny" data-noshow="${b.id}">No-Show</button>
+              <button class="btn btn-tiny" data-cancel="${b.id}">Cancel</button>
+            `
+              : "";
+          return `
+          <tr>
+            <td>${escapeHtml(b.session.title)}<br><span class="mono">${new Date(b.session.start_time).toLocaleDateString()}</span></td>
+            <td>${escapeHtml(b.contact_name)}<br><span class="mono">${escapeHtml(b.contact_email)}</span></td>
+            <td><span class="badge ${b.status}">${b.status}</span></td>
+            <td>${actions}</td>
+          </tr>
+        `;
+        })
+        .join("");
+
+      tbody.querySelectorAll("[data-attend]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          await AdminAPI.markAttendance(btn.dataset.attend, "attended");
+          loadBookings();
+        })
+      );
+      tbody.querySelectorAll("[data-noshow]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          await AdminAPI.markAttendance(btn.dataset.noshow, "no_show");
+          loadBookings();
+        })
+      );
+      tbody.querySelectorAll("[data-cancel]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          if (!confirm("Cancel this booking and notify the client?")) return;
+          await AdminAPI.cancelBooking(btn.dataset.cancel);
+          loadBookings();
+        })
+      );
+    }
+
+    (async () => {
+      await requireAdmin();
+      loadBookings();
+    })();
+  </script>
+</body>
+</html>

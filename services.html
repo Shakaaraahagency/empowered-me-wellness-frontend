@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services — Empowered Me Wellness</title>
+  <meta name="description" content="Kemetic Yoga, Kid's Yoga, and mindfulness workshops with Empowered Me Wellness in Hamilton, Bermuda.">
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="canonical" href="https://empoweredmewellness.com/services.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Services — Empowered Me Wellness">
+  <meta property="og:description" content="Kemetic Yoga, Kid's Yoga, and mindfulness workshops with Empowered Me Wellness in Hamilton, Bermuda.">
+  <meta property="og:url" content="https://empoweredmewellness.com/services.html">
+  <meta property="og:image" content="https://empoweredmewellness.com/assets/brand/emw-logo-horizontal.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .services-hero {
+      position: relative;
+      padding: 32px 24px 70px;
+      text-align: center;
+      background: radial-gradient(circle at 50% 20%, rgba(92, 107, 62, 0.12) 0%, rgba(241, 232, 214, 0.95) 70%),
+                  repeating-linear-gradient(-45deg, rgba(217, 199, 160, 0.08) 0, rgba(217, 199, 160, 0.08) 12px, transparent 12px, transparent 24px);
+      border-bottom: 1px solid var(--sand);
+    }
+    .services-hero .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: #fff;
+      border: 1px solid var(--sand);
+      border-radius: 30px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--moss);
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(36,28,19,0.04);
+      animation: floatSlow 4s ease-in-out infinite;
+    }
+    .services-hero h1 {
+      font-size: clamp(2.5rem, 5vw, 3.8rem);
+      color: var(--ink);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+    .services-hero p.lead {
+      max-width: 880px;
+      margin: 16px auto 0;
+      font-size: 1.15rem;
+      color: var(--ink);
+      opacity: 0.85;
+      animation: fadeInUp 1s ease-out forwards;
+    }
+
+    /* Enhanced Card Grid */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+      margin-top: 40px;
+    }
+    .service-card {
+      background: #fff;
+      border: 1px solid var(--sand);
+      border-radius: 18px;
+      padding: 32px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .service-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--clay);
+      box-shadow: 0 14px 35px rgba(168,86,48,0.1);
+    }
+    .service-badge {
+      align-self: flex-start;
+      padding: 4px 12px;
+      background: rgba(192, 138, 52, 0.12);
+      color: var(--clay);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .service-card h3 {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+      color: var(--ink);
+    }
+    .service-features {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 28px;
+    }
+    .service-features li {
+      font-size: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      opacity: 0.9;
+    }
+    .service-features li svg {
+      color: var(--moss);
+      flex-shrink: 0;
+    }
+
+    /* Accordion Section */
+    .accordion-section {
+      max-width: 1100px;
+      margin: 60px auto 0;
+      background: #fff;
+      border: 1px solid var(--sand);
+      border-radius: 18px;
+      padding: 36px;
+    }
+    .accordion-item {
+      border-bottom: 1px solid var(--sand);
+      padding: 18px 0;
+    }
+    .accordion-item:last-child { border-bottom: none; }
+    .accordion-header {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 0;
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--ink);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0;
+      transition: color 0.2s ease;
+    }
+    .accordion-header:hover { color: var(--clay); }
+    .accordion-icon {
+      font-family: var(--font-mono);
+      font-size: 1.4rem;
+      transition: transform 0.3s ease;
+    }
+    .accordion-item.open .accordion-icon { transform: rotate(45deg); }
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0, 1, 0, 1), opacity 0.3s ease;
+      opacity: 0;
+      margin-top: 0;
+    }
+    .accordion-item.open .accordion-body {
+      max-height: 300px;
+      opacity: 1;
+      margin-top: 12px;
+    }
+    .accordion-body p {
+      font-size: 0.98rem;
+      color: var(--ink);
+      opacity: 0.85;
+      line-height: 1.6;
+    }
+
+    /* Highlight Banner */
+    .highlight-callout {
+      background: linear-gradient(135deg, var(--clay) 0%, #8c4222 100%);
+      color: var(--papyrus);
+      border-radius: 20px;
+      padding: 44px 36px;
+      text-align: center;
+      margin-top: 60px;
+      box-shadow: 0 8px 30px rgba(168,86,48,0.2);
+    }
+    .highlight-callout h3 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+      color: var(--papyrus);
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="services-hero">
+      <div class="hero-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        Mindful Offerings
+      </div>
+      <h1>Our Wellness Services</h1>
+      <p class="lead">Grounded Kemetic movement, youth mindfulness, and specialized workshops crafted for holistic health in Hamilton, Bermuda.</p>
+    </section>
+
+    <section class="container">
+      <div class="services-grid">
+        <div class="service-card">
+          <div>
+            <span class="service-badge">Signature Practice</span>
+            <h3>Kemetic Yoga</h3>
+            <p>A breath-led movement practice rooted in ancient Egyptian postures. Slow, deliberate geometrical movements restore alignment and flow.</p>
+            <ul class="service-features">
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Anatomically aligned sequences
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Deep rhythmic abdominal breathing
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Suitable for beginners & advanced
+              </li>
+            </ul>
+          </div>
+          <a href="schedule.html" class="btn" style="text-align:center;">Book Session</a>
+        </div>
+
+        <div class="service-card">
+          <div>
+            <span class="service-badge">Youth Program</span>
+            <h3>Kid's Yoga</h3>
+            <p>Playful, age-appropriate sessions that build mental focus, body awareness, and calm energy — designed specifically for young children.</p>
+            <ul class="service-features">
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Storytelling & dynamic posture play
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Breath regulation for emotional balance
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Supportive group environment
+              </li>
+            </ul>
+          </div>
+          <a href="schedule.html" class="btn" style="text-align:center;">Book Kids Class</a>
+        </div>
+
+        <div class="service-card">
+          <div>
+            <span class="service-badge">Special Events</span>
+            <h3>Mindfulness Workshops</h3>
+            <p>Periodic themed masterclasses — focusing on stress resilience, plant-based kitchen mindfulness, and seasonal ancestral practices.</p>
+            <ul class="service-features">
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Comprehensive guided workbooks
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Plant-based nutrition tips
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Community discussion & Q&A
+              </li>
+            </ul>
+          </div>
+          <a href="schedule.html" class="btn" style="text-align:center;">View Upcoming</a>
+        </div>
+      </div>
+
+      <!-- FAQ Accordion -->
+      <div class="accordion-section">
+        <h2 style="text-align:center; font-size: 1.8rem; margin-bottom: 24px;">Frequently Asked Questions</h2>
+        
+        <div class="accordion-item">
+          <button class="accordion-header" onclick="toggleAccordion(this)">
+            What makes Kemetic Yoga different from other practices?
+            <span class="accordion-icon">+</span>
+          </button>
+          <div class="accordion-body">
+            <p>Kemetic Yoga is based on the ancient Egyptian (Kemetian) system of renewal. It focuses heavily on slow, geometric postures, spinal alignment, and rhythmic rule-of-four breathing to channel energy safely through the physical and subtle body.</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-header" onclick="toggleAccordion(this)">
+            Do I need prior yoga experience?
+            <span class="accordion-icon">+</span>
+          </button>
+          <div class="accordion-body">
+            <p>No prior experience is necessary. All sessions are structured to accommodate beginners while offering gentle progressions for returning practitioners.</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-header" onclick="toggleAccordion(this)">
+            What should I bring to class?
+            <span class="accordion-icon">+</span>
+          </button>
+          <div class="accordion-body">
+            <p>Please wear comfortable, breathable clothing. We recommend bringing a personal yoga mat and a reusable water bottle. Props and mats are also available on site if needed.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Callout Banner -->
+      <div class="highlight-callout">
+        <h3>Ready to Begin Your Practice?</h3>
+        <p style="max-width: 580px; margin: 0 auto 24px; font-size: 1.05rem; opacity: 0.9;">Reserve your spot online through our live schedule or view our digital guides in the shop.</p>
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+          <a href="schedule.html" class="btn" style="background: var(--papyrus); color: var(--ink);">View Live Schedule</a>
+          <a href="shop.html" class="btn btn-outline" style="border-color: var(--papyrus); color: var(--papyrus);">Browse Digital Shop</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="js/api.js"></script>
+  <script src="js/components/layout.js"></script>
+  <script>
+    function toggleAccordion(button) {
+      const item = button.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) {
+        item.classList.add('open');
+      }
+    }
+  </script>
+</body>
+</html>
+

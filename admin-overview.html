@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Overview — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "admin-login.html";
+    }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero"><h1>Admin Overview</h1></section>
+    <div id="admin-nav"></div>
+
+    <div class="admin-container">
+      <div class="stat-grid" id="stat-grid">
+        <p class="mono" style="grid-column:1/-1;text-align:center;">Loading…</p>
+      </div>
+
+      <div class="section-block">
+        <h2>Top Classes</h2>
+        <table class="admin-table" id="top-classes-table">
+          <thead><tr><th>Class</th><th>Bookings</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/admin-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    (async () => {
+      await requireAdmin();
+      try {
+        const stats = await AdminAPI.stats();
+        document.getElementById("stat-grid").innerHTML = `
+          <div class="stat-card"><div class="stat-num">${stats.bookings_this_month}</div><p class="mono">Bookings This Month</p></div>
+          <div class="stat-card"><div class="stat-num">$${stats.revenue_this_month}</div><p class="mono">Revenue This Month</p></div>
+          <div class="stat-card"><div class="stat-num">${stats.upcoming_sessions}</div><p class="mono">Upcoming Sessions</p></div>
+          <div class="stat-card"><div class="stat-num">${stats.pending_contact_messages}</div><p class="mono">Unread Messages</p></div>
+        `;
+
+        const tbody = document.querySelector("#top-classes-table tbody");
+        if (stats.top_classes.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="2" class="mono">No booking data yet.</td></tr>`;
+        } else {
+          tbody.innerHTML = stats.top_classes
+            .map((c) => `<tr><td>${c.name}</td><td>${c.bookings}</td></tr>`)
+            .join("");
+        }
+      } catch (err) {
+        document.getElementById("stat-grid").innerHTML = `<p class="mono">Couldn't load stats.</p>`;
+      }
+    })();
+  </script>
+</body>
+</html>

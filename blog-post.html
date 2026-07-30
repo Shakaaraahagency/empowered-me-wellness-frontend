@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="container" style="max-width:680px;padding-top:56px;padding-bottom:60px;">
+      <div id="post-content"><p class="mono">Loading…</p></div>
+    </section>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/api.js"></script>
+  <script src="js/components/layout.js"></script>
+  <script>
+    (async () => {
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get("slug");
+      const contentEl = document.getElementById("post-content");
+
+      if (!slug) {
+        contentEl.innerHTML = `<p class="mono">No post specified.</p>`;
+        return;
+      }
+
+      try {
+        const post = await BlogAPI.get(slug);
+        document.title = `${post.title} — Empowered Me Wellness`;
+
+        const metaDesc = document.createElement("meta");
+        metaDesc.name = "description";
+        metaDesc.content = post.seo_description || post.excerpt || post.title;
+        document.head.appendChild(metaDesc);
+
+        const canonical = document.createElement("link");
+        canonical.rel = "canonical";
+        canonical.href = `https://empoweredmewellness.com/blog-post.html?slug=${post.slug}`;
+        document.head.appendChild(canonical);
+
+        contentEl.innerHTML = `
+          <h1>${post.title}</h1>
+          <p class="mono" style="margin-bottom:24px;">${new Date(post.published_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}</p>
+          <div>${post.content}</div>
+          <p style="margin-top:40px;"><a href="blog.html">&larr; Back to Blog</a></p>
+        `;
+      } catch (err) {
+        contentEl.innerHTML = `<p class="mono">This post couldn't be found.</p><p><a href="blog.html">Back to Blog</a></p>`;
+      }
+    })();
+  </script>
+</body>
+</html>

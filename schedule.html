@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule & Booking — Empowered Me Wellness</title>
+  <meta name="description" content="Upcoming Kemetic Yoga, Kid's Yoga, and workshop sessions at Empowered Me Wellness in Hamilton, Bermuda.">
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="canonical" href="https://empoweredmewellness.com/schedule.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Schedule & Booking — Empowered Me Wellness">
+  <meta property="og:description" content="Upcoming Kemetic Yoga, Kid's Yoga, and workshop sessions at Empowered Me Wellness in Hamilton, Bermuda.">
+  <meta property="og:url" content="https://empoweredmewellness.com/schedule.html">
+  <meta property="og:image" content="https://empoweredmewellness.com/assets/brand/emw-logo-horizontal.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes skeletonPulse {
+      0%, 100% { background-color: #e8ded0; }
+      50% { background-color: #d9cebe; }
+    }
+
+    .schedule-hero {
+      position: relative;
+      padding: 32px 24px 70px;
+      text-align: center;
+      background: radial-gradient(circle at 50% 20%, rgba(192, 138, 52, 0.12) 0%, rgba(241, 232, 214, 0.95) 70%),
+                  repeating-linear-gradient(0deg, rgba(217, 199, 160, 0.08) 0, rgba(217, 199, 160, 0.08) 10px, transparent 10px, transparent 20px);
+      border-bottom: 1px solid var(--sand);
+    }
+    .schedule-hero .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: #fff;
+      border: 1px solid var(--sand);
+      border-radius: 30px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--clay);
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(36,28,19,0.04);
+      animation: floatSlow 4s ease-in-out infinite;
+    }
+    .schedule-hero h1 {
+      font-size: clamp(2.5rem, 5vw, 3.8rem);
+      color: var(--ink);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+    .schedule-hero p.lead {
+      max-width: 880px;
+      margin: 16px auto 0;
+      font-size: 1.15rem;
+      color: var(--ink);
+      opacity: 0.85;
+      animation: fadeInUp 1s ease-out forwards;
+    }
+
+    /* Filter & Search Bar */
+    .schedule-controls {
+      max-width: 1100px;
+      margin: 40px auto 28px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .schedule-tab {
+      background: #fff;
+      border: 1px solid var(--sand);
+      border-radius: 20px;
+      padding: 8px 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--ink);
+      cursor: pointer;
+      width: auto;
+      margin-top: 0;
+      transition: all 0.25s ease;
+    }
+    .schedule-tab:hover, .schedule-tab.active {
+      background: var(--clay);
+      color: var(--papyrus);
+      border-color: var(--clay);
+    }
+
+    .session-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .session-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border: 1px solid var(--sand);
+      border-radius: 16px;
+      padding: 24px 28px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+      position: relative;
+      overflow: hidden;
+    }
+    .session-row::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0; width: 4px;
+      background: var(--moss);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .session-row:hover {
+      transform: translateX(6px);
+      border-color: var(--clay);
+      box-shadow: 0 10px 30px rgba(168,86,48,0.08);
+    }
+    .session-row:hover::before { opacity: 1; }
+    .session-row h3 {
+      margin: 0 0 6px;
+      font-size: 1.35rem;
+    }
+    .session-meta {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      opacity: 0.8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .session-meta svg { color: var(--clay); }
+    .spots-tag {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: var(--papyrus);
+      color: var(--ink);
+      border: 1px solid var(--sand);
+      font-weight: 600;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+    .spots-tag.full {
+      background: var(--clay);
+      color: var(--papyrus);
+      border-color: var(--clay);
+    }
+    .session-row:hover .spots-tag:not(.full) {
+      background: var(--clay);
+      color: var(--papyrus);
+      border-color: var(--clay);
+    }
+
+    .skeleton-row {
+      height: 90px;
+      border-radius: 16px;
+      animation: skeletonPulse 1.5s infinite ease-in-out;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      background: #fff;
+      border: 1px dashed var(--sand);
+      border-radius: 16px;
+    }
+
+    /* Class Info Notice Box */
+    .schedule-info-box {
+      max-width: 820px;
+      margin: 60px auto 0;
+      background: #fff;
+      border: 1px solid var(--sand);
+      border-radius: 18px;
+      padding: 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+    }
+    .info-item h4 {
+      margin: 0 0 6px;
+      font-size: 1.1rem;
+      color: var(--clay);
+    }
+    .info-item p {
+      margin: 0;
+      font-size: 0.92rem;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="schedule-hero">
+      <div class="hero-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Live Class Calendar
+      </div>
+      <h1>Upcoming Sessions & Workshops</h1>
+      <p class="lead">Select a session below to reserve your space online. All classes take place in Hamilton, Bermuda unless noted.</p>
+    </section>
+
+    <section class="container">
+      <div class="schedule-controls" id="schedule-controls">
+        <button class="schedule-tab active" onclick="filterSessions('all', this)">All Classes</button>
+      </div>
+
+      <div class="session-list" id="session-list">
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+      </div>
+
+      <!-- General Class Info Box -->
+      <div class="schedule-info-box">
+        <div class="info-item">
+          <h4>Location</h4>
+          <p>Hamilton, Bermuda studio space. Exact venue details provided upon booking confirmation.</p>
+        </div>
+        <div class="info-item">
+          <h4>Arrival & Mats</h4>
+          <p>Please arrive 10 minutes before start time. Mats and props available or bring your own.</p>
+        </div>
+        <div class="info-item">
+          <h4>Cancellation</h4>
+          <p>Full refund available up to 24 hours prior to session start. Manage via your account.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    let allSessions = [];
+
+    function formatDateTime(iso) {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, {
+        weekday: "short", month: "short", day: "numeric",
+        hour: "numeric", minute: "2-digit",
+      });
+    }
+
+    (async () => {
+      const listEl = document.getElementById("session-list");
+      try {
+        allSessions = await SessionsAPI.list();
+        renderFilterButtons(allSessions);
+        renderSessions(allSessions);
+      } catch (err) {
+        listEl.innerHTML = `<p class="mono" style="text-align:center; padding: 40px;">Couldn't load the schedule right now. Please try again shortly.</p>`;
+      }
+    })();
+    
+    function renderFilterButtons(sessions) {
+      const controls = document.getElementById("schedule-controls");
+      const categories = new Set();
+      sessions.forEach(s => {
+        if (s.class_category) {
+          categories.add(s.class_category);
+        }
+      });
+      
+      let html = `<button class="schedule-tab active" onclick="filterSessions('all', this)">All Classes</button>`;
+      Array.from(categories).sort().forEach(cat => {
+        html += `<button class="schedule-tab" style="text-transform: capitalize;" onclick="filterSessions('${cat.replace(/'/g, "\\'")}', this)">${escapeHtml(cat)}</button>`;
+      });
+      controls.innerHTML = html;
+    }
+
+    function renderSessions(sessions) {
+      const listEl = document.getElementById("session-list");
+      if (!sessions || sessions.length === 0) {
+        listEl.innerHTML = `<div class="empty-state"><p class="mono" style="margin:0;">No sessions scheduled right now — check back soon for new dates.</p></div>`;
+        return;
+      }
+      listEl.innerHTML = sessions
+        .map(
+          (s) => `
+        <a class="session-row" href="session-detail.html?id=${s.id}">
+          <div>
+            <h3>${s.title}</h3>
+            <div class="session-meta">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <span>${formatDateTime(s.start_time)}</span>
+              <span>·</span>
+              <span>${s.location}</span>
+              ${s.class_name ? `<span>·</span><span>${s.class_name}</span>` : ""}
+            </div>
+          </div>
+          <span class="spots-tag ${s.is_full ? "full" : ""}">${s.is_full ? "Session Full" : s.spots_remaining + " spots left &rarr;"}</span>
+        </a>
+      `
+        )
+        .join("");
+    }
+
+    function filterSessions(keyword, btn) {
+      document.querySelectorAll('.schedule-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (keyword === 'all') {
+        renderSessions(allSessions);
+      } else {
+        const filtered = allSessions.filter(s => s.class_category && s.class_category.toLowerCase() === keyword.toLowerCase());
+        renderSessions(filtered);
+      }
+    }
+  </script>
+</body>
+</html>
+

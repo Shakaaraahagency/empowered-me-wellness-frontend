@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "admin-login.html";
+    }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero"><h1>Orders</h1></section>
+    <div id="admin-nav"></div>
+
+    <div class="admin-container">
+      <table class="admin-table" id="orders-table">
+        <thead><tr><th>Items</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/admin-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    (async () => {
+      await requireAdmin();
+      const orders = await AdminAPI.listOrders();
+      const tbody = document.querySelector("#orders-table tbody");
+
+      if (orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="mono">No orders yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = orders
+        .map(
+          (o) => `
+        <tr>
+          <td>${o.items.map((i) => escapeHtml(i.product_name)).join(", ")}</td>
+          <td class="mono">${escapeHtml(o.contact_email)}</td>
+          <td>$${o.total_amount}</td>
+          <td><span class="badge ${o.status}">${o.status}</span></td>
+        </tr>
+      `
+        )
+        .join("");
+    })();
+  </script>
+</body>
+</html>

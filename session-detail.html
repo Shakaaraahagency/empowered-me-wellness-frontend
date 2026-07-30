@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session Details — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <style>
+    .detail-wrap { max-width: 900px; margin: 0 auto; }
+    .booking-card { background: #fff; border: 1px solid var(--sand); border-radius: 14px; padding: 28px; margin-top: 32px; }
+    .full-banner { background: var(--clay); color: var(--papyrus); padding: 14px 18px; border-radius: 10px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="container detail-wrap" style="padding-top:48px;">
+      <div id="session-info">
+        <p class="mono">Loading…</p>
+      </div>
+
+      <div class="booking-card" id="booking-card" style="display:none;">
+        <h2 id="booking-heading">Book this session</h2>
+        <div id="guest-fields">
+          <label for="guest_name">Name</label>
+          <input type="text" id="guest_name">
+          <label for="guest_email">Email</label>
+          <input type="email" id="guest_email">
+          <label for="guest_phone">Phone (optional)</label>
+          <input type="tel" id="guest_phone">
+        </div>
+        <p class="mono" id="logged-in-note" style="display:none;">Booking as <strong id="logged-in-email"></strong></p>
+        <button id="book-btn" class="btn">Book This Session</button>
+        <p class="error-msg" id="error-msg"></p>
+      </div>
+
+      <div class="full-banner" id="full-banner" style="display:none;">
+        This session is fully booked. Check the <a href="schedule.html" style="color:var(--papyrus);">schedule</a> for other times.
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("id");
+
+    function formatDateTime(iso) {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, {
+        weekday: "long", month: "long", day: "numeric",
+        hour: "numeric", minute: "2-digit",
+      });
+    }
+
+    let currentUser = null;
+
+    async function init() {
+      const infoEl = document.getElementById("session-info");
+
+      if (!sessionId) {
+        infoEl.innerHTML = `<p class="mono">No session specified.</p>`;
+        return;
+      }
+
+      let session;
+      try {
+        session = await SessionsAPI.get(sessionId);
+      } catch (err) {
+        infoEl.innerHTML = `<p class="mono">Session not found.</p>`;
+        return;
+      }
+
+      infoEl.innerHTML = `
+        <h1>${session.title}</h1>
+        <p class="mono">${formatDateTime(session.start_time)} · ${session.location}</p>
+        ${session.description ? `<p>${session.description}</p>` : ""}
+        <p class="mono">${session.spots_remaining} of ${session.capacity} spots remaining</p>
+      `;
+
+      document.title = `${session.title} — Empowered Me Wellness`;
+      const metaDesc = document.createElement("meta");
+      metaDesc.name = "description";
+      metaDesc.content = session.description || `Book ${session.title} at Empowered Me Wellness.`;
+      document.head.appendChild(metaDesc);
+
+      if (session.is_full) {
+        document.getElementById("full-banner").style.display = "block";
+        return;
+      }
+
+      document.getElementById("booking-card").style.display = "block";
+
+      try {
+        currentUser = await AuthAPI.me();
+        document.getElementById("guest-fields").style.display = "none";
+        document.getElementById("logged-in-note").style.display = "block";
+        document.getElementById("logged-in-email").textContent = currentUser.email;
+      } catch (err) {
+        // Not logged in — guest fields stay visible, that's fine.
+      }
+
+      document.getElementById("book-btn").addEventListener("click", async () => {
+        const errorMsg = document.getElementById("error-msg");
+        errorMsg.style.display = "none";
+
+        const payload = { session_id: sessionId };
+        if (!currentUser) {
+          payload.guest_name = document.getElementById("guest_name").value.trim();
+          payload.guest_email = document.getElementById("guest_email").value.trim();
+          payload.guest_phone = document.getElementById("guest_phone").value.trim();
+        }
+
+        try {
+          const booking = await BookingsAPI.create(payload);
+          // Guests have no JWT, so the confirmation page can't re-fetch this
+          // via the (correctly) ownership-checked GET /bookings/:id. Pass it
+          // along directly instead of creating an unauthenticated lookup route.
+          sessionStorage.setItem("emw_last_booking", JSON.stringify(booking));
+          window.location.href = `booking-confirmation.html?id=${booking.id}`;
+        } catch (err) {
+          errorMsg.textContent = err.message;
+          errorMsg.style.display = "block";
+        }
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>

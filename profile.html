@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "login.html";
+    }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero"><h1>Profile</h1></section>
+    <div id="dashboard-nav"></div>
+
+    <div class="dash-container" style="max-width:480px;">
+      <div class="tile">
+        <p class="mono" id="email-display" style="margin-bottom:20px;"></p>
+        <form id="profile-form">
+          <label for="full_name">Full name</label>
+          <input type="text" id="full_name" required>
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone">
+          <button type="submit" class="btn">Save Changes</button>
+          <p class="error-msg" id="error-msg"></p>
+          <p class="mono" id="success-msg" style="display:none;color:var(--moss);margin-top:16px;">Saved.</p>
+        </form>
+      </div>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/dashboard-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    (async () => {
+      const user = await requireAuth();
+      document.getElementById("email-display").textContent = user.email;
+      document.getElementById("full_name").value = user.full_name;
+      document.getElementById("phone").value = user.phone || "";
+
+      document.getElementById("profile-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const errorMsg = document.getElementById("error-msg");
+        const successMsg = document.getElementById("success-msg");
+        errorMsg.style.display = "none";
+        successMsg.style.display = "none";
+
+        try {
+          await AuthAPI.updateMe({
+            full_name: document.getElementById("full_name").value.trim(),
+            phone: document.getElementById("phone").value.trim(),
+          });
+          successMsg.style.display = "block";
+        } catch (err) {
+          errorMsg.textContent = err.message;
+          errorMsg.style.display = "block";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

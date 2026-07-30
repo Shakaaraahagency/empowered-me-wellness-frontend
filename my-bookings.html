@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "login.html";
+    }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero"><h1>My Bookings</h1></section>
+    <div id="dashboard-nav"></div>
+
+    <div class="dash-container">
+      <div class="dash-list" id="bookings-list">
+        <p class="mono" style="text-align:center;">Loading…</p>
+      </div>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/dashboard-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    function formatDateTime(iso) {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+    }
+
+    async function loadBookings() {
+      const listEl = document.getElementById("bookings-list");
+      try {
+        const bookings = await BookingsAPI.mine();
+        if (bookings.length === 0) {
+          listEl.innerHTML = `<p class="mono" style="text-align:center;">No bookings yet. <a href="schedule.html">Browse the schedule</a>.</p>`;
+          return;
+        }
+
+        const now = new Date();
+        listEl.innerHTML = bookings
+          .map((b) => {
+            const canCancel = b.status === "confirmed" && new Date(b.session.start_time) > now;
+            return `
+            <div class="dash-row">
+              <div>
+                <h3>${escapeHtml(b.session.title)}</h3>
+                <p class="mono">${formatDateTime(b.session.start_time)} · ${b.session.location}</p>
+              </div>
+              <div style="text-align:right;">
+                <span class="status-tag ${b.status === "cancelled" ? "cancelled" : ""}">${b.status}</span>
+                ${canCancel ? `<br><button class="btn btn-small btn-danger" style="margin-top:8px;" data-booking-id="${b.id}">Cancel</button>` : ""}
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+
+        listEl.querySelectorAll("[data-booking-id]").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            if (!confirm("Cancel this booking?")) return;
+            try {
+              await BookingsAPI.cancel(btn.dataset.bookingId);
+              loadBookings();
+            } catch (err) {
+              alert(err.message);
+            }
+          });
+        });
+      } catch (err) {
+        listEl.innerHTML = `<p class="mono" style="text-align:center;">Couldn't load your bookings right now.</p>`;
+      }
+    }
+
+    (async () => {
+      await requireAuth();
+      loadBookings();
+    })();
+  </script>
+</body>
+</html>

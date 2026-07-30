@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "login.html";
+    }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero">
+      <h1>Welcome back<span id="welcome-name"></span></h1>
+    </section>
+    <div id="dashboard-nav"></div>
+
+    <div class="dash-container">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num" id="stat-upcoming">–</div><p class="mono">Upcoming Sessions</p></div>
+        <div class="stat-num-wrap stat-card"><div class="stat-num" id="stat-orders">–</div><p class="mono">Orders</p></div>
+        <div class="stat-card"><div class="stat-num" id="stat-total">–</div><p class="mono">Total Bookings</p></div>
+      </div>
+      <p class="mono" style="text-align:center;">Use the tabs above to manage your bookings, downloads, and profile.</p>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/dashboard-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    (async () => {
+      const user = await requireAuth();
+      document.getElementById("welcome-name").textContent = `, ${user.full_name.split(" ")[0]}`;
+
+      try {
+        const [bookings, orders] = await Promise.all([BookingsAPI.mine(), OrdersAPI.mine()]);
+        const now = new Date();
+        const upcoming = bookings.filter((b) => b.status === "confirmed" && new Date(b.session.start_time) > now);
+        document.getElementById("stat-upcoming").textContent = upcoming.length;
+        document.getElementById("stat-orders").textContent = orders.length;
+        document.getElementById("stat-total").textContent = bookings.length;
+      } catch (err) {
+        // Dashboard stats are supplementary — a failure here shouldn't block the page.
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog CMS — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "admin-login.html";
+    }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero"><h1>Blog</h1></section>
+    <div id="admin-nav"></div>
+
+    <div class="admin-container">
+      <div class="section-block">
+        <h2 id="form-heading">New Post</h2>
+        <div class="inline-form">
+          <form id="post-form">
+            <input type="hidden" id="post-id">
+            <input type="text" id="post-title" placeholder="Title" required>
+            <textarea id="post-excerpt" placeholder="Short excerpt (shown in the blog listing)" rows="2" style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;margin-bottom:10px;"></textarea>
+            <textarea id="post-content" placeholder="Full post content (HTML allowed)" rows="8" required style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;margin-bottom:10px;"></textarea>
+            <button type="submit" class="btn btn-small">Save Draft</button>
+            <button type="button" id="cancel-edit" class="btn btn-small btn-outline" style="display:none;color:var(--ink);border-color:var(--ink);background:transparent;">Cancel Edit</button>
+            <p class="error-msg" id="post-error"></p>
+          </form>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <h2>All Posts</h2>
+        <table class="admin-table" id="posts-table">
+          <thead><tr><th>Title</th><th>Status</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/admin-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    let editingId = null;
+
+    function resetForm() {
+      editingId = null;
+      document.getElementById("form-heading").textContent = "New Post";
+      document.getElementById("post-form").reset();
+      document.getElementById("cancel-edit").style.display = "none";
+    }
+
+    async function loadPosts() {
+      const posts = await AdminAPI.listPosts();
+      const tbody = document.querySelector("#posts-table tbody");
+
+      if (posts.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="mono">No posts yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = posts
+        .map(
+          (p) => `
+        <tr>
+          <td>${p.title}</td>
+          <td><span class="badge ${p.status === "published" ? "approved" : ""}">${p.status}</span></td>
+          <td>
+            <button class="btn btn-tiny" data-edit="${p.id}">Edit</button>
+            <button class="btn btn-tiny" data-toggle-publish="${p.id}" data-status="${p.status}">${p.status === "published" ? "Unpublish" : "Publish"}</button>
+            <button class="btn btn-tiny" data-delete="${p.id}">Delete</button>
+          </td>
+        </tr>
+      `
+        )
+        .join("");
+
+      tbody.querySelectorAll("[data-edit]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          const posts = await AdminAPI.listPosts();
+          const post = posts.find((p) => p.id === btn.dataset.edit);
+          editingId = post.id;
+          document.getElementById("form-heading").textContent = `Editing: ${post.title}`;
+          document.getElementById("post-title").value = post.title;
+          document.getElementById("post-excerpt").value = post.excerpt || "";
+          document.getElementById("post-content").value = post.content;
+          document.getElementById("cancel-edit").style.display = "inline-block";
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        })
+      );
+
+      tbody.querySelectorAll("[data-toggle-publish]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          const newStatus = btn.dataset.status === "published" ? "draft" : "published";
+          await AdminAPI.updatePost(btn.dataset.togglePublish, { status: newStatus });
+          loadPosts();
+        })
+      );
+
+      tbody.querySelectorAll("[data-delete]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          if (!confirm("Delete this post permanently?")) return;
+          await AdminAPI.deletePost(btn.dataset.delete);
+          loadPosts();
+        })
+      );
+    }
+
+    (async () => {
+      await requireAdmin();
+      loadPosts();
+
+      document.getElementById("cancel-edit").addEventListener("click", resetForm);
+
+      document.getElementById("post-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const errorEl = document.getElementById("post-error");
+        errorEl.style.display = "none";
+
+        const payload = {
+          title: document.getElementById("post-title").value.trim(),
+          excerpt: document.getElementById("post-excerpt").value.trim(),
+          content: document.getElementById("post-content").value.trim(),
+        };
+
+        try {
+          if (editingId) {
+            await AdminAPI.updatePost(editingId, payload);
+          } else {
+            await AdminAPI.createPost(payload);
+          }
+          resetForm();
+          loadPosts();
+        } catch (err) {
+          errorEl.textContent = err.message;
+          errorEl.style.display = "block";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

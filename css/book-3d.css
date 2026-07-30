@@ -1,0 +1,242 @@
+/* ==========================================================================
+   Realistic 3D Book CSS
+   Reference: "Design Engineering at Vercel" style mockup
+   ========================================================================== */
+
+/* The card acts as the perspective camera */
+.product-card, .book-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  perspective: 1500px;
+  perspective-origin: 50% 50%;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.book-container {
+  margin-bottom: 24px;
+}
+
+/* The physical book block */
+.book-3d {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 3 / 4;
+  position: relative;
+  transform-style: preserve-3d;
+  /* At rest: completely flat facing forward */
+  transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg) translateZ(0);
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.product-card:hover .book-3d,
+.book-container:hover .book-3d {
+  /* On hover: swing right to reveal the left spine and right pages */
+  transform: rotateY(-25deg) rotateX(8deg) rotateZ(-1deg) translateZ(30px) scale(1.05);
+}
+
+/* ---- Front Cover ---- */
+.book-cover {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px 4px 4px 2px;
+  transform-style: preserve-3d;
+  /* Book depth = 36px total. Half is 18px */
+  transform: translateZ(18px);
+  background: var(--book-color, #c0392b);
+  overflow: hidden;
+}
+
+/* Base image styling */
+.book-cover-img,
+.book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  z-index: 1;
+  position: relative;
+}
+
+/* Lighting: Hinge line (indentation near spine) and cover glare */
+.book-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  background: 
+    /* Hinge indentation */
+    linear-gradient(to right, 
+      rgba(255,255,255,0) 2px, 
+      rgba(255,255,255,0.4) 3px, 
+      rgba(0,0,0,0.1) 4px, 
+      rgba(255,255,255,0) 6px,
+      rgba(255,255,255,0) 12px,
+      /* Glare across the cover */
+      rgba(255,255,255,0.2) 15px,
+      rgba(255,255,255,0) 30px,
+      rgba(0,0,0,0.05) 100%
+    );
+  border-radius: inherit;
+  box-shadow: inset 1px 0 3px rgba(255,255,255,0.3), inset -1px 0 2px rgba(0,0,0,0.1);
+}
+
+/* Fine linen/canvas texture */
+.book-texture {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 4px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 4px);
+  mix-blend-mode: overlay;
+}
+
+/* ---- Spine ---- */
+.book-spine {
+  position: absolute;
+  top: 0; 
+  left: -18px; /* half of 36px thickness */
+  width: 36px;
+  height: 100%;
+  background: color-mix(in srgb, var(--book-color, #c0392b) 80%, #000 20%);
+  transform: rotateY(-90deg);
+  border-radius: 4px 0 0 4px;
+  transform-origin: center;
+  box-shadow: 
+    inset -2px 0 6px rgba(0,0,0,0.3),
+    inset 2px 0 5px rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+
+/* Spine lighting */
+.book-spine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, 
+    rgba(255,255,255,0.1) 0%, 
+    rgba(255,255,255,0.2) 20%, 
+    rgba(0,0,0,0.15) 80%, 
+    rgba(0,0,0,0.3) 100%
+  );
+  pointer-events: none;
+}
+
+/* ---- Back Cover ---- */
+.book-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px 2px 2px 4px;
+  transform: rotateY(180deg) translateZ(18px);
+  background: var(--book-color, #c0392b);
+  box-shadow: inset -4px 0 10px rgba(0,0,0,0.15);
+}
+
+/* ---- Right Pages (Foredge) ---- */
+.book-pages {
+  position: absolute;
+  top: 1%;
+  right: -18px;
+  width: 36px; 
+  height: 98%;
+  background: #fdfdfc;
+  transform: rotateY(90deg);
+  transform-origin: center;
+  /* Render individual pages using fine lines */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0, transparent 2px,
+    rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 3px
+  );
+  border-radius: 0 3px 3px 0;
+  box-shadow: 
+    inset 3px 0 6px rgba(0,0,0,0.1),
+    inset -1px 0 2px rgba(0,0,0,0.05);
+}
+
+/* ---- Top Pages (Head) - For extra 3D realism ---- */
+.book-pages-top {
+  position: absolute;
+  top: -18px;
+  left: 2px; /* compensate for spine rounding */
+  width: calc(100% - 4px); /* slightly narrower than cover */
+  height: 36px;
+  background: #fdfdfc;
+  transform: rotateX(90deg);
+  transform-origin: center;
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0, transparent 2px,
+    rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 3px
+  );
+  border-radius: 2px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ---- Bottom Pages (Tail) ---- */
+.book-pages-bottom {
+  position: absolute;
+  bottom: -18px;
+  left: 2px;
+  width: calc(100% - 4px);
+  height: 36px;
+  background: #fdfdfc;
+  transform: rotateX(-90deg);
+  transform-origin: center;
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0, transparent 2px,
+    rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 3px
+  );
+  border-radius: 2px;
+  box-shadow: inset 0 -2px 4px rgba(0,0,0,0.05);
+}
+
+/* ---- Realistic Shadow on the Floor ---- */
+.book-shadow-el {
+  width: 85%;
+  height: 12px;
+  margin: -6px auto 16px; /* pull up slightly under book */
+  background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.02) 60%, transparent 80%);
+  filter: blur(4px);
+  transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Flat shadow for flat book */
+  transform: translateX(0) translateY(4px) scale(0.9);
+}
+
+.product-card:hover .book-shadow-el,
+.book-container:hover .book-shadow-el {
+  width: 90%;
+  transform: translateX(20px) translateY(18px) scale(1);
+  filter: blur(8px);
+  opacity: 0.7;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.05) 60%, transparent 80%);
+}
+
+/* Fallback cover styling */
+.book-cover-placeholder {
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: clamp(10px, 8%, 18px);
+  box-sizing: border-box;
+}
+
+.book-cover-placeholder .cover-title {
+  font-family: var(--font-display);
+  font-size: clamp(12px, 1.1em, 17px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+  max-width: 85%;
+  word-break: break-word;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 20;
+}

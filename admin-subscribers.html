@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscribers — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "admin-login.html";
+    }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero"><h1>Newsletter Subscribers</h1></section>
+    <div id="admin-nav"></div>
+
+    <div class="admin-container">
+      <div style="text-align:right;margin-bottom:16px;">
+        <a id="export-link" href="#" class="btn btn-small" style="display:inline-block;">Export CSV</a>
+      </div>
+      <table class="admin-table" id="subscribers-table">
+        <thead><tr><th>Email</th><th>Subscribed</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/admin-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    (async () => {
+      await requireAdmin();
+
+      document.getElementById("export-link").href = absoluteApiUrl("/api/v1/admin/subscribers/export");
+
+      const subs = await AdminAPI.listSubscribers();
+      const tbody = document.querySelector("#subscribers-table tbody");
+
+      if (subs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="2" class="mono">No active subscribers yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = subs
+        .map(
+          (s) => `
+        <tr>
+          <td>${s.email}</td>
+          <td class="mono">${new Date(s.subscribed_at).toLocaleDateString()}</td>
+        </tr>
+      `
+        )
+        .join("");
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal Login — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 30%, rgba(192, 138, 52, 0.15) 0%, rgba(241, 232, 214, 1) 70%);
+      padding: 24px;
+    }
+    .admin-card {
+      width: 100%;
+      max-width: 440px;
+      background: #FFFFFF;
+      border: 1px solid var(--sand);
+      border-radius: 18px;
+      padding: 40px 36px;
+      box-shadow: 0 16px 40px rgba(36, 28, 19, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .admin-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--clay) 0%, var(--ochre) 50%, var(--moss) 100%);
+    }
+    .admin-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .admin-brand svg {
+      margin-bottom: 12px;
+    }
+    .admin-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0 0 6px;
+    }
+    .admin-subtitle {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--clay);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink);
+      margin-bottom: 8px;
+      display: block;
+    }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--sand);
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      background: #FAFAFA;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--clay);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(168, 86, 48, 0.12);
+    }
+    .btn-admin-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--clay);
+      color: var(--papyrus);
+      border: none;
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .btn-admin-submit:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+    .admin-footer-links {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--sand);
+    }
+    .admin-footer-links a {
+      color: var(--ink);
+      opacity: 0.7;
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      transition: opacity 0.2s ease, color 0.2s ease;
+    }
+    .admin-footer-links a:hover {
+      opacity: 1;
+      color: var(--clay);
+    }
+    .error-msg {
+      background: #FBE9E3;
+      border: 1px solid rgba(168, 86, 48, 0.2);
+      color: var(--clay);
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-top: 20px;
+      display: none;
+    }
+    .success-msg {
+      background: #EAF2E4;
+      border: 1px solid rgba(92, 107, 62, 0.2);
+      color: var(--moss);
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-card">
+    <div class="admin-brand">
+      <svg viewBox="-90 -145 180 155" width="44" height="38" aria-hidden="true">
+        <path d="M 0,0 Q -49.4,-32.5 -73.6,-81.7 Q -27.1,-52.5 0,0 Z" fill="#5C6B3E"/>
+        <path d="M 0,0 Q -17,-72.8 0,-140 Q 17,-72.8 0,0 Z" fill="#C08A34"/>
+        <path d="M 0,0 Q 27.1,-52.5 73.6,-81.7 Q 49.4,-32.5 0,0 Z" fill="#5C6B3E"/>
+        <circle cx="0" cy="0" r="9" fill="#241C13"/>
+      </svg>
+      <h1 class="admin-title">Empowered Me</h1>
+      <span class="admin-subtitle">Admin Control Portal</span>
+    </div>
+
+    <form id="admin-login-form">
+      <div class="form-group">
+        <label for="admin-email">Admin Email</label>
+        <input type="email" id="admin-email" placeholder="admin@emw.yoga" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label for="admin-password">Password</label>
+        <input type="password" id="admin-password" placeholder="••••••••••••" required autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn-admin-submit" id="admin-submit-btn">Access Dashboard</button>
+
+      <div class="error-msg" id="admin-error-msg"></div>
+      <div class="success-msg" id="admin-success-msg">Authentication successful. Redirecting...</div>
+    </form>
+
+    <div class="admin-footer-links">
+      <a href="index.html">&larr; Return to Public Website</a>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Auto-check if already logged in as admin
+      try {
+        const user = await AuthAPI.me();
+        if (user && user.role === "admin") {
+          window.location.href = "admin-overview.html";
+        }
+      } catch (err) {
+        // Not logged in — proceed with login form
+      }
+    });
+
+    const form = document.getElementById("admin-login-form");
+    const errorMsg = document.getElementById("admin-error-msg");
+    const successMsg = document.getElementById("admin-success-msg");
+    const submitBtn = document.getElementById("admin-submit-btn");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorMsg.style.display = "none";
+      successMsg.style.display = "none";
+
+      const email = document.getElementById("admin-email").value.trim();
+      const password = document.getElementById("admin-password").value;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Verifying...";
+
+      try {
+        await AuthAPI.login(email, password);
+        const user = await AuthAPI.me();
+
+        if (user.role !== "admin") {
+          await AuthAPI.logout();
+          throw new Error("Access Denied: Account lacks administrative privileges.");
+        }
+
+        successMsg.style.display = "block";
+        setTimeout(() => {
+          window.location.href = "admin-overview.html";
+        }, 600);
+      } catch (err) {
+        errorMsg.textContent = err.message || "Invalid credentials or authorization failure.";
+        errorMsg.style.display = "block";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Access Dashboard";
+      }
+    });
+  </script>
+</body>
+</html>

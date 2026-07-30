@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <div class="card">
+      <h1>Checkout</h1>
+      <div id="product-summary"><p class="mono">Loading…</p></div>
+
+      <div id="guest-email-field" style="display:none;">
+        <label for="guest_email">Email (for your receipt and download link)</label>
+        <input type="email" id="guest_email">
+      </div>
+      <p class="mono" id="logged-in-note" style="display:none;">Checking out as <strong id="logged-in-email"></strong></p>
+
+      <button id="pay-btn" class="btn">Pay Now</button>
+      <p class="error-msg" id="error-msg"></p>
+      <p class="mono" id="dev-note" style="display:none;margin-top:16px;">
+        Note: payments aren't configured in this environment, so this is a simulated purchase for testing.
+      </p>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("product_id");
+    let currentUser = null;
+
+    (async () => {
+      const summaryEl = document.getElementById("product-summary");
+      if (!productId) {
+        summaryEl.innerHTML = `<p class="mono">No product selected.</p>`;
+        return;
+      }
+
+      let product;
+      try {
+        product = await ProductsAPI.get(productId);
+      } catch (err) {
+        summaryEl.innerHTML = `<p class="mono">Product not found.</p>`;
+        return;
+      }
+
+      summaryEl.innerHTML = `<p><strong>${product.name}</strong> — $${product.price}</p>`;
+
+      try {
+        currentUser = await AuthAPI.me();
+        document.getElementById("logged-in-note").style.display = "block";
+        document.getElementById("logged-in-email").textContent = currentUser.email;
+      } catch (err) {
+        document.getElementById("guest-email-field").style.display = "block";
+      }
+
+      document.getElementById("pay-btn").addEventListener("click", async () => {
+        const errorMsg = document.getElementById("error-msg");
+        errorMsg.style.display = "none";
+
+        const payload = {
+          product_ids: [productId],
+          success_url: `${window.location.origin}/order-confirmation.html`,
+          cancel_url: `${window.location.origin}/product-detail.html?id=${productId}`,
+        };
+        if (!currentUser) {
+          payload.guest_email = document.getElementById("guest_email").value.trim();
+        }
+
+        try {
+          const result = await OrdersAPI.checkout(payload);
+          // Guests have no JWT to re-fetch order details with, and even a
+          // logged-in user's real Stripe redirect round-trip is smoother if
+          // we don't have to guess what was just purchased. sessionStorage
+          // survives navigating to Stripe's domain and back to ours.
+          sessionStorage.setItem(
+            "emw_last_purchase",
+            JSON.stringify({
+              order_id: result.order_id,
+              product_id: productId,
+              product_name: product.name,
+              guest_email: currentUser ? null : payload.guest_email,
+            })
+          );
+          window.location.href = result.checkout_url;
+        } catch (err) {
+          errorMsg.textContent = err.message;
+          errorMsg.style.display = "block";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

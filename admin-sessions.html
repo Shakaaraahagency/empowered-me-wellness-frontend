@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Classes & Sessions — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "admin-login.html";
+    }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero"><h1>Classes &amp; Sessions</h1></section>
+    <div id="admin-nav"></div>
+
+    <div class="admin-container">
+      <div class="section-block">
+        <h2>Add a Class</h2>
+        <div class="inline-form">
+          <form id="class-form">
+            <input type="text" id="class-name" placeholder="Class name (e.g. Kemetic Yoga for Beginners)" required>
+            <input type="text" id="class-category" list="category-options" placeholder="Category (e.g. Kemetic Yoga)" required>
+            <datalist id="category-options">
+              <option value="Kemetic Yoga"></option>
+              <option value="Kid's Yoga"></option>
+              <option value="Workshops"></option>
+            </datalist>
+            <textarea id="class-description" placeholder="Description (optional)" rows="2" style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;margin-bottom:10px;"></textarea>
+            <button type="submit" class="btn btn-small">Add Class</button>
+            <p class="error-msg" id="class-error"></p>
+          </form>
+        </div>
+        <table class="admin-table" id="classes-table">
+          <thead><tr><th>Name</th><th>Category</th><th>Status</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="section-block">
+        <h2>Add a Session</h2>
+        <div class="inline-form">
+          <form id="session-form">
+            <input type="text" id="session-title" placeholder="Session title" required>
+            <select id="session-class" style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;margin-bottom:10px;">
+              <option value="">No linked class (one-off event)</option>
+            </select>
+            <div class="inline-form-row">
+              <input type="datetime-local" id="session-start" required>
+              <input type="datetime-local" id="session-end" required>
+            </div>
+            <div class="inline-form-row">
+              <input type="text" id="session-location" placeholder="Location" value="Studio">
+              <input type="number" id="session-capacity" placeholder="Capacity" value="12" min="1">
+            </div>
+            <button type="submit" class="btn btn-small">Add Session</button>
+            <p class="error-msg" id="session-error"></p>
+          </form>
+        </div>
+        <table class="admin-table" id="sessions-table">
+          <thead><tr><th>Title</th><th>When</th><th>Spots</th><th>Status</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/admin-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    function formatDateTime(iso) {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+    }
+
+    async function loadClasses() {
+      const classes = await AdminAPI.listClasses();
+      const tbody = document.querySelector("#classes-table tbody");
+      tbody.innerHTML = classes
+        .map(
+          (c) => `
+        <tr>
+          <td>${escapeHtml(c.name)}</td>
+          <td style="text-transform: capitalize;">${escapeHtml(c.category || "—")}</td>
+          <td><span class="badge ${c.is_active === false ? "cancelled" : "approved"}">${c.is_active === false ? "inactive" : "active"}</span></td>
+          <td>
+            ${c.is_active === false
+              ? `<button class="btn btn-tiny btn-outline" data-activate-class="${c.id}">Activate</button>`
+              : `<button class="btn btn-tiny" data-deactivate-class="${c.id}">Deactivate</button>`
+            }
+          </td>
+        </tr>
+      `
+        )
+        .join("");
+
+      tbody.querySelectorAll("[data-deactivate-class]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          if (!confirm("Deactivate this class? All its scheduled sessions will be hidden from the public schedule.")) return;
+          try {
+            await AdminAPI.updateClass(btn.dataset.deactivateClass, { is_active: false });
+            loadClasses();
+          } catch (err) {
+            alert("Error: " + (err.message || "Could not deactivate class."));
+          }
+        });
+      });
+
+      tbody.querySelectorAll("[data-activate-class]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          try {
+            await AdminAPI.updateClass(btn.dataset.activateClass, { is_active: true });
+            loadClasses();
+          } catch (err) {
+            alert("Error: " + (err.message || "Could not activate class."));
+          }
+        });
+      });
+
+      const select = document.getElementById("session-class");
+      select.innerHTML =
+        `<option value="">No linked class (one-off event)</option>` +
+        classes.map((c) => `<option value="${c.id}">${c.name}</option>`).join("");
+    }
+
+    async function loadSessions() {
+      const sessions = await AdminAPI.listSessions();
+      const tbody = document.querySelector("#sessions-table tbody");
+      tbody.innerHTML = sessions
+        .map(
+          (s) => `
+        <tr>
+          <td>${s.title}</td>
+          <td class="mono">${formatDateTime(s.start_time)}</td>
+          <td>${s.spots_remaining}/${s.capacity}</td>
+          <td><span class="badge ${s.status === "cancelled" ? "cancelled" : "approved"}">${s.status}</span></td>
+          <td>${s.status === "scheduled" ? `<button class="btn btn-tiny" data-cancel-session="${s.id}">Cancel</button>` : ""}</td>
+        </tr>
+      `
+        )
+        .join("");
+
+      tbody.querySelectorAll("[data-cancel-session]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          if (!confirm("Cancel this session? Every confirmed booking will be cancelled and the client notified.")) return;
+          const result = await AdminAPI.cancelSession(btn.dataset.cancelSession);
+          alert(`Cancelled. Notified: ${result.notified.join(", ") || "no one (no active bookings)"}`);
+          loadSessions();
+        });
+      });
+    }
+
+    (async () => {
+      await requireAdmin();
+      loadClasses();
+      loadSessions();
+
+      document.getElementById("class-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const errorEl = document.getElementById("class-error");
+        errorEl.style.display = "none";
+        try {
+          await AdminAPI.createClass({
+            name: document.getElementById("class-name").value.trim(),
+            category: document.getElementById("class-category").value.trim(),
+            description: document.getElementById("class-description").value.trim(),
+          });
+          document.getElementById("class-form").reset();
+          loadClasses();
+        } catch (err) {
+          errorEl.textContent = err.message;
+          errorEl.style.display = "block";
+        }
+      });
+
+      document.getElementById("session-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const errorEl = document.getElementById("session-error");
+        errorEl.style.display = "none";
+        try {
+          const classId = document.getElementById("session-class").value;
+          await AdminAPI.createSession({
+            title: document.getElementById("session-title").value.trim(),
+            class_id: classId || null,
+            start_time: document.getElementById("session-start").value,
+            end_time: document.getElementById("session-end").value,
+            location: document.getElementById("session-location").value.trim(),
+            capacity: parseInt(document.getElementById("session-capacity").value, 10),
+          });
+          document.getElementById("session-form").reset();
+          loadSessions();
+        } catch (err) {
+          errorEl.textContent = err.message;
+          errorEl.style.display = "block";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

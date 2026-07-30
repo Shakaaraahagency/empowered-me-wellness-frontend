@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact & Inquiries — Empowered Me Wellness</title>
+  <meta name="description" content="Get in touch with Empowered Me Wellness in Hamilton, Bermuda for class inquiries, private sessions, or workshops.">
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="canonical" href="https://empoweredmewellness.com/contact.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Contact & Inquiries — Empowered Me Wellness">
+  <meta property="og:description" content="Get in touch with Empowered Me Wellness in Hamilton, Bermuda for class inquiries, private sessions, or workshops.">
+  <meta property="og:url" content="https://empoweredmewellness.com/contact.html">
+  <meta property="og:image" content="https://empoweredmewellness.com/assets/brand/emw-logo-horizontal.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .contact-hero {
+      position: relative;
+      padding: 32px 24px 70px;
+      text-align: center;
+      background: radial-gradient(circle at 50% 20%, rgba(168, 86, 72, 0.12) 0%, rgba(241, 232, 214, 0.95) 70%),
+                  repeating-linear-gradient(45deg, rgba(217, 199, 160, 0.08) 0, rgba(217, 199, 160, 0.08) 12px, transparent 12px, transparent 24px);
+      border-bottom: 1px solid var(--sand);
+    }
+    .contact-hero .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: #fff;
+      border: 1px solid var(--sand);
+      border-radius: 30px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--clay);
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(36,28,19,0.04);
+      animation: floatSlow 4s ease-in-out infinite;
+    }
+    .contact-hero h1 {
+      font-size: clamp(2.5rem, 5vw, 3.8rem);
+      color: var(--ink);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+    .contact-hero p.lead {
+      max-width: 880px;
+      margin: 16px auto 0;
+      font-size: 1.15rem;
+      color: var(--ink);
+      opacity: 0.85;
+      animation: fadeInUp 1s ease-out forwards;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 40px;
+      max-width: 1300px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    @media (max-width: 800px) {
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+
+    .contact-info-card {
+      background: #fff;
+      border: 1px solid var(--sand);
+      border-radius: 18px;
+      padding: 36px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin-top: 28px;
+    }
+    .info-item-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .info-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(168,86,48,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--clay);
+      flex-shrink: 0;
+    }
+    .info-item-row h4 {
+      margin: 0 0 4px;
+      font-size: 1rem;
+    }
+    .info-item-row p {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      opacity: 0.85;
+    }
+
+    /* Form Card */
+    .contact-form-card {
+      background: #fff;
+      border: 1px solid var(--sand);
+      border-radius: 18px;
+      padding: 36px;
+      box-shadow: 0 4px 20px rgba(36,28,19,0.03);
+    }
+    .contact-form-card label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--ink);
+      margin: 18px 0 6px;
+    }
+    .contact-form-card input,
+    .contact-form-card textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--sand);
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      background: #fcfaf7;
+      transition: all 0.25s ease;
+    }
+    .contact-form-card input:focus,
+    .contact-form-card textarea:focus {
+      outline: none;
+      border-color: var(--clay);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(168,86,48,0.12);
+    }
+    .contact-form-card button[type="submit"] {
+      margin-top: 28px;
+      transition: all 0.3s ease;
+    }
+    .contact-form-card button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(168,86,48,0.25);
+    }
+    
+    .hp-field {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="contact-hero">
+      <div class="hero-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        We're Here For You
+      </div>
+      <h1>Get in Touch</h1>
+      <p class="lead">Have questions about Kemetic yoga, booking private group workshops, or our digital publications? Send us a message.</p>
+    </section>
+
+    <section class="container" style="padding-top: 60px;">
+      <div class="contact-grid">
+        <div class="contact-info-card">
+          <h2 style="font-size: 1.6rem; color: var(--clay); margin-bottom: 8px;">Direct Contact Details</h2>
+          <p style="font-size: 0.95rem; opacity: 0.85;">We aim to respond to all inquiries within 24–48 business hours.</p>
+
+          <div class="info-list">
+            <div class="info-item-row">
+              <div class="info-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div>
+                <h4>Email Us</h4>
+                <p><a href="mailto:info@emw.yoga" style="color: var(--ink); text-decoration: none;">info@emw.yoga</a></p>
+              </div>
+            </div>
+
+            <div class="info-item-row">
+              <div class="info-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+              <div>
+                <h4>Phone</h4>
+                <p><a href="tel:+14415954105" style="color: var(--ink); text-decoration: none;">+441-595-4105</a></p>
+              </div>
+            </div>
+
+            <div class="info-item-row">
+              <div class="info-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <h4>Studio Location</h4>
+                <p>Hamilton, Bermuda</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-form-card">
+          <h2 style="font-size: 1.6rem; margin-bottom: 20px;">Send a Message</h2>
+          <form id="contact-form">
+            <label for="name">Your Full Name</label>
+            <input type="text" id="name" required placeholder="e.g. Maya Lin">
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" required placeholder="e.g. maya@example.com">
+
+            <label for="message">Your Message</label>
+            <textarea id="message" required rows="5" placeholder="How can we assist you with your wellness journey?"></textarea>
+
+            <!-- Honeypot: hidden from real users via CSS, invisible to screen readers -->
+            <div class="hp-field" aria-hidden="true">
+              <label for="website">Website</label>
+              <input type="text" id="website" tabindex="-1" autocomplete="off">
+            </div>
+
+            <button type="submit" class="btn" id="submit-btn">Send Message</button>
+            <p class="error-msg" id="error-msg"></p>
+            <p class="mono" id="success-msg" style="display:none; color:var(--moss); margin-top:16px; text-align:center; font-weight:600;">Message sent — we'll be in touch soon.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    const form = document.getElementById("contact-form");
+    const errorMsg = document.getElementById("error-msg");
+    const successMsg = document.getElementById("success-msg");
+    const submitBtn = document.getElementById("submit-btn");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorMsg.style.display = "none";
+      successMsg.style.display = "none";
+
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sending Message...";
+
+      const payload = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        message: document.getElementById("message").value.trim(),
+        website: document.getElementById("website").value, // honeypot
+      };
+
+      try {
+        await api("/contact", { method: "POST", body: payload });
+        form.reset();
+        successMsg.style.display = "block";
+      } catch (err) {
+        errorMsg.textContent = err.message;
+        errorMsg.style.display = "block";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      }
+    });
+  </script>
+</body>
+</html>
+

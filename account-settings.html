@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Settings — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "login.html";
+    }
+  </script>
+  <style>
+    .danger-zone { border: 1px solid var(--clay); border-radius: 14px; padding: 24px; margin-top: 32px; }
+    .danger-zone h2 { color: var(--clay); font-size: 20px; }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero"><h1>Account Settings</h1></section>
+    <div id="dashboard-nav"></div>
+
+    <div class="dash-container" style="max-width:480px;">
+      <div class="tile">
+        <h3>Session</h3>
+        <button id="logout-btn" class="btn btn-outline" style="color:var(--ink);border-color:var(--ink);background:transparent;">Log Out</button>
+      </div>
+
+      <div class="danger-zone">
+        <h2>Delete Account</h2>
+        <p class="mono">This permanently removes your personal information (name, email, phone) and signs you out everywhere. Your booking and order history is kept in anonymized form for business records — it won't be linked to you anymore.</p>
+        <button id="delete-btn" class="btn btn-danger" style="margin-top:16px;">Delete My Account</button>
+      </div>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/dashboard-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    (async () => {
+      await requireAuth();
+
+      document.getElementById("logout-btn").addEventListener("click", async () => {
+        await AuthAPI.logout();
+        window.location.href = "login.html";
+      });
+
+      document.getElementById("delete-btn").addEventListener("click", async () => {
+        const confirmed = confirm(
+          "Are you sure you want to delete your account? This cannot be undone — " +
+          "your personal details will be permanently removed."
+        );
+        if (!confirmed) return;
+
+        const typed = prompt('Type "DELETE" to confirm.');
+        if (typed !== "DELETE") return;
+
+        try {
+          const result = await AuthAPI.deleteMe();
+          alert(result.message);
+          window.location.href = "index.html";
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

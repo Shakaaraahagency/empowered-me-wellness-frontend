@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "login.html";
+    }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero"><h1>My Orders</h1></section>
+    <div id="dashboard-nav"></div>
+
+    <div class="dash-container">
+      <div class="dash-list" id="orders-list">
+        <p class="mono" style="text-align:center;">Loading…</p>
+      </div>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/dashboard-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    async function handleDownload(orderId, productId, btn) {
+      btn.textContent = "Preparing…";
+      btn.disabled = true;
+      try {
+        const result = await OrdersAPI.downloadLink(orderId, productId);
+        window.location.href = absoluteApiUrl(result.download_url);
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        btn.textContent = "Download";
+        btn.disabled = false;
+      }
+    }
+
+    (async () => {
+      await requireAuth();
+      const listEl = document.getElementById("orders-list");
+
+      try {
+        const orders = await OrdersAPI.mine();
+        if (orders.length === 0) {
+          listEl.innerHTML = `<p class="mono" style="text-align:center;">No orders yet. <a href="shop.html">Visit the shop</a>.</p>`;
+          return;
+        }
+
+        listEl.innerHTML = orders
+          .map(
+            (o) => `
+          <div class="dash-row">
+            <div>
+              <h3>${o.items.map((i) => escapeHtml(i.product_name)).join(", ")}</h3>
+              <p class="mono">$${o.total_amount} · ${new Date(o.created_at).toLocaleDateString()}</p>
+            </div>
+            <div style="text-align:right;">
+              <span class="status-tag ${o.status === "paid" ? "paid" : ""}">${o.status}</span>
+              ${
+                o.status === "paid"
+                  ? o.items
+                      .map(
+                        (i) =>
+                          `<br><button class="btn btn-small" style="margin-top:8px;" data-order-id="${o.id}" data-product-id="${i.product_id}">Download</button>`
+                      )
+                      .join("")
+                  : ""
+              }
+            </div>
+          </div>
+        `
+          )
+          .join("");
+
+        listEl.querySelectorAll("[data-order-id]").forEach((btn) => {
+          btn.addEventListener("click", () => handleDownload(btn.dataset.orderId, btn.dataset.productId, btn));
+        });
+      } catch (err) {
+        listEl.innerHTML = `<p class="mono" style="text-align:center;">Couldn't load your orders right now.</p>`;
+      }
+    })();
+  </script>
+</body>
+</html>

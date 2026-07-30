@@ -1,0 +1,331 @@
+/* ==========================================================================
+   Testimonials Page Styles
+   ========================================================================== */
+
+/* --- Hero Section --- */
+.testimonial-hero {
+  position: relative;
+  background-color: var(--ink); /* Dark theme per screenshot */
+  color: var(--papyrus);
+  padding: 120px 24px 80px;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-text {
+  text-align: center;
+  max-width: 900px;
+  position: relative;
+  z-index: 10;
+}
+
+.hero-badge {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--papyrus);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 64px);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  color: var(--papyrus);
+}
+
+.hero-subtext {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.6;
+  opacity: 0.8;
+  margin-bottom: 40px;
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--papyrus);
+  color: var(--ink);
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.hero-cta:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* Floating Avatars */
+.hero-avatar {
+  position: absolute;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  opacity: 0.9;
+  z-index: 5;
+  animation: float-avatar 6s ease-in-out infinite;
+  background: var(--sand);
+}
+
+.hero-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes float-avatar {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Specific avatar positions and animation delays (to make them float out of sync) */
+.av-1 { top: 10%; left: 15%; width: 90px; height: 90px; animation-delay: 0s; }
+.av-2 { top: 5%; right: 35%; width: 70px; height: 70px; animation-delay: -1s; }
+.av-3 { top: 15%; right: 15%; width: 110px; height: 110px; animation-delay: -2s; }
+.av-4 { bottom: 25%; left: 10%; width: 100px; height: 100px; animation-delay: -3s; }
+.av-5 { bottom: 15%; right: 12%; width: 85px; height: 85px; animation-delay: -4s; }
+.av-6 { top: 35%; left: 30%; width: 60px; height: 60px; animation-delay: -1.5s; opacity: 0.6; }
+.av-7 { bottom: 5%; left: 40%; width: 75px; height: 75px; animation-delay: -2.5s; opacity: 0.8; }
+.av-8 { bottom: -5%; right: 30%; width: 95px; height: 95px; animation-delay: -0.5s; }
+
+/* Hide some avatars on smaller screens to avoid clutter */
+@media (max-width: 900px) {
+  .av-6, .av-7, .av-8 { display: none; }
+  .av-1 { left: 5%; width: 70px; height: 70px; }
+  .av-3 { right: 5%; width: 80px; height: 80px; }
+  .av-4 { bottom: 15%; left: 5%; width: 80px; height: 80px; }
+  .av-5 { bottom: 10%; right: 5%; width: 70px; height: 70px; }
+}
+
+@media (max-width: 600px) {
+  .hero-avatar { display: none; /* Hero text needs all the room on mobile */ }
+  .testimonial-hero { min-height: auto; padding: 100px 24px 60px; }
+}
+
+/* --- Wall Section --- */
+.wall-section {
+  background-color: var(--papyrus);
+  padding: 80px 24px;
+}
+
+.wall-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 60px;
+}
+
+.wall-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 48px);
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.wall-header p {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--ink);
+  opacity: 0.7;
+}
+
+.wall-container {
+  max-width: 1500px;
+  margin: 0 auto;
+  height: 800px; /* Fixed height to create the scrolling window */
+  overflow: hidden;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  
+  /* Fade the top and bottom edges */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+}
+
+.wall-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  /* Start animation off initially, JS will add it once content is cloned */
+}
+
+/* The infinite scroll animation */
+@keyframes scroll-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); } /* Scrolls exactly half its height (the original content) */
+}
+
+/* Speeds for each column */
+.wall-col.col-1 { animation: scroll-up 45s linear infinite; }
+.wall-col.col-2 { animation: scroll-up 55s linear infinite; }
+.wall-col.col-3 { animation: scroll-up 35s linear infinite; }
+
+/* Pause on hover */
+.wall-container:hover .wall-col {
+  animation-play-state: paused;
+}
+
+/* Testimonial Card */
+.test-card {
+  background: #ffffff;
+  border: 1px solid var(--sand);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(36, 28, 19, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.test-card-text {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ink);
+  opacity: 0.9;
+  margin: 0;
+}
+
+.test-card-author {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.test-card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: var(--sand);
+}
+
+.test-card-meta h4 {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 4px;
+}
+
+.test-card-meta p {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink);
+  opacity: 0.6;
+  margin: 0;
+}
+
+/* Responsive Wall */
+@media (max-width: 900px) {
+  .wall-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .wall-col.col-3 {
+    display: none; /* Hide 3rd column */
+  }
+}
+
+@media (max-width: 600px) {
+  .wall-container {
+    grid-template-columns: 1fr;
+    height: 600px;
+  }
+  .wall-col.col-2 {
+    display: none; /* Hide 2nd column */
+  }
+}
+
+/* Submit Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(36, 28, 19, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: var(--papyrus);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 500px;
+  padding: 40px;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.modal-overlay.open .modal-content {
+  transform: translateY(0);
+}
+
+.modal-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink);
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.modal-close:hover {
+  opacity: 1;
+}
+
+.modal-content h3 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+
+.modal-content p {
+  font-family: var(--font-body);
+  color: var(--ink);
+  opacity: 0.7;
+  margin: 0 0 24px;
+}

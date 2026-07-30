@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testimonials — Empowered Me Wellness</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script>
+    if (!document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
+      window.location.href = "admin-login.html";
+    }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero"><h1>Testimonials</h1></section>
+    <div id="admin-nav"></div>
+
+    <div class="admin-container">
+      <div class="inline-form">
+        <form id="testimonial-form">
+          <div class="inline-form-row">
+            <input type="text" id="t-author" placeholder="Author name" required>
+            <input type="text" id="t-role" placeholder="Role (e.g. Parent of two)">
+          </div>
+          <textarea id="t-content" placeholder="Testimonial text" rows="3" required style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;margin-bottom:10px;"></textarea>
+          <button type="submit" class="btn btn-small">Add Testimonial</button>
+          <p class="error-msg" id="t-error"></p>
+        </form>
+      </div>
+
+      <div class="dash-list" id="testimonials-list"></div>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/admin-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    async function loadTestimonials() {
+      const testimonials = await AdminAPI.listTestimonials();
+      const listEl = document.getElementById("testimonials-list");
+
+      if (testimonials.length === 0) {
+        listEl.innerHTML = `<p class="mono" style="text-align:center;">No testimonials yet.</p>`;
+        return;
+      }
+
+      listEl.innerHTML = testimonials
+        .map(
+          (t) => `
+        <div class="dash-row">
+          <div>
+            <h3>${escapeHtml(t.author_name)}${t.role ? ` — <span class="mono">${escapeHtml(t.role)}</span>` : ""}</h3>
+            <p>${escapeHtml(t.content)}</p>
+          </div>
+          <div style="text-align:right;min-width:140px;">
+            <span class="badge ${t.is_approved ? "approved" : ""}">${t.is_approved ? "approved" : "pending"}</span>
+            <br>
+            <button class="btn btn-tiny" style="margin-top:8px;" data-toggle-approve="${t.id}" data-current="${t.is_approved}">${t.is_approved ? "Hide" : "Approve"}</button>
+            <button class="btn btn-tiny" data-delete="${t.id}">Delete</button>
+          </div>
+        </div>
+      `
+        )
+        .join("");
+
+      listEl.querySelectorAll("[data-toggle-approve]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          const current = btn.dataset.current === "true";
+          await AdminAPI.updateTestimonial(btn.dataset.toggleApprove, { is_approved: !current });
+          loadTestimonials();
+        })
+      );
+      listEl.querySelectorAll("[data-delete]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          if (!confirm("Delete this testimonial permanently?")) return;
+          await AdminAPI.deleteTestimonial(btn.dataset.delete);
+          loadTestimonials();
+        })
+      );
+    }
+
+    (async () => {
+      await requireAdmin();
+      loadTestimonials();
+
+      document.getElementById("testimonial-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const errorEl = document.getElementById("t-error");
+        errorEl.style.display = "none";
+        try {
+          await AdminAPI.createTestimonial({
+            author_name: document.getElementById("t-author").value.trim(),
+            role: document.getElementById("t-role").value.trim(),
+            content: document.getElementById("t-content").value.trim(),
+          });
+          document.getElementById("testimonial-form").reset();
+          loadTestimonials();
+        } catch (err) {
+          errorEl.textContent = err.message;
+          errorEl.style.display = "block";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

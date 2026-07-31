@@ -26,9 +26,11 @@ function escapeHtml(str) {
     .replace(/'/g, "&#39;");
 }
 
-const API_URL = "http://127.0.0.1:5000/api/v1";
-// Production value (set when deploying frontend to Hostinger):
-// const API_URL = "https://api.empoweredmewellness.com/api/v1";
+// Auto-detects dev vs production. Never hardcode a backend URL in two places.
+const _IS_LOCAL = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+const API_URL = _IS_LOCAL
+  ? "http://127.0.0.1:5000/api/v1"
+  : "https://empowered-me-wellness-backend.onrender.com/api/v1"; // ← your Render URL
 
 // Some API responses (e.g. download links) return a path rooted at the
 // backend's domain, not relative to the frontend. Use this to build a

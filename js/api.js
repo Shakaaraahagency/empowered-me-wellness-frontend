@@ -41,10 +41,8 @@ function absoluteApiUrl(path) {
   return `${API_ORIGIN}${path}`;
 }
 
-function getCsrfTokenFromCookie(cookieName) {
-  const match = document.cookie.match(new RegExp("(^| )" + cookieName + "=([^;]+)"));
-  return match ? match[2] : null;
-}
+// Cross-domain cookie reading is impossible in modern browsers, so we rely on 
+// the CSRF tokens returned in the JSON payload of login/refresh endpoints.
 
 /**
  * Wrapper around fetch() that:
@@ -58,7 +56,8 @@ async function api(path, { method = "GET", body = null } = {}) {
   const headers = { "Content-Type": "application/json" };
 
   if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
-    const csrf = getCsrfTokenFromCookie("csrf_access_token");
+    const isRefresh = path.startsWith("/auth/refresh");
+    const csrf = localStorage.getItem(isRefresh ? "csrf_refresh" : "csrf_access");
     if (csrf) headers["X-CSRF-TOKEN"] = csrf;
   }
 
@@ -76,6 +75,9 @@ async function api(path, { method = "GET", body = null } = {}) {
     const code = data?.error?.code || "unknown_error";
     throw { message, code, status: response.status };
   }
+
+  if (data.csrf_access) localStorage.setItem("csrf_access", data.csrf_access);
+  if (data.csrf_refresh) localStorage.setItem("csrf_refresh", data.csrf_refresh);
 
   return data;
 }
@@ -98,8 +100,8 @@ const AuthAPI = {
    */
   refresh: async () => {
     const headers = {};
-    // The refresh endpoint needs its own CSRF token from the refresh cookie.
-    const csrfRefresh = getCsrfTokenFromCookie("csrf_refresh_token");
+    // The refresh endpoint needs its own CSRF token from localStorage
+    const csrfRefresh = localStorage.getItem("csrf_refresh");
     if (csrfRefresh) headers["X-CSRF-TOKEN"] = csrfRefresh;
     const response = await fetch(`${API_URL}/auth/refresh`, {
       method: "POST",
@@ -127,7 +129,10 @@ async function requireAuth() {
   try {
     return await AuthAPI.me();
   } catch (err) {
-    document.cookie = "csrf_access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem("csrf_access");
+    localStorage.removeItem("csrf_refresh");
+    // We don't try to clear cookies manually since they are cross-origin anyway.
+    // The backend clears them on logout.
     window.location.href = "login.html";
     throw err;
   }
@@ -148,8 +153,8 @@ function startTokenAutoRefresh() {
     const ok = await AuthAPI.refresh();
     if (!ok) {
       // Refresh token has expired — full session over, send to login.
-      document.cookie = "csrf_access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      document.cookie = "csrf_refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      localStorage.removeItem("csrf_access");
+      localStorage.removeItem("csrf_refresh");
       window.location.href = "login.html";
     }
   };
@@ -289,8 +294,9 @@ async function requireAdmin() {
   try {
     user = await AuthAPI.me();
   } catch (err) {
-    document.cookie = "csrf_access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    window.location.href = "login.html";
+    localStorage.removeItem("csrf_access");
+    localStorage.removeItem("csrf_refresh");
+    window.location.href = "admin-login.html";
     throw err;
   }
   if (user.role !== "admin") {

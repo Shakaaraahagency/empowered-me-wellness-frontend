@@ -11,12 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/hero.css">
-  <script>
-    /* If already logged in, skip the login page entirely */
-    if (document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='))) {
-      window.location.href = "dashboard.html";
-    }
-  </script>
   <style>
     .auth-wrap {
       min-height: calc(100vh - 72px);

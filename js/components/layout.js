@@ -32,7 +32,7 @@ async function renderHeader() {
   if (!el) return;
 
   const page = currentPage();
-  const hasToken = document.cookie.split(';').some(item => item.trim().startsWith('csrf_access_token='));
+  const hasToken = !!localStorage.getItem('csrf_access') || !!localStorage.getItem('csrf_refresh');
 
   // Default links for guests
   let linksArray = [...NAV_LINKS];
@@ -48,18 +48,17 @@ async function renderHeader() {
       }
     } catch (err) {
       // Token expired or invalid — try a silent refresh first before giving up.
-      const refreshed = await AuthAPI.refresh().catch(() => false);
-      if (refreshed) {
+      if (AuthAPI.refresh && typeof AuthAPI.refresh === "function" && await AuthAPI.refresh()) {
         try {
           user = await AuthAPI.me();
           if (typeof startTokenAutoRefresh === "function") startTokenAutoRefresh();
         } catch (_) {
-          document.cookie = "csrf_access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          localStorage.removeItem('csrf_access');
         }
       } else {
-        // Refresh token also expired — clear everything, treat as guest
-        document.cookie = "csrf_access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        document.cookie = "csrf_refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        // Refresh token also expired - clear everything, treat as guest
+        localStorage.removeItem('csrf_access');
+        localStorage.removeItem('csrf_refresh');
       }
     }
   }
@@ -220,6 +219,8 @@ async function renderHeader() {
     const handleLogout = async () => {
       try {
         await AuthAPI.logout();
+        localStorage.removeItem("csrf_access");
+        localStorage.removeItem("csrf_refresh");
         window.location.href = "index.html";
       } catch (err) {
         window.location.href = "index.html";

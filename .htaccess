@@ -1,0 +1,4 @@
+# Configure custom error pages for Hostinger (Apache/LiteSpeed)
+ErrorDocument 404 /404.html
+ErrorDocument 500 /error.html
+ErrorDocument 403 /404.html

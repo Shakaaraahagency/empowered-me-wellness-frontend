@@ -160,8 +160,7 @@ async function renderHeader() {
     <nav class="hero-nav-sticky" aria-label="Main navigation">
       <!-- Brand -->
       <a href="index.html" class="hn-brand" aria-label="Empowered Me Wellness — Home">
-        ${FROND_ICON}
-        <span class="hn-brand-text">Empowered Me <em>wellness</em></span>
+        <img src="assets/brand/logo-transparent.png" alt="Empowered Me Wellness Logo" style="height: 48px; width: auto; display: block; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.05));" />
       </a>
 
       <!-- Desktop nav links -->

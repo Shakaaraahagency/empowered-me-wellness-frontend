@@ -119,7 +119,7 @@ function _buildNavHtml(page, linksArray, user) {
     <nav class="hero-nav-sticky" aria-label="Main navigation">
       <!-- Brand -->
       <a href="/" class="hn-brand" aria-label="Empowered Me Wellness — Home">
-        <img src="/assets/brand/logo-transparent.png" alt="Empowered Me Wellness" style="height: 80px; width: auto; display: block; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.05));" />
+        <img src="/assets/brand/logo-transparent.png" alt="Empowered Me Wellness" style="height: 40px; width: auto; display: block; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.05));" />
       </a>
 
       <!-- Desktop nav links -->
@@ -292,7 +292,7 @@ function renderFooter() {
       <div class="footer-cols">
         <div>
           <a href="/" class="brand-lockup" style="display:inline-block; text-decoration:none;">
-            <img src="/assets/brand/logo-transparent.png" alt="Empowered Me Wellness" style="height: 80px; width: auto; display: block;" />
+            <img src="/assets/brand/logo-transparent.png" alt="Empowered Me Wellness" style="height: 60px; width: auto; display: block;" />
           </a>
           <p class="mono">Hamilton, Bermuda</p>
         </div>

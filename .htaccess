@@ -4,13 +4,14 @@ ErrorDocument 500 /error.html
 ErrorDocument 403 /404.html
 
 RewriteEngine On
+RewriteBase /
 
 # Redirect explicitly typed .html requests to extensionless URL
-RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^.]+)\.html\ HTTP
-RewriteRule ^([^.]+)\.html$ / [R=301,L]
+RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
+RewriteRule ^ /%1 [NC,L,R=301]
 
 # Internally rewrite extensionless URLs to .html files
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
-RewriteRule ^(.*)$ .html [L,QSA]
+RewriteRule ^(.*)$ $1.html [L,QSA]

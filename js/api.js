@@ -99,16 +99,12 @@ const AuthAPI = {
    * Returns true on success, false if the session has fully expired.
    */
   refresh: async () => {
-    const headers = {};
-    // The refresh endpoint needs its own CSRF token from localStorage
-    const csrfRefresh = localStorage.getItem("csrf_refresh");
-    if (csrfRefresh) headers["X-CSRF-TOKEN"] = csrfRefresh;
-    const response = await fetch(`${API_URL}/auth/refresh`, {
-      method: "POST",
-      headers,
-      credentials: "include",
-    });
-    return response.ok;
+    try {
+      await api("/auth/refresh", { method: "POST" });
+      return true;
+    } catch (err) {
+      return false;
+    }
   },
 
   updateMe: (payload) => api("/auth/me", { method: "PATCH", body: payload }),

@@ -169,7 +169,7 @@
     (async () => {
       try {
         const user = await AuthAPI.me();
-        window.location.replace(user.role === 'admin' ? 'admin-overview.html' : 'dashboard.html');
+        window.location.replace(user.role === 'admin' ? '/admin-overview' : '/dashboard');
       } catch (_) {
         // Not logged in — show the form normally
       }
@@ -192,7 +192,7 @@
         await AuthAPI.login(email, password);
         /* Check role and redirect appropriately */
         const user = await AuthAPI.me();
-        window.location.href = user.role === "admin" ? "admin-overview.html" : "dashboard.html";
+        window.location.href = user.role === "admin" ? "/admin-overview" : "/dashboard";
       } catch (err) {
         errorMsg.textContent = err.message;
         errorMsg.style.display = "block";

@@ -237,7 +237,7 @@
       try {
         await AuthAPI.register(email, password, full_name);
         await AuthAPI.login(email, password);
-        window.location.href = "dashboard.html";
+        window.location.href = "/dashboard";
       } catch (err) {
         errorMsg.textContent = err.message;
         errorMsg.style.display = "block";

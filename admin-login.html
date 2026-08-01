@@ -191,7 +191,7 @@
       try {
         const user = await AuthAPI.me();
         if (user && user.role === "admin") {
-          window.location.href = "admin-overview.html";
+          window.location.href = "/admin-overview";
         }
       } catch (err) {
         // Not logged in — proceed with login form
@@ -225,7 +225,7 @@
 
         successMsg.style.display = "block";
         setTimeout(() => {
-          window.location.href = "admin-overview.html";
+          window.location.href = "/admin-overview";
         }, 600);
       } catch (err) {
         errorMsg.textContent = err.message || "Invalid credentials or authorization failure.";

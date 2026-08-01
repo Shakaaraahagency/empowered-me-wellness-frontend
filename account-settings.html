@@ -45,7 +45,7 @@
 
       document.getElementById("logout-btn").addEventListener("click", async () => {
         await AuthAPI.logout();
-        window.location.href = "login.html";
+        window.location.href = "/login";
       });
 
       document.getElementById("delete-btn").addEventListener("click", async () => {
@@ -61,7 +61,7 @@
         try {
           const result = await AuthAPI.deleteMe();
           alert(result.message);
-          window.location.href = "index.html";
+          window.location.href = "/index";
         } catch (err) {
           alert(err.message);
         }

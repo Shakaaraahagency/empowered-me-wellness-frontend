@@ -29,55 +29,8 @@ function currentPage() {
   return path.replace(/^\//, "").replace(/\.html$/, "").replace(/\/$/, "") || "";
 }
 
-async function renderHeader() {
-  const el = document.getElementById("site-header");
-  if (!el) return;
-
-  const page = currentPage();
-
-  // Default links for guests
-  let linksArray = [...NAV_LINKS];
-  let user = null;
-
-  // Always verify auth state by calling /me — never rely solely on localStorage.
-  // localStorage CSRF tokens are used for POST security only, not as auth gate.
-  if (typeof AuthAPI !== 'undefined') {
-    try {
-      user = await AuthAPI.me();
-      // Cache CSRF tokens if returned (fresh login scenario)
-      if (user && user.csrf_access) localStorage.setItem('csrf_access', user.csrf_access);
-      if (typeof startTokenAutoRefresh === 'function') startTokenAutoRefresh();
-    } catch (err) {
-      // Access token expired — try a silent refresh
-      try {
-        const refreshed = await AuthAPI.refresh();
-        if (refreshed) {
-          user = await AuthAPI.me();
-          if (typeof startTokenAutoRefresh === 'function') startTokenAutoRefresh();
-        } else {
-          // Refresh token also expired — fully logged out
-          localStorage.removeItem('csrf_access');
-          localStorage.removeItem('csrf_refresh');
-        }
-      } catch (_) {
-        localStorage.removeItem('csrf_access');
-        localStorage.removeItem('csrf_refresh');
-      }
-    }
-  }
-
-  if (user) {
-    linksArray = linksArray.filter(l => l.href !== "/contact");
-    if (user.role === "admin") {
-      linksArray.push({ href: "/admin-overview", label: "Admin Panel" });
-    } else {
-      linksArray.push({ href: "/dashboard", label: "Dashboard" });
-    }
-  } else {
-    // Add Login link for guests on desktop
-    linksArray.push({ href: "/login", label: "Log In" });
-  }
-
+/** Build the nav HTML string for a given user (or null for guest) */
+function _buildNavHtml(page, linksArray, user) {
   const links = linksArray.map(
     (l) => `<li><a href="${l.href}" class="${(l.href === "/" ? page === "" : l.href.replace(/^\//, "") === page) ? "active" : ""}"> ${l.label}</a></li>`
   ).join("");
@@ -157,7 +110,12 @@ async function renderHeader() {
     `;
   }
 
-  el.innerHTML = `
+  const mobileSuffix = user
+    ? `<a href="/profile" style="display:block;padding:10px 0;border-bottom:1px solid var(--sand);color:var(--ink);">Personal Information</a>
+       <button id="hn-mobile-logout-btn" style="width: 100%; text-align: left; background: none; border: none; padding: 12px 0; color: #c0392b; font-family: var(--font-body); font-size: 16px; font-weight: 600; cursor: pointer;">Log Out</button>`
+    : `<a href="/schedule" style="color: var(--clay); font-weight: 600;">Book a Class &rarr;</a>`;
+
+  return `
     <nav class="hero-nav-sticky" aria-label="Main navigation">
       <!-- Brand -->
       <a href="/" class="hn-brand" aria-label="Empowered Me Wellness — Home">
@@ -188,15 +146,14 @@ async function renderHeader() {
       <!-- Mobile dropdown -->
       <div class="hn-mobile-menu" role="navigation" aria-label="Mobile navigation">
         ${mobileLinks}
-        ${user 
-          ? `<a href="/profile" style="display:block;padding:10px 0;border-bottom:1px solid var(--sand);color:var(--ink);">Personal Information</a>
-             <button id="hn-mobile-logout-btn" style="width: 100%; text-align: left; background: none; border: none; padding: 12px 0; color: #c0392b; font-family: var(--font-body); font-size: 16px; font-weight: 600; cursor: pointer;">Log Out</button>`
-          : `<a href="/schedule" style="color: var(--clay); font-weight: 600;">Book a Class &rarr;</a>`
-        }
+        ${mobileSuffix}
       </div>
     </nav>
   `;
+}
 
+/** Wire up all interactive listeners after nav HTML is injected */
+function _attachNavListeners(el, user) {
   // Attach dropdown & logout event listeners if logged in
   if (user) {
     const wrap = el.querySelector("#hn-user-menu-wrap");
@@ -256,19 +213,74 @@ async function renderHeader() {
       }
     }
   });
+}
 
+async function renderHeader() {
+  const el = document.getElementById("site-header");
+  if (!el) return;
+
+  const page = currentPage();
+
+  // ── STEP 1: Render guest nav IMMEDIATELY (no network wait) ──────────────
+  // This means the navbar is visible the instant the script runs.
+  const guestLinks = [...NAV_LINKS, { href: "/login", label: "Log In" }];
+  el.innerHTML = _buildNavHtml(page, guestLinks, null);
+  _attachNavListeners(el, null);
+
+  // Set up scroll effect right away so it works even during auth loading
   const nav = el.querySelector(".hero-nav-sticky");
-  if (nav) {
-    const onScroll = () => {
-      if (window.scrollY > 20) {
-        nav.classList.add("scrolled");
-      } else {
-        nav.classList.remove("scrolled");
-      }
-    };
+  const attachScroll = (navEl) => {
+    if (!navEl) return;
+    const onScroll = () => navEl.classList.toggle("scrolled", window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
+  };
+  attachScroll(nav);
+
+  // ── STEP 2: Resolve auth state in background ─────────────────────────────
+  // After the network responds, patch ONLY the CTA + links that depend on auth.
+  if (typeof AuthAPI === 'undefined') return;
+
+  let user = null;
+  try {
+    user = await AuthAPI.me();
+    if (user && user.csrf_access) localStorage.setItem('csrf_access', user.csrf_access);
+    if (typeof startTokenAutoRefresh === 'function') startTokenAutoRefresh();
+  } catch (err) {
+    // Access token expired — try a silent refresh
+    try {
+      const refreshed = await AuthAPI.refresh();
+      if (refreshed) {
+        user = await AuthAPI.me();
+        if (typeof startTokenAutoRefresh === 'function') startTokenAutoRefresh();
+      } else {
+        localStorage.removeItem('csrf_access');
+        localStorage.removeItem('csrf_refresh');
+      }
+    } catch (_) {
+      localStorage.removeItem('csrf_access');
+      localStorage.removeItem('csrf_refresh');
+    }
   }
+
+  // If auth resolved as logged-out (same as initial render), nothing changes.
+  if (!user) return;
+
+  // ── STEP 3: Patch the nav with authenticated state ───────────────────────
+  let linksArray = [...NAV_LINKS];
+  linksArray = linksArray.filter(l => l.href !== "/contact");
+  if (user.role === "admin") {
+    linksArray.push({ href: "/admin-overview", label: "Admin Panel" });
+  } else {
+    linksArray.push({ href: "/dashboard", label: "Dashboard" });
+  }
+
+  // Replace the nav entirely with the authenticated version
+  el.innerHTML = _buildNavHtml(page, linksArray, user);
+  _attachNavListeners(el, user);
+
+  // Attach scroll effect to the patched nav as well
+  attachScroll(el.querySelector(".hero-nav-sticky"));
 }
 
 function renderFooter() {

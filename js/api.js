@@ -214,7 +214,7 @@ const AdminAPI = {
   listProducts: () => api("/admin/products"),
   uploadProductFile: async (formData) => {
     const headers = {};
-    const csrf = getCsrfTokenFromCookie("csrf_access_token");
+    const csrf = localStorage.getItem("csrf_access");
     if (csrf) headers["X-CSRF-TOKEN"] = csrf;
     const response = await fetch(`${API_URL}/admin/products/upload`, {
       method: "POST",
@@ -230,7 +230,7 @@ const AdminAPI = {
   },
   uploadProductCover: async (formData) => {
     const headers = {};
-    const csrf = getCsrfTokenFromCookie("csrf_access_token");
+    const csrf = localStorage.getItem("csrf_access");
     if (csrf) headers["X-CSRF-TOKEN"] = csrf;
     const response = await fetch(`${API_URL}/admin/products/upload-cover`, {
       method: "POST",
@@ -292,11 +292,11 @@ async function requireAdmin() {
   } catch (err) {
     localStorage.removeItem("csrf_access");
     localStorage.removeItem("csrf_refresh");
-    window.location.href = "admin-login.html";
+    window.location.href = "/admin-login";
     throw err;
   }
   if (user.role !== "admin") {
-    window.location.href = "index.html";
+    window.location.href = "/";
     throw new Error("not an admin");
   }
   return user;

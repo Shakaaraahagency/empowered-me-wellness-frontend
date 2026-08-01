@@ -143,7 +143,7 @@
             const coverFormData = new FormData();
             coverFormData.append("file", coverInput.files[0]);
             const coverRes = await AdminAPI.uploadProductCover(coverFormData);
-            coverImageUrl = API_URL.replace('/api/v1', '') + coverRes.url;
+            coverImageUrl = coverRes.url; // Cloudinary returns a full https:// URL
           }
 
           submitBtn.textContent = "Saving product…";

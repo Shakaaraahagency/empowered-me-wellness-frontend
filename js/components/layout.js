@@ -32,31 +32,32 @@ async function renderHeader() {
   if (!el) return;
 
   const page = currentPage();
-  const hasToken = !!localStorage.getItem('csrf_access') || !!localStorage.getItem('csrf_refresh');
 
   // Default links for guests
   let linksArray = [...NAV_LINKS];
   let user = null;
 
-  if (hasToken) {
+  // Always verify auth state by calling /me — never rely solely on localStorage.
+  // localStorage CSRF tokens are used for POST security only, not as auth gate.
+  if (typeof AuthAPI !== 'undefined') {
     try {
       user = await AuthAPI.me();
-      // Start silent background token refresh now that we know the user is logged in.
-      // startTokenAutoRefresh() is defined in api.js (loaded before layout.js).
-      if (typeof startTokenAutoRefresh === "function") {
-        startTokenAutoRefresh();
-      }
+      // Cache CSRF tokens if returned (fresh login scenario)
+      if (user && user.csrf_access) localStorage.setItem('csrf_access', user.csrf_access);
+      if (typeof startTokenAutoRefresh === 'function') startTokenAutoRefresh();
     } catch (err) {
-      // Token expired or invalid — try a silent refresh first before giving up.
-      if (AuthAPI.refresh && typeof AuthAPI.refresh === "function" && await AuthAPI.refresh()) {
-        try {
+      // Access token expired — try a silent refresh
+      try {
+        const refreshed = await AuthAPI.refresh();
+        if (refreshed) {
           user = await AuthAPI.me();
-          if (typeof startTokenAutoRefresh === "function") startTokenAutoRefresh();
-        } catch (_) {
+          if (typeof startTokenAutoRefresh === 'function') startTokenAutoRefresh();
+        } else {
+          // Refresh token also expired — fully logged out
           localStorage.removeItem('csrf_access');
+          localStorage.removeItem('csrf_refresh');
         }
-      } else {
-        // Refresh token also expired - clear everything, treat as guest
+      } catch (_) {
         localStorage.removeItem('csrf_access');
         localStorage.removeItem('csrf_refresh');
       }

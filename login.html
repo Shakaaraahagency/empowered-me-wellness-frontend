@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Log In — Empowered Me Wellness</title>
   <meta name="description" content="Sign in to your Empowered Me Wellness account to manage bookings, downloads, and your profile.">
-  <link rel="icon" type="image/svg+xml" href="assets/brand/emw-favicon.svg">
+  <link rel="icon" type="image/png" href="assets/brand/favicon.png">
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
@@ -164,6 +165,16 @@
   <script src="js/api.js"></script>
   <script src="js/components/layout.js"></script>
   <script>
+    // If already authenticated, redirect immediately to correct page
+    (async () => {
+      try {
+        const user = await AuthAPI.me();
+        window.location.replace(user.role === 'admin' ? 'admin-overview.html' : 'dashboard.html');
+      } catch (_) {
+        // Not logged in — show the form normally
+      }
+    })();
+
     const form = document.getElementById("login-form");
     const errorMsg = document.getElementById("error-msg");
     const submitBtn = document.getElementById("submit-btn");

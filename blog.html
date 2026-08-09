@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog & Insights — Empowered Me Wellness</title>
-  <meta name="description" content="Wellness notes, Kemetic yoga tips, plant-based lifestyle guides, and updates from Empowered Me Wellness in Hamilton, Bermuda.">
+  <meta name="description" content="Reflections on nervous system healing, somatic practice, and everyday regulation from Empowered Me Wellness in Hamilton, Bermuda.">
   <link rel="icon" type="image/png" href="assets/brand/favicon.png">
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lato:wght@300;400;700;900&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/polish.css">
   <link rel="canonical" href="https://empoweredmewellness.com/blog.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Blog & Insights — Empowered Me Wellness">
-  <meta property="og:description" content="Wellness notes, Kemetic yoga tips, plant-based lifestyle guides, and updates from Empowered Me Wellness in Hamilton, Bermuda.">
+  <meta property="og:description" content="Reflections on nervous system healing, somatic practice, and everyday regulation from Empowered Me Wellness in Hamilton, Bermuda.">
   <meta property="og:url" content="https://empoweredmewellness.com/blog.html">
   <meta property="og:image" content="https://empoweredmewellness.com/assets/brand/emw-logo-horizontal.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -197,13 +198,13 @@
         Reflections & Practice Tips
       </div>
       <h1>Wellness Journal</h1>
-      <p class="lead">Insights on Kemetic movement, mindfulness, plant-based vitality, and conscious living from Hamilton, Bermuda.</p>
+      <p class="lead">Insights on nervous system healing, somatic practice, and conscious living from Hamilton, Bermuda.</p>
     </section>
 
     <section class="container">
       <div class="blog-filter">
         <button class="blog-tab active" onclick="filterPosts('all', this)">All Articles</button>
-        <button class="blog-tab" onclick="filterPosts('kemetic', this)">Kemetic Yoga</button>
+        <button class="blog-tab" onclick="filterPosts('healing', this)">Nervous System Healing</button>
         <button class="blog-tab" onclick="filterPosts('mindful', this)">Mindfulness</button>
         <button class="blog-tab" onclick="filterPosts('wellness', this)">Lifestyle</button>
       </div>
@@ -213,11 +214,21 @@
         <div class="skeleton-post"></div>
       </div>
 
-      <!-- Newsletter Callout -->
-      <div class="newsletter-banner">
-        <h3>Stay Connected with Our Journal</h3>
-        <p>Receive monthly practice tips, upcoming workshop announcements, and plant-based recipes directly in your inbox.</p>
-        <a href="contact.html" class="btn" style="background: var(--clay); color: var(--papyrus); padding: 12px 32px;">Subscribe & Get in Touch</a>
+      </div>
+    </section>
+
+    <!-- Full-Bleed Edge-to-Edge Newsletter Banner -->
+    <section class="green-banner-section full-bleed-section" aria-label="Journal Newsletter Subscription" style="background: #241C13; padding: 90px 24px; margin-bottom: 0;">
+      <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h3 style="font-family: var(--font-display); font-size: clamp(32px, 4.5vw, 48px); margin-bottom: 14px; color: #FFFFFF; font-weight: 400;">Stay Connected with Our Journal</h3>
+        <p style="max-width: 600px; margin: 0 auto 32px; font-size: 17px; opacity: 0.9; line-height: 1.65; color: rgba(255,255,255,0.9);">
+          Receive monthly practice tips, upcoming workshop announcements, and plant-based recipes directly in your inbox.
+        </p>
+        <div>
+          <a href="contact.html" class="btn" style="background: var(--clay); color: #FFFFFF; border: 1.5px solid var(--clay); padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; margin-top: 0;">
+            Subscribe &amp; Get in Touch
+          </a>
+        </div>
       </div>
     </section>
   </main>
@@ -227,20 +238,39 @@
   <script>
     let allPosts = [];
 
-    (async () => {
+    async function loadBlog() {
       const listEl = document.getElementById("post-list");
       try {
         allPosts = await BlogAPI.list();
         renderPosts(allPosts);
       } catch (err) {
-        listEl.innerHTML = `<p class="mono" style="grid-column:1/-1; text-align:center; padding:40px;">Couldn't load the blog right now. Please try again shortly.</p>`;
+        listEl.innerHTML = `
+          <div class="alert alert-error" style="grid-column:1/-1;">
+            <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <div>
+              <p class="alert-title">Couldn't load the blog</p>
+              <p class="alert-body">Please try again. <button type="button" class="btn-link" onclick="loadBlog()">Retry</button></p>
+            </div>
+          </div>`;
       }
-    })();
+    }
+    loadBlog();
 
     function renderPosts(posts) {
       const listEl = document.getElementById("post-list");
       if (!posts || posts.length === 0) {
-        listEl.innerHTML = `<p class="mono" style="grid-column:1/-1; text-align:center; padding:40px;">No journal posts found.</p>`;
+        listEl.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1;">
+            <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 19.5V6a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v12.5"/>
+              <path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H19"/>
+              <path d="M6 6h11"/><path d="M6 10h11"/>
+            </svg>
+            <h3>No posts yet</h3>
+            <p>New articles will appear here as they're published.</p>
+          </div>`;
         return;
       }
       listEl.innerHTML = posts
@@ -275,4 +305,5 @@
   </script>
 </body>
 </html>
+
 

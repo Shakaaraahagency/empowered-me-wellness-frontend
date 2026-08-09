@@ -1,0 +1,131 @@
+/* css/polish.css */
+/* 1. Green accent touches */
+.section-badge--green {
+  background-color: var(--leaf-soft);
+}
+.story-card-icon:hover,
+.story-card-icon:active {
+  background-color: var(--leaf);
+}
+blockquote:nth-of-type(odd),
+.bio-quote:nth-of-type(odd) {
+  border-left-color: var(--clay);
+}
+blockquote:nth-of-type(even),
+.bio-quote:nth-of-type(even) {
+  border-left-color: var(--leaf);
+}
+.pillar-band .tile {
+  border-top-color: var(--leaf);
+}
+
+/* 2. Section dividers */
+.section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 12px 0;
+  opacity: 0.3;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233D6B35' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z'/%3E%3Cpath d='M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 24px 24px;
+}
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  max-width: 120px;
+  height: 1px;
+  background: var(--sand);
+}
+
+/* 3. Card depth enhancement */
+.tile, .program-card, .story-card, .faq-item, .newsletter-card, .testimonial-card-frame {
+  box-shadow: 0 1px 4px rgba(36,28,19,0.04);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tile:hover, .program-card:hover, .story-card:hover, .faq-item:hover, .newsletter-card:hover, .testimonial-card-frame:hover {
+  box-shadow: 0 14px 36px rgba(36,28,19,0.08);
+}
+
+/* 4. CTA button gradient */
+.hm-book-btn,
+.btn:not(.btn-outline):not(.btn-ghost):not(.btn-link):not(.btn-destructive):not(.btn-secondary) {
+  background: linear-gradient(135deg, var(--clay) 0%, #C06040 100%);
+  box-shadow: 0 2px 8px rgba(176, 85, 53, 0.25);
+}
+.hm-book-btn:hover,
+.btn:not(.btn-outline):not(.btn-ghost):not(.btn-link):not(.btn-destructive):not(.btn-secondary):hover {
+  box-shadow: 0 6px 20px rgba(176, 85, 53, 0.3);
+}
+
+/* 5. Subtle CTA pulse glow */
+@keyframes cta-glow {
+  0%, 100% { box-shadow: 0 2px 8px rgba(176, 85, 53, 0.25); }
+  50% { box-shadow: 0 4px 20px rgba(176, 85, 53, 0.4); }
+}
+.hm-book-btn {
+  animation: cta-glow 3s ease-in-out infinite;
+}
+.hm-book-btn:hover {
+  animation: none;
+}
+
+/* 6. Footer polish */
+.site-footer {
+  position: relative;
+  border-top: 1px solid var(--sand);
+}
+.footer-social a:hover {
+  background: var(--leaf);
+  border-color: var(--leaf);
+}
+
+/* 7. Form input focus polish */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--clay);
+  box-shadow: 0 0 0 3px rgba(176, 85, 53, 0.12);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 8. Typography refinements */
+.section-badge {
+  letter-spacing: 0.1em;
+}
+.story-intro p {
+  font-size: 20px;
+}
+.program-card p, .story-card p {
+  line-height: 1.7;
+}
+
+/* 9. Image hover enhancements */
+.bio-portrait {
+  transition: transform 0.3s ease;
+}
+.bio-portrait:hover {
+  transform: scale(1.02);
+}
+#beyond-resilience > .container > div:first-child {
+  transition: transform 0.3s ease;
+}
+#beyond-resilience > .container > div:first-child:hover {
+  transform: scale(1.03);
+}
+
+/* 10. Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hm-book-btn { animation: none !important; }
+  .tile, .program-card, .story-card, .faq-item, .newsletter-card, .testimonial-card-frame {
+    transition: none !important;
+  }
+  .bio-portrait {
+    transition: none !important;
+  }
+  #beyond-resilience > .container > div:first-child {
+    transition: none !important;
+  }
+}

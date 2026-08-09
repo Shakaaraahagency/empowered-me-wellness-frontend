@@ -8,9 +8,10 @@
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lato:wght@300;400;700;900&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/polish.css">
   <style>
     .danger-zone { border: 1px solid var(--clay); border-radius: 14px; padding: 24px; margin-top: 32px; }
     .danger-zone h2 { color: var(--clay); font-size: 20px; }
@@ -39,34 +40,33 @@
   <script src="js/components/layout.js"></script>
   <script src="js/components/dashboard-nav.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/components/modal.js"></script>
   <script>
     (async () => {
       await requireAuth();
 
       document.getElementById("logout-btn").addEventListener("click", async () => {
         await AuthAPI.logout();
-        window.location.href = "/login";
+        window.location.href = "/login.html";
       });
 
       document.getElementById("delete-btn").addEventListener("click", async () => {
-        const confirmed = confirm(
-          "Are you sure you want to delete your account? This cannot be undone — " +
-          "your personal details will be permanently removed."
+        const confirmed = await EMWModal.promptConfirm(
+          "This cannot be undone — your personal details will be permanently removed.",
+          { title: "Delete your account?", expectedValue: "DELETE", confirmLabel: "Delete my account" }
         );
         if (!confirmed) return;
 
-        const typed = prompt('Type "DELETE" to confirm.');
-        if (typed !== "DELETE") return;
-
         try {
           const result = await AuthAPI.deleteMe();
-          alert(result.message);
-          window.location.href = "/index";
+          await EMWModal.alert(result.message, { title: "Account deleted" });
+          window.location.href = "/index.html";
         } catch (err) {
-          alert(err.message);
+          await EMWModal.alert(err.message, { title: "Couldn't delete account" });
         }
       });
     })();
   </script>
 </body>
 </html>
+

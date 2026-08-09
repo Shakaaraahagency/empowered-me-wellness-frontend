@@ -9,9 +9,10 @@
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lato:wght@300;400;700;900&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/polish.css">
   <style>
     .auth-wrap {
       min-height: calc(100vh - 72px);
@@ -192,7 +193,7 @@
         await AuthAPI.login(email, password);
         /* Check role and redirect appropriately */
         const user = await AuthAPI.me();
-        window.location.href = user.role === "admin" ? "/admin-overview" : "/dashboard";
+        window.location.href = user.role === "admin" ? "/admin-overview.html" : "/dashboard.html";
       } catch (err) {
         errorMsg.textContent = err.message;
         errorMsg.style.display = "block";
@@ -203,3 +204,4 @@
   </script>
 </body>
 </html>
+

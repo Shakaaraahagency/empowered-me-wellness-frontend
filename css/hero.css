@@ -5,12 +5,12 @@
 
 /* Push all page content below the fixed nav bar */
 body {
-  padding-top: 72px;
+  padding-top: 86px;
 }
 
 /* Hero page overrides body padding since it manages its own top spacing */
 .hero-mnml {
-  margin-top: -72px;
+  margin-top: -86px;
 }
 
 /* ---------- Sticky nav overlay (works with existing site-header) ---------- */
@@ -19,13 +19,13 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 900;
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0;
   padding: 0 40px;
-  height: 72px;
+  height: 86px;
   background: transparent;
   transition: background 0.35s ease, box-shadow 0.35s ease;
 }
@@ -66,6 +66,8 @@ body {
   list-style: none;
   margin: 0;
   padding: 0;
+  position: relative;
+  z-index: 100000;
   opacity: 1;
   transform: translateY(0);
   transition: opacity 0.45s ease 0.12s, transform 0.45s ease 0.12s;
@@ -99,8 +101,89 @@ body {
 }
 
 .hero-nav-sticky .hn-links a.active {
-  color: var(--clay);
+  color: var(--moss);
   font-weight: 600;
+}
+
+/* Navigation Dropdown */
+.hero-nav-sticky .hn-has-dropdown {
+  position: relative;
+  z-index: 100001;
+}
+
+.hero-nav-sticky .hn-has-dropdown > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hero-nav-sticky .hn-chevron-down {
+  transition: transform 0.2s ease;
+}
+
+.hero-nav-sticky .hn-has-dropdown:hover .hn-chevron-down {
+  transform: rotate(180deg);
+}
+
+.hero-nav-sticky .hn-nav-dropdown {
+  position: absolute;
+  top: 100%;
+  margin-top: 10px;
+  left: -12px;
+  min-width: 220px;
+  background: var(--papyrus);
+  border: 1px solid var(--sand);
+  border-radius: 12px;
+  padding: 8px 0;
+  box-shadow: 0 14px 36px rgba(36, 28, 19, 0.14);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  pointer-events: none;
+  z-index: 100002;
+}
+
+/* Hover bridge to prevent losing hover across gap */
+.hero-nav-sticky .hn-nav-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -14px;
+  left: 0;
+  right: 0;
+  height: 14px;
+}
+
+.hero-nav-sticky .hn-has-dropdown:hover .hn-nav-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.hero-nav-sticky .hn-nav-dropdown a {
+  display: block;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: var(--ink);
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.hero-nav-sticky .hn-nav-dropdown a::after {
+  display: none;
+}
+
+.hero-nav-sticky .hn-nav-dropdown a:hover {
+  background: rgba(176, 85, 53, 0.08);
+  color: var(--clay);
+}
+
+/* Mobile sublinks */
+.hn-mobile-sublink {
+  padding-left: 28px !important;
+  font-size: 14px !important;
+  opacity: 0.85;
 }
 
 /* CTA / user block container — stays vertically centred with the nav links */
@@ -206,7 +289,7 @@ body {
 
 .hero-nav-sticky .hn-mobile-menu a:hover,
 .hero-nav-sticky .hn-mobile-menu a.active {
-  color: var(--clay);
+  color: var(--moss);
 }
 
 /* Visible state (after IntersectionObserver fires or default fallback) */
@@ -220,14 +303,14 @@ body {
 .hero-mnml {
   position: relative;
   min-height: 100vh;
-  padding-top: 80px; /* clear the fixed nav */
+  padding-top: 94px; /* clear the fixed nav */
   background: var(--papyrus);
   overflow: hidden;
 }
 
 /* ---------- Hero stage (the visible full-viewport section) ---------- */
 .hero-mnml .hm-stage {
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 94px);
   display: grid;
   grid-template-columns: 1fr 520px 1fr;
   grid-template-rows: auto 1fr auto;
@@ -308,6 +391,74 @@ body {
     transform: translate(-50%, -50%) scale(1.4);
     opacity: 0.18;
   }
+}
+
+/* Drifting leaf shapes */
+.hm-leaves {
+  position: absolute;
+  inset: 0;
+}
+
+.hm-leaf {
+  position: absolute;
+  opacity: 0.16;
+  will-change: transform;
+}
+
+.hm-leaf-1 {
+  top: 8%;
+  left: 6%;
+  width: 70px;
+  color: var(--moss);
+  animation: leaf-drift-a 26s ease-in-out infinite;
+}
+.hm-leaf-2 {
+  top: 18%;
+  right: 10%;
+  width: 46px;
+  color: var(--clay);
+  animation: leaf-drift-b 21s ease-in-out infinite;
+  animation-delay: -4s;
+}
+.hm-leaf-3 {
+  bottom: 14%;
+  left: 12%;
+  width: 54px;
+  color: var(--ochre);
+  animation: leaf-drift-a 30s ease-in-out infinite;
+  animation-delay: -12s;
+}
+.hm-leaf-4 {
+  bottom: 22%;
+  right: 16%;
+  width: 38px;
+  color: var(--moss);
+  animation: leaf-drift-b 24s ease-in-out infinite;
+  animation-delay: -8s;
+}
+.hm-leaf-5 {
+  top: 46%;
+  left: 3%;
+  width: 32px;
+  color: var(--clay);
+  animation: leaf-drift-a 19s ease-in-out infinite;
+  animation-delay: -15s;
+}
+
+@keyframes leaf-drift-a {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  25%  { transform: translate(14px, -18px) rotate(90deg); }
+  50%  { transform: translate(-6px, -32px) rotate(180deg); }
+  75%  { transform: translate(-18px, -10px) rotate(270deg); }
+  100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+@keyframes leaf-drift-b {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  25%  { transform: translate(-16px, 14px) rotate(-80deg); }
+  50%  { transform: translate(-4px, 28px) rotate(-190deg); }
+  75%  { transform: translate(16px, 8px) rotate(-280deg); }
+  100% { transform: translate(0, 0) rotate(-360deg); }
 }
 
 /* ---------- Accent circle ---------- */
@@ -404,7 +555,7 @@ body {
   max-width: 420px;
 }
 
-.hero-mnml .hm-readmore {
+.hm-readmore {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -416,15 +567,15 @@ body {
   transition: gap 0.25s ease;
 }
 
-.hero-mnml .hm-readmore svg {
+.hm-readmore svg {
   transition: transform 0.25s ease;
 }
 
-.hero-mnml .hm-readmore:hover {
+.hm-readmore:hover {
   gap: 12px;
 }
 
-.hero-mnml .hm-readmore:hover svg {
+.hm-readmore:hover svg {
   transform: translateX(3px);
 }
 
@@ -472,25 +623,46 @@ body {
   margin-bottom: 12px;
 }
 
-.hero-mnml .hm-book-btn {
+.hero-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.hm-book-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 14px 32px;
   background: var(--clay);
   color: var(--papyrus);
+  border: 1.5px solid var(--clay);
   border-radius: 10px;
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 16px;
   text-decoration: none;
-  transition: transform 0.22s ease, opacity 0.22s ease;
-  margin-top: 4px;
+  transition: transform 0.22s ease, opacity 0.22s ease, background 0.22s ease;
+  box-sizing: border-box;
 }
 
-.hero-mnml .hm-book-btn:hover {
+.hm-book-btn:hover {
   transform: translateY(-2px);
   opacity: 0.9;
+}
+
+.hm-book-btn-outline {
+  background: transparent !important;
+  border-color: var(--ink) !important;
+  color: var(--ink) !important;
+  animation: none !important;
+}
+
+.hm-book-btn-outline:hover {
+  background: rgba(36, 28, 19, 0.06) !important;
 }
 
 
@@ -558,6 +730,11 @@ body {
     animation: none !important;
     opacity: 0.05 !important;
     transform: translate(-50%, -50%) scale(1) !important;
+  }
+  .hm-leaf {
+    animation: none !important;
+    opacity: 0.08 !important;
+    transform: none !important;
   }
   .hero-mnml .hm-circle,
   .hero-mnml .hm-portrait,
@@ -634,6 +811,17 @@ body {
     text-align: center;
   }
 
+  .hero-btn-group {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .hero-btn-group .hm-book-btn {
+    width: 100%;
+    margin-top: 0;
+  }
+
   .hero-mnml.is-visible .hm-right {
     transform: translateY(0);
   }
@@ -684,6 +872,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
+  z-index: 100000;
 }
 
 .hn-user-trigger {
@@ -747,19 +936,20 @@ body {
 /* User Dropdown Card */
 .hn-user-dropdown {
   position: absolute;
-  top: calc(100% + 10px);
+  top: 100%;
+  margin-top: 10px;
   right: 0;
   width: 240px;
-  background: #ffffff;
+  background: var(--papyrus);
   border: 1px solid var(--sand);
   border-radius: 16px;
-  box-shadow: 0 12px 36px rgba(36, 28, 19, 0.12);
-  padding: 12px 0;
+  box-shadow: 0 14px 36px rgba(36, 28, 19, 0.14);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
-  z-index: 1000;
+  z-index: 100002;
+  padding: 12px 0;
 }
 
 /* Show on hover or click */

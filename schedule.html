@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Schedule & Booking — Empowered Me Wellness</title>
-  <meta name="description" content="Upcoming Kemetic Yoga, Kid's Yoga, and workshop sessions at Empowered Me Wellness in Hamilton, Bermuda.">
+  <meta name="description" content="Upcoming sessions, programs, and events at Empowered Me Wellness in Hamilton, Bermuda.">
   <link rel="icon" type="image/png" href="assets/brand/favicon.png">
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lato:wght@300;400;700;900&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/polish.css">
   <link rel="canonical" href="https://empoweredmewellness.com/schedule.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Schedule & Booking — Empowered Me Wellness">
-  <meta property="og:description" content="Upcoming Kemetic Yoga, Kid's Yoga, and workshop sessions at Empowered Me Wellness in Hamilton, Bermuda.">
+  <meta property="og:description" content="Upcoming sessions, programs, and events at Empowered Me Wellness in Hamilton, Bermuda.">
   <meta property="og:url" content="https://empoweredmewellness.com/schedule.html">
   <meta property="og:image" content="https://empoweredmewellness.com/assets/brand/emw-logo-horizontal.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -232,19 +233,23 @@
         <div class="skeleton-row"></div>
       </div>
 
-      <!-- General Class Info Box -->
-      <div class="schedule-info-box">
+      </div>
+    </section>
+
+    <!-- Full-Bleed Edge-to-Edge Class Info Banner -->
+    <section class="full-bleed-section" aria-label="General Class Information" style="background: #FFFFFF; border-top: 1px solid var(--sand); border-bottom: 1px solid var(--sand); padding: 70px 24px; margin-bottom: 0;">
+      <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px; text-align: center;">
         <div class="info-item">
-          <h4>Location</h4>
-          <p>Hamilton, Bermuda studio space. Exact venue details provided upon booking confirmation.</p>
+          <h4 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--clay); margin: 0 0 8px;">Location</h4>
+          <p style="font-size: 0.95rem; opacity: 0.85; margin: 0; line-height: 1.6;">Hamilton, Bermuda studio space. Exact venue details provided upon booking confirmation.</p>
         </div>
         <div class="info-item">
-          <h4>Arrival & Mats</h4>
-          <p>Please arrive 10 minutes before start time. Mats and props available or bring your own.</p>
+          <h4 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--clay); margin: 0 0 8px;">Arrival &amp; Mats</h4>
+          <p style="font-size: 0.95rem; opacity: 0.85; margin: 0; line-height: 1.6;">Please arrive 10 minutes before start time. Mats and props available or bring your own.</p>
         </div>
         <div class="info-item">
-          <h4>Cancellation</h4>
-          <p>Full refund available up to 24 hours prior to session start. Manage via your account.</p>
+          <h4 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--clay); margin: 0 0 8px;">Cancellation</h4>
+          <p style="font-size: 0.95rem; opacity: 0.85; margin: 0; line-height: 1.6;">Full refund available up to 24 hours prior to session start. Manage via your account.</p>
         </div>
       </div>
     </section>
@@ -264,16 +269,26 @@
       });
     }
 
-    (async () => {
+    async function loadSchedule() {
       const listEl = document.getElementById("session-list");
       try {
         allSessions = await SessionsAPI.list();
         renderFilterButtons(allSessions);
         renderSessions(allSessions);
       } catch (err) {
-        listEl.innerHTML = `<p class="mono" style="text-align:center; padding: 40px;">Couldn't load the schedule right now. Please try again shortly.</p>`;
+        listEl.innerHTML = `
+          <div class="alert alert-error">
+            <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <div>
+              <p class="alert-title">Couldn't load the schedule</p>
+              <p class="alert-body">Please try again. <button type="button" class="btn-link" onclick="loadSchedule()">Retry</button></p>
+            </div>
+          </div>`;
       }
-    })();
+    }
+    loadSchedule();
     
     function renderFilterButtons(sessions) {
       const controls = document.getElementById("schedule-controls");
@@ -294,7 +309,17 @@
     function renderSessions(sessions) {
       const listEl = document.getElementById("session-list");
       if (!sessions || sessions.length === 0) {
-        listEl.innerHTML = `<div class="empty-state"><p class="mono" style="margin:0;">No sessions scheduled right now — check back soon for new dates.</p></div>`;
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="16" rx="2"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+              <line x1="8" y1="3" x2="8" y2="7"/>
+              <line x1="16" y1="3" x2="16" y2="7"/>
+            </svg>
+            <h3>No sessions scheduled</h3>
+            <p>Check back soon — new dates are added regularly.</p>
+          </div>`;
         return;
       }
       listEl.innerHTML = sessions
@@ -331,4 +356,5 @@
   </script>
 </body>
 </html>
+
 

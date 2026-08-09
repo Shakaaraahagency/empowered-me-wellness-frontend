@@ -182,6 +182,7 @@ const ProductsAPI = {
   get: (id) => api(`/products/${id}`),
   listReviews: (id) => api(`/products/${id}/reviews`),
   submitReview: (id, payload) => api(`/products/${id}/reviews`, { method: "POST", body: payload }),
+  notifyMe: (productId, email) => api(`/products/${productId}/notify-me`, { method: "POST", body: { email } }),
 };
 
 const OrdersAPI = {
@@ -228,6 +229,32 @@ const AdminAPI = {
     }
     return data;
   },
+  // fetch() doesn't expose upload progress in a broadly-supported way, so the PDF
+  // upload (the one large enough for progress to actually matter) uses XHR instead.
+  uploadProductFileWithProgress: (formData, onProgress) => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `${API_URL}/admin/products/upload`);
+      xhr.withCredentials = true;
+      const csrf = localStorage.getItem("csrf_access");
+      if (csrf) xhr.setRequestHeader("X-CSRF-TOKEN", csrf);
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
+      };
+      xhr.onload = () => {
+        let data = {};
+        try { data = JSON.parse(xhr.responseText); } catch (_) {}
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(data);
+        } else {
+          reject({ message: data?.error?.message || "File upload failed.", code: data?.error?.code || "upload_failed" });
+        }
+      };
+      xhr.onerror = () => reject({ message: "File upload failed. Check your connection.", code: "upload_failed" });
+      xhr.send(formData);
+    });
+  },
   uploadProductCover: async (formData) => {
     const headers = {};
     const csrf = localStorage.getItem("csrf_access");
@@ -247,6 +274,7 @@ const AdminAPI = {
   createProduct: (payload) => api("/admin/products", { method: "POST", body: payload }),
   updateProduct: (id, payload) => api(`/admin/products/${id}`, { method: "PATCH", body: payload }),
   deleteProduct: (id) => api(`/admin/products/${id}`, { method: "DELETE" }),
+  releaseProduct: (id, payload) => api(`/admin/products/${id}/release`, { method: "POST", body: payload }),
 
   listOrders: (status) => api(`/admin/orders${status ? `?status=${status}` : ""}`),
 
@@ -292,11 +320,11 @@ async function requireAdmin() {
   } catch (err) {
     localStorage.removeItem("csrf_access");
     localStorage.removeItem("csrf_refresh");
-    window.location.href = "/admin-login";
+    window.location.href = "/admin-login.html";
     throw err;
   }
   if (user.role !== "admin") {
-    window.location.href = "/";
+    window.location.href = "/index.html";
     throw new Error("not an admin");
   }
   return user;

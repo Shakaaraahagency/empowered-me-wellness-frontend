@@ -8,9 +8,10 @@
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lato:wght@300;400;700;900&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/polish.css">
 </head>
 <body>
   <div id="site-header"></div>
@@ -27,14 +28,26 @@
             <select id="product-category" required style="padding: 10px; border: 1px solid var(--sand); border-radius: 8px;">
               <option value="" disabled selected>Select Category</option>
               <option value="ebook">Ebook</option>
-              <option value="guide">Guide & Manual</option>
+              <option value="guide">Guide &amp; Manual</option>
             </select>
           </div>
-          <div style="background:var(--papyrus);padding:14px;border:1px solid var(--sand);border-radius:10px;margin-bottom:14px;">
+
+          <div style="margin-bottom:14px;">
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;">
+              <input type="checkbox" id="product-coming-soon" style="width:auto;margin:0;" onchange="toggleComingSoon()">
+              <span>This is a pre-release / coming soon product</span>
+            </label>
+          </div>
+
+          <div id="release-date-group" style="display:none;margin-bottom:14px;">
+            <label for="product-release-date" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Expected Release Date</label>
+            <input type="text" id="product-release-date" placeholder="e.g., Fall 2026, January 2027" style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;">
+          </div>
+
+          <div id="file-upload-section" style="background:var(--papyrus);padding:14px;border:1px solid var(--sand);border-radius:10px;margin-bottom:14px;">
             <label for="product-file" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Upload E-Book File (PDF, EPUB, MOBI)</label>
             <input type="file" id="product-file" accept=".pdf,.epub,.mobi" style="width:100%;padding:6px;background:#fff;border:1px solid var(--sand);border-radius:6px;">
-            <p class="mono" style="font-size:11px;opacity:0.6;margin-top:6px;">Alternatively, enter existing file path below if file is already on server:</p>
-            <input type="text" id="product-file-path" placeholder="Existing server filename (optional if file chosen above)" style="width:100%;margin-top:4px;">
+            <p id="file-not-required-note" class="mono" style="display:none;font-size:11px;color:var(--ochre);margin-top:6px;">File not required for coming-soon products. You can upload it later when the product is ready.</p>
           </div>
           
           <div style="background:var(--papyrus);padding:14px;border:1px solid var(--sand);border-radius:10px;margin-bottom:14px;">
@@ -43,53 +56,158 @@
           </div>
 
           <textarea id="product-description" placeholder="Description (optional)" rows="2" style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;margin-bottom:10px;"></textarea>
+
+          <div class="progress-block" id="upload-progress-block" style="display:none;">
+            <div class="progress-label"><span id="upload-progress-label">Uploading</span><span id="upload-progress-pct"></span></div>
+            <div class="progress-track"><div class="progress-fill" id="upload-progress-fill"></div></div>
+          </div>
+
           <button type="submit" id="submit-product-btn" class="btn btn-small">Add Product</button>
           <p class="error-msg" id="product-error"></p>
         </form>
       </div>
 
-      <table class="admin-table" id="products-table">
-        <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>File</th><th>Status</th><th></th></tr></thead>
-        <tbody></tbody>
-      </table>
+      <!-- Filter Toolbar -->
+      <div class="admin-toolbar">
+        <div class="admin-toolbar-group">
+          <div class="admin-search-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="search-input" class="admin-search-input" placeholder="Search by product name, category, or filename..." oninput="applyFilters()">
+          </div>
+          <select id="status-filter" class="admin-filter-select" onchange="applyFilters()">
+            <option value="all">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="coming_soon">Coming Soon</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <select id="category-filter" class="admin-filter-select" onchange="applyFilters()">
+            <option value="all">All Categories</option>
+            <option value="ebook">Ebook</option>
+            <option value="guide">Guide &amp; Manual</option>
+          </select>
+        </div>
+        <div class="admin-count-badge" id="count-badge">Loading products...</div>
+      </div>
+
+      <div class="table-scroll">
+        <table class="admin-table" id="products-table">
+          <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>File</th><th>Status</th><th>Release</th><th>Actions</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
   </main>
   <div id="site-footer"></div>
   <script src="js/components/layout.js"></script>
   <script src="js/components/admin-nav.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/components/modal.js"></script>
   <script>
+    let rawProducts = [];
+
+    function toggleComingSoon() {
+      const isCS = document.getElementById('product-coming-soon').checked;
+      document.getElementById('release-date-group').style.display = isCS ? 'block' : 'none';
+      const fileSection = document.getElementById('file-upload-section');
+      const fileNote = document.getElementById('file-not-required-note');
+      if (isCS) {
+        fileSection.style.opacity = '0.5';
+        fileNote.style.display = 'block';
+      } else {
+        fileSection.style.opacity = '1';
+        fileNote.style.display = 'none';
+      }
+    }
+
     async function loadProducts() {
-      const products = await AdminAPI.listProducts();
+      try {
+        rawProducts = await AdminAPI.listProducts();
+        applyFilters();
+      } catch (err) {
+        document.querySelector("#products-table tbody").innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px 16px;"><span class="mono" style="opacity:0.7;">Couldn't load products.</span></td></tr>`;
+      }
+    }
+
+    function applyFilters() {
+      const q = document.getElementById("search-input").value.toLowerCase().trim();
+      const statusFilter = document.getElementById("status-filter").value;
+      const catFilter = document.getElementById("category-filter").value;
+
+      const filtered = rawProducts.filter(p => {
+        const matchQuery = !q || 
+          (p.name && p.name.toLowerCase().includes(q)) || 
+          (p.category && p.category.toLowerCase().includes(q)) ||
+          (p.file_path && p.file_path.toLowerCase().includes(q));
+        
+        let matchStatus = true;
+        if (statusFilter === "coming_soon") matchStatus = p.is_coming_soon;
+        else if (statusFilter === "inactive") matchStatus = p.is_active === false && !p.is_coming_soon;
+        else if (statusFilter === "active") matchStatus = p.is_active !== false && !p.is_coming_soon;
+
+        const matchCat = catFilter === "all" || (p.category && p.category.toLowerCase() === catFilter.toLowerCase());
+
+        return matchQuery && matchStatus && matchCat;
+      });
+
+      document.getElementById("count-badge").textContent = `Showing ${filtered.length} of ${rawProducts.length} products`;
+      renderTable(filtered);
+    }
+
+    function renderTable(products) {
       const tbody = document.querySelector("#products-table tbody");
+      if (products.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:32px 16px; opacity:0.7;">
+          <span class="mono">No matching products found</span>
+        </td></tr>`;
+        return;
+      }
+
       tbody.innerHTML = products
-        .map(
-          (p) => `
-        <tr>
-          <td>${escapeHtml(p.name)}</td>
-          <td style="text-transform: capitalize;">${escapeHtml(p.category || 'ebook')}</td>
-          <td>$${p.price}</td>
-          <td class="mono" style="font-size:12px;">${escapeHtml(p.file_path || 'None')}</td>
-          <td><span class="badge ${p.is_active === false ? "cancelled" : "approved"}">${p.is_active === false ? "inactive" : "active"}</span></td>
-          <td>
-            ${p.is_active === false
-              ? `<button class="btn btn-tiny btn-outline" data-activate="${p.id}">Activate</button>`
-              : `<button class="btn btn-tiny" data-deactivate="${p.id}">Deactivate</button>`
-            }
-          </td>
-        </tr>
-      `
-        )
+        .map((p) => {
+          let statusBadge;
+          if (p.is_coming_soon) {
+            const waitCount = p.notify_count || 0;
+            statusBadge = `<span class="badge" style="background:var(--ochre);color:#fff;">Coming Soon</span>`
+              + (waitCount > 0 ? `<br><span class="mono" style="font-size:11px;color:var(--ochre);">${waitCount} waiting</span>` : '');
+          } else if (p.is_active === false) {
+            statusBadge = `<span class="badge cancelled">inactive</span>`;
+          } else {
+            statusBadge = `<span class="badge approved">active</span>`;
+          }
+          return `
+          <tr>
+            <td><strong>${escapeHtml(p.name)}</strong></td>
+            <td style="text-transform: capitalize;">${escapeHtml(p.category || 'ebook')}</td>
+            <td><strong>$${p.price}</strong></td>
+            <td class="mono" style="font-size:12px; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(p.file_path || 'None')}</td>
+            <td>${statusBadge}</td>
+            <td class="mono" style="font-size:12px;">${p.release_date ? escapeHtml(p.release_date) : '—'}</td>
+            <td>
+              ${p.is_coming_soon
+                ? `<button class="btn btn-tiny" style="background:var(--moss);" data-release="${p.id}" data-name="${escapeHtml(p.name)}">Release</button>`
+                : ''
+              }
+              ${p.is_active === false
+                ? `<button class="btn btn-tiny btn-outline" data-activate="${p.id}">Activate</button>`
+                : `<button class="btn btn-tiny btn-destructive" data-deactivate="${p.id}">Deactivate</button>`
+              }
+            </td>
+          </tr>
+        `;
+        })
         .join("");
 
       tbody.querySelectorAll("[data-deactivate]").forEach((btn) =>
         btn.addEventListener("click", async () => {
-          if (!confirm("Deactivate this product? It will no longer appear in the shop. Existing orders are unaffected.")) return;
+          const ok = await EMWModal.confirm("It will no longer appear in the shop. Existing orders are unaffected.", {
+            title: "Deactivate this product?", confirmLabel: "Deactivate", danger: true,
+          });
+          if (!ok) return;
           try {
             await AdminAPI.deleteProduct(btn.dataset.deactivate);
             loadProducts();
           } catch (err) {
-            alert("Error: " + (err.message || "Could not deactivate product."));
+            await EMWModal.alert(err.message || "Could not deactivate product.", { title: "Something went wrong" });
           }
         })
       );
@@ -100,10 +218,109 @@
             await AdminAPI.updateProduct(btn.dataset.activate, { is_active: true });
             loadProducts();
           } catch (err) {
-            alert("Error: " + (err.message || "Could not activate product."));
+            await EMWModal.alert(err.message || "Could not activate product.", { title: "Something went wrong" });
           }
         })
       );
+
+      tbody.querySelectorAll("[data-release]").forEach((btn) =>
+        btn.addEventListener("click", () => {
+          openReleaseModal(btn.dataset.release, btn.dataset.name);
+        })
+      );
+    }
+
+    function openReleaseModal(productId, productName) {
+      const existing = document.getElementById('release-modal-overlay');
+      if (existing) existing.remove();
+
+      const overlay = document.createElement('div');
+      overlay.id = 'release-modal-overlay';
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
+      overlay.innerHTML = `
+        <div style="background:var(--papyrus);border-radius:14px;padding:32px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+          <h3 style="margin:0 0 6px;font-family:var(--font-display);">Release Product</h3>
+          <p style="margin:0 0 20px;font-size:14px;color:#666;">Upload the file for <strong>${productName}</strong> to make it available for purchase. All "Notify Me" subscribers will be emailed.</p>
+          
+          <div style="background:#fff;padding:14px;border:1px solid var(--sand);border-radius:10px;margin-bottom:16px;">
+            <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Product File (PDF, EPUB, MOBI)</label>
+            <input type="file" id="release-file-input" accept=".pdf,.epub,.mobi" style="width:100%;padding:6px;border:1px solid var(--sand);border-radius:6px;">
+          </div>
+
+          <div id="release-progress" style="display:none;margin-bottom:16px;">
+            <div class="progress-block">
+              <div class="progress-label"><span id="release-progress-label">Uploading</span> <span id="release-progress-pct"></span></div>
+              <div class="progress-track"><div class="progress-fill" id="release-progress-fill"></div></div>
+            </div>
+          </div>
+
+          <p id="release-error" class="error-msg" style="display:none;"></p>
+
+          <div style="display:flex;gap:10px;justify-content:flex-end;">
+            <button type="button" class="btn btn-outline btn-small" id="release-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-small" id="release-confirm-btn" style="background:var(--moss);">Upload &amp; Release</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      document.getElementById('release-cancel-btn').addEventListener('click', () => overlay.remove());
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+      document.getElementById('release-confirm-btn').addEventListener('click', async () => {
+        const fileInput = document.getElementById('release-file-input');
+        const errorEl = document.getElementById('release-error');
+        const confirmBtn = document.getElementById('release-confirm-btn');
+        const progressDiv = document.getElementById('release-progress');
+        const progressLabel = document.getElementById('release-progress-label');
+        const progressPct = document.getElementById('release-progress-pct');
+        const progressFill = document.getElementById('release-progress-fill');
+
+        errorEl.style.display = 'none';
+
+        if (!fileInput.files.length) {
+          errorEl.textContent = 'Please select a file to upload.';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'Processing…';
+
+        try {
+          progressDiv.style.display = 'block';
+          progressLabel.textContent = 'Uploading file';
+          const formData = new FormData();
+          formData.append('file', fileInput.files[0]);
+          const uploadRes = await AdminAPI.uploadProductFileWithProgress(formData, (pct) => {
+            progressFill.style.width = pct + '%';
+            progressPct.textContent = pct + '%';
+          });
+
+          progressLabel.textContent = 'Releasing product & sending notifications';
+          progressFill.style.width = '100%';
+          progressFill.classList.add('is-shimmer');
+
+          const result = await AdminAPI.releaseProduct(productId, { file_path: uploadRes.file_path });
+
+          overlay.remove();
+
+          const msg = result.notifications_sent > 0
+            ? `"${productName}" is now live! ${result.notifications_sent} notification email(s) sent.`
+            : `"${productName}" is now live! No subscribers were waiting for notification.`;
+          await EMWModal.alert(msg, { title: 'Product Released' });
+
+          loadProducts();
+        } catch (err) {
+          errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+          errorEl.style.display = 'block';
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = 'Upload & Release';
+          progressDiv.style.display = 'none';
+          progressFill.style.width = '0%';
+          progressFill.classList.remove('is-shimmer');
+        }
+      });
     }
 
     (async () => {
@@ -117,35 +334,61 @@
         errorEl.style.display = "none";
 
         const fileInput = document.getElementById("product-file");
-        let filePath = document.getElementById("product-file-path").value.trim();
-        
+        let filePath = null;
+
         const coverInput = document.getElementById("product-cover");
         let coverImageUrl = null;
+
+        const progressBlock = document.getElementById("upload-progress-block");
+        const progressLabel = document.getElementById("upload-progress-label");
+        const progressPct = document.getElementById("upload-progress-pct");
+        const progressFill = document.getElementById("upload-progress-fill");
+
+        const setProgress = (label, pct) => {
+          progressBlock.style.display = "block";
+          progressLabel.textContent = label;
+          progressFill.classList.remove("is-shimmer", "is-complete");
+          if (pct === null) {
+            progressFill.classList.add("is-shimmer");
+            progressPct.textContent = "";
+          } else {
+            progressFill.style.width = pct + "%";
+            progressPct.textContent = pct + "%";
+            if (pct >= 100) progressFill.classList.add("is-complete");
+          }
+        };
 
         submitBtn.disabled = true;
         submitBtn.textContent = "Processing…";
 
         try {
           if (fileInput.files.length > 0) {
-            submitBtn.textContent = "Uploading PDF file…";
+            setProgress("Uploading PDF", 0);
             const formData = new FormData();
             formData.append("file", fileInput.files[0]);
-            const uploadRes = await AdminAPI.uploadProductFile(formData);
+            const uploadRes = await AdminAPI.uploadProductFileWithProgress(formData, (pct) =>
+              setProgress("Uploading PDF", pct)
+            );
             filePath = uploadRes.file_path;
+            setProgress("Uploading PDF", 100);
           }
 
-          if (!filePath) {
-            throw new Error("Please select a PDF file to upload or enter a server file path.");
+          const isComingSoon = document.getElementById('product-coming-soon').checked;
+
+          if (!isComingSoon && !filePath) {
+            throw new Error("Please select a PDF file to upload.");
           }
-          
+
           if (coverInput.files.length > 0) {
-            submitBtn.textContent = "Uploading cover image…";
+            setProgress("Uploading cover image", null);
             const coverFormData = new FormData();
             coverFormData.append("file", coverInput.files[0]);
             const coverRes = await AdminAPI.uploadProductCover(coverFormData);
-            coverImageUrl = coverRes.url; // Cloudinary returns a full https:// URL
+            coverImageUrl = coverRes.url;
+            setProgress("Uploading cover image", 100);
           }
 
+          setProgress("Saving product", 100);
           submitBtn.textContent = "Saving product…";
           await AdminAPI.createProduct({
             name: document.getElementById("product-name").value.trim(),
@@ -154,8 +397,13 @@
             file_path: filePath,
             cover_image_url: coverImageUrl,
             description: document.getElementById("product-description").value.trim(),
+            is_coming_soon: isComingSoon,
+            release_date: isComingSoon ? (document.getElementById("product-release-date").value.trim() || null) : null,
           });
           document.getElementById("product-form").reset();
+          document.getElementById('release-date-group').style.display = 'none';
+          document.getElementById('file-upload-section').style.opacity = '1';
+          document.getElementById('file-not-required-note').style.display = 'none';
           loadProducts();
         } catch (err) {
           errorEl.textContent = err.message;
@@ -163,6 +411,9 @@
         } finally {
           submitBtn.disabled = false;
           submitBtn.textContent = "Add Product";
+          progressBlock.style.display = "none";
+          progressFill.style.width = "0%";
+          progressFill.classList.remove("is-shimmer", "is-complete");
         }
       });
     })();

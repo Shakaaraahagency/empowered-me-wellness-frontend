@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Empowered Me Wellness — Kemetic Yoga &amp; Mindfulness in Bermuda</title>
-  <meta name="description" content="Kemetic yoga, kid's yoga, and mindfulness practices led by Latoya Bridgewater in Hamilton, Bermuda. Book a class or explore the Inner Calm Mindfulness Manual.">
+  <title>Empowered Me Wellness — Healing Beyond Survival | Bermuda</title>
+  <meta name="description" content="Nervous system healing, somatic practice, and yoga therapy with Latoya Bridgewater in Hamilton, Bermuda. Individual, family, and corporate wellness programs.">
   <link rel="icon" type="image/png" href="assets/brand/favicon.png">
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lato:wght@300;400;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/hero.css">
   <link rel="canonical" href="https://empoweredmewellness.com/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Empowered Me Wellness — Kemetic Yoga &amp; Mindfulness in Bermuda">
-  <meta property="og:description" content="Kemetic yoga, kid's yoga, and mindfulness practices led by Latoya Bridgewater in Hamilton, Bermuda. Book a class or explore the Inner Calm Mindfulness Manual.">
+  <meta property="og:title" content="Empowered Me Wellness — Healing Beyond Survival">
+  <meta property="og:description" content="Nervous system healing, somatic practice, and yoga therapy with Latoya Bridgewater in Hamilton, Bermuda.">
   <meta property="og:url" content="https://empoweredmewellness.com/">
   <meta property="og:image" content="https://empoweredmewellness.com/assets/brand/emw-logo-horizontal.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -69,12 +69,10 @@
       margin-bottom: 14px;
     }
 
-    /* --- Kemetic Yoga Story & Origins --- */
     .story-section {
       background: linear-gradient(180deg, var(--papyrus) 0%, #EBE0C9 100%);
       position: relative;
       overflow: hidden;
-      border-top: 1px solid var(--sand);
       border-bottom: 1px solid var(--sand);
     }
 
@@ -345,57 +343,233 @@
 
     /* --- Latoya Bio Spotlight Banner --- */
     .bio-spotlight-section {
-      background: #EBE1CC;
+      background: var(--papyrus);
       border-top: 1px solid var(--sand);
       border-bottom: 1px solid var(--sand);
-      padding: 80px 24px;
+      padding: 90px 24px;
     }
 
     .bio-grid {
       display: grid;
       grid-template-columns: 380px 1fr;
-      gap: 50px;
+      gap: 60px;
       align-items: center;
     }
 
     @media (max-width: 900px) {
       .bio-grid {
         grid-template-columns: 1fr;
-        gap: 36px;
+        gap: 40px;
       }
     }
 
-    .bio-image-wrapper {
+    /* Arched Monogram Graphic Frame */
+    .bio-arch-card {
+      width: 100%;
+      max-width: 360px;
+      height: 460px;
+      margin: 0 auto;
+      border-radius: 180px 180px 30px 30px;
+      background: linear-gradient(145deg, #4B7A3E 0%, #8C7030 50%, #B05535 100%);
       position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 20px 48px rgba(36, 28, 19, 0.15), inset 0 0 0 12px rgba(255, 255, 255, 0.15);
+      border: 3px solid #FFFFFF;
+      overflow: hidden;
+    }
+
+    .bio-arch-inner-circle {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      background: rgba(192, 138, 52, 0.45);
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .bio-monogram {
+      font-family: var(--font-display);
+      font-size: 56px;
+      font-weight: 400;
+      font-style: italic;
+      color: #FFFFFF;
+      line-height: 0.9;
+      text-align: center;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .bio-arch-vertical-text {
+      position: absolute;
+      right: 20px;
+      bottom: 40px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .meet-latoya-title {
+      font-family: var(--font-display);
+      font-size: clamp(38px, 5vw, 54px);
+      font-weight: 400;
+      color: var(--ink);
+      margin: 0 0 16px;
+      line-height: 1.1;
+    }
+
+    .meet-latoya-title em {
+      font-style: italic;
+      color: var(--leaf);
+      font-weight: 400;
+    }
+
+    /* --- Community Testimonials Section & Pagination --- */
+    .community-section {
+      background: var(--papyrus);
+      border-top: 1px solid var(--sand);
+      border-bottom: 1px solid var(--sand);
+      padding: 90px 24px;
+    }
+
+    .community-title {
+      font-family: var(--font-display);
+      font-size: clamp(38px, 5.5vw, 56px);
+      font-weight: 400;
+      color: var(--ink);
+      margin: 12px 0 0;
+      line-height: 1.1;
       text-align: center;
     }
 
-    .bio-portrait {
-      width: 100%;
-      max-width: 380px;
-      border-radius: 180px 180px 24px 24px;
-      box-shadow: 0 16px 36px rgba(36, 28, 19, 0.12);
-      border: 3px solid #FFFFFF;
-      display: block;
-      margin: 0 auto;
+    .community-title em {
+      font-style: italic;
+      color: var(--clay);
+      font-weight: 400;
     }
 
-    .bio-badge {
-      position: absolute;
-      bottom: -15px;
-      right: 20px;
-      background: var(--moss);
-      color: var(--papyrus);
-      padding: 8px 16px;
-      border-radius: 20px;
+    .community-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 36px;
+      margin: 50px auto 30px;
+      max-width: 1180px;
+    }
+
+    @media (max-width: 900px) {
+      .community-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+    }
+
+    .community-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .community-stars {
+      color: #C08A34;
+      font-size: 15px;
+      letter-spacing: 3px;
+      margin-bottom: 18px;
+    }
+
+    .community-quote {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--ink);
+      margin: 0 0 24px;
+      flex: 1;
+    }
+
+    .community-author-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .community-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--leaf);
+      color: #FFFFFF;
       font-family: var(--font-mono);
-      font-size: 12px;
-      box-shadow: 0 4px 12px rgba(36, 28, 19, 0.15);
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
-    .bio-content h2 {
-      font-size: 38px;
-      margin-bottom: 8px;
+    .community-author-meta h4 {
+      margin: 0;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .community-author-meta p {
+      margin: 2px 0 0;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink);
+      opacity: 0.65;
+    }
+
+    .community-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 40px;
+    }
+
+    .community-page-btn {
+      background: transparent;
+      border: 1px solid var(--sand);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: auto;
+      margin-top: 0;
+      transition: all 0.2s ease;
+    }
+
+    .community-page-btn:hover:not(:disabled) {
+      border-color: var(--clay);
+      color: var(--clay);
+      background: rgba(176, 85, 53, 0.05);
+    }
+
+    .community-page-btn.active {
+      background: var(--clay);
+      color: var(--papyrus);
+      border-color: var(--clay);
+    }
+
+    .community-page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
     .bio-subtitle {
@@ -675,31 +849,177 @@
       transform: scale(1.25);
     }
 
-    /* --- Newsletter Enhancement --- */
-    .newsletter-card {
-      max-width: 880px;
-      margin: 0 auto;
-      background: #FFFFFF;
-      border: 1px solid var(--sand);
-      border-radius: 20px;
-      padding: 44px 36px;
-      box-shadow: 0 10px 30px rgba(36, 28, 19, 0.04);
+    /* Kill the gap between last section and footer */
+    main {
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+    }
+    .green-banner-section:last-child,
+    main > .green-banner-section:last-of-type {
+      margin-bottom: 0 !important;
+      padding-bottom: 95px;
+    }
+    #site-footer {
+      margin-top: 0 !important;
+    }
+
+    /* --- Full-Bleed Section Utility (Touch Screen Walls 100% Edge-to-Edge) --- */
+    .full-bleed-section {
+      width: 100vw !important;
+      position: relative !important;
+      left: 50% !important;
+      right: 50% !important;
+      margin-left: -50vw !important;
+      margin-right: -50vw !important;
+      box-sizing: border-box !important;
+    }
+
+    /* --- Full-Bleed Green Banner (Replit Mockup Style) --- */
+    .green-banner-section {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      background: #4B6B3E;
+      overflow: hidden;
+      padding: 95px 24px;
       text-align: center;
+      color: #FFFFFF;
+      box-sizing: border-box;
     }
 
-    .newsletter-input-group {
-      display: flex;
-      gap: 10px;
-      max-width: 460px;
-      margin: 24px auto 0;
+    .botanical-stem {
+      position: absolute;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.45;
     }
 
-    @media (max-width: 500px) {
-      .newsletter-input-group {
-        flex-direction: column;
+    .botanical-stem.left-stem {
+      top: 10%;
+      left: 3%;
+      width: 160px;
+      height: auto;
+    }
+
+    .botanical-stem.right-stem {
+      bottom: 5%;
+      right: 3%;
+      width: 160px;
+      height: auto;
+    }
+
+    @media (max-width: 768px) {
+      .botanical-stem.left-stem {
+        width: 100px;
+        left: -10px;
+        top: 4%;
       }
-      .newsletter-input-group button {
+      .botanical-stem.right-stem {
+        width: 100px;
+        right: -10px;
+        bottom: 2%;
+      }
+    }
+
+    .green-banner-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--sand);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .green-banner-title {
+      font-family: var(--font-display);
+      font-size: clamp(38px, 5.5vw, 58px);
+      font-weight: 400;
+      color: #FFFFFF;
+      margin: 12px 0;
+      line-height: 1.1;
+    }
+
+    .green-banner-title em {
+      font-style: italic;
+      color: var(--sand);
+      font-weight: 400;
+    }
+
+    .green-banner-subtitle {
+      font-family: var(--font-body);
+      font-size: 17px;
+      max-width: 660px;
+      margin: 0 auto 36px;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.65;
+      font-weight: 400;
+    }
+
+    .newsletter-banner-form {
+      display: flex;
+      gap: 12px;
+      max-width: 540px;
+      margin: 28px auto 0;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .newsletter-banner-input {
+      flex: 1;
+      min-width: 280px;
+      padding: 15px 22px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: #FFFFFF;
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 16px;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .newsletter-banner-btn {
+      padding: 15px 32px;
+      background: var(--clay);
+      color: #FFFFFF;
+      border: 1.5px solid var(--clay);
+      border-radius: 10px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.22s ease, background 0.22s ease;
+      margin-top: 0;
+      box-sizing: border-box;
+    }
+
+    .newsletter-banner-btn:hover {
+      transform: translateY(-2px);
+      background: #8C4222;
+    }
+
+    @media (max-width: 600px) {
+      .newsletter-banner-form {
+        flex-direction: column;
         width: 100%;
+      }
+      .newsletter-banner-input,
+      .newsletter-banner-btn {
+        width: 100% !important;
+        min-width: unset !important;
       }
     }
   </style>
@@ -721,6 +1041,30 @@
         <div class="hm-ring hm-ring-2"></div>
         <div class="hm-ring hm-ring-3"></div>
       </div>
+
+      <!-- Drifting leaf shapes -->
+      <div class="hm-leaves">
+        <svg class="hm-leaf hm-leaf-1" viewBox="0 0 64 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4C50 20 58 42 44 68C36 82 24 90 10 92C10 70 14 46 24 28C27 20 30 12 32 4Z" fill="currentColor"/>
+          <path d="M32 8C30 30 24 54 12 88" stroke="var(--papyrus)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+        <svg class="hm-leaf hm-leaf-2" viewBox="0 0 64 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4C50 20 58 42 44 68C36 82 24 90 10 92C10 70 14 46 24 28C27 20 30 12 32 4Z" fill="currentColor"/>
+          <path d="M32 8C30 30 24 54 12 88" stroke="var(--papyrus)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+        <svg class="hm-leaf hm-leaf-3" viewBox="0 0 64 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4C50 20 58 42 44 68C36 82 24 90 10 92C10 70 14 46 24 28C27 20 30 12 32 4Z" fill="currentColor"/>
+          <path d="M32 8C30 30 24 54 12 88" stroke="var(--papyrus)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+        <svg class="hm-leaf hm-leaf-4" viewBox="0 0 64 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4C50 20 58 42 44 68C36 82 24 90 10 92C10 70 14 46 24 28C27 20 30 12 32 4Z" fill="currentColor"/>
+          <path d="M32 8C30 30 24 54 12 88" stroke="var(--papyrus)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+        <svg class="hm-leaf hm-leaf-5" viewBox="0 0 64 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4C50 20 58 42 44 68C36 82 24 90 10 92C10 70 14 46 24 28C27 20 30 12 32 4Z" fill="currentColor"/>
+          <path d="M32 8C30 30 24 54 12 88" stroke="var(--papyrus)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+      </div>
     </div>
 
     <!-- Accent circle (behind portrait) -->
@@ -737,15 +1081,15 @@
         <div class="hm-stats" aria-label="Quick facts">
           <div class="hm-stat">
             <span class="hm-stat-num">8+</span>
-            <span class="hm-stat-label">Years teaching</span>
+            <span class="hm-stat-label">Years in practice</span>
           </div>
           <div class="hm-stat">
             <span class="hm-stat-num">200+</span>
-            <span class="hm-stat-label">Students</span>
+            <span class="hm-stat-label">People guided</span>
           </div>
           <div class="hm-stat">
-            <span class="hm-stat-num">4</span>
-            <span class="hm-stat-label">Pillars of practice</span>
+            <span class="hm-stat-num">3</span>
+            <span class="hm-stat-label">Steps: acknowledge, reclaim, strengthen</span>
           </div>
         </div>
       </div>
@@ -754,7 +1098,7 @@
       <div class="hm-left">
         <p class="hm-eyebrow">Hamilton, Bermuda</p>
         <p>
-          Kemetic yoga and mindfulness practices for the whole family, led by Latoya Bridgewater in Hamilton, Bermuda.
+          Helping individuals, families, and organizations regulate the nervous system, heal from chronic stress and trauma, and reconnect with themselves — through evidence-informed, culturally grounded practices.
         </p>
         <a href="about.html" class="hm-readmore" id="hero-readmore-link">
           Read more
@@ -770,7 +1114,7 @@
         <img
           class="hm-portrait"
           src="assets/hero-portrait-placeholder.png"
-          alt="Portrait of Latoya Bridgewater, founder of Empowered Me Wellness, in a Kemetic yoga pose"
+          alt="Latoya Bridgewater, founder of Empowered Me Wellness"
           width="400"
           height="500"
           loading="eager"
@@ -779,21 +1123,25 @@
 
       <!-- Right column: headline + CTA -->
       <div class="hm-right">
-        <p class="hm-tagline">Kemetic Yoga &amp; Mindfulness</p>
+        <p class="hm-tagline">Healing Beyond Survival</p>
         <h1 class="hm-headline">
-          Grounded<br>
-          movement.<br>
-          <em>Ancestral calm.</em>
+          Come back<br>
+          to <em>yourself.</em>
         </h1>
-        <a href="schedule.html" class="hm-book-btn" id="hero-book-class-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="4" width="18" height="18" rx="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-          View the Schedule
-        </a>
+        <div class="hero-btn-group">
+          <a href="schedule.html" class="hm-book-btn" id="hero-book-class-btn">
+            Start Your Healing Journey
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+            </svg>
+          </a>
+          <a href="#beyond-resilience" class="hm-book-btn hm-book-btn-outline">
+            Explore Beyond Resilience
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+            </svg>
+          </a>
+        </div>
       </div>
 
     </div><!-- /.hm-stage -->
@@ -802,112 +1150,109 @@
   <main>
 
     <!-- =====================================================================
-         1. KEMETIC YOGA STORY & ORIGINS SECTION
+         1. NERVOUS SYSTEM HEALING — "ARE YOU LIVING IN SURVIVAL MODE?"
     ====================================================================== -->
-    <section class="story-section" aria-label="Kemetic Yoga Story &amp; Origins">
+    <section class="story-section" id="nervous-system-healing" aria-label="Nervous System Healing">
       <div class="container">
-        
-        <div class="story-intro reveal-on-scroll">
+
+        <div class="story-intro reveal-on-scroll" style="max-width:760px;">
           <div class="section-badge">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 2a7 7 0 0 0 0 14 7 7 0 0 0 0-14z"/>
+              <path d="M3 12h4l2-8 4 16 2-8h6"/>
             </svg>
-            Ancestral Roots
+            Nervous System Healing
           </div>
-          <h2 class="section-title">The Sacred Origins of Kemetic Yoga</h2>
-          <p>
-            Kemetic Yoga is the ancient Egyptian system of yoga based on postures depicted on temple walls and hieroglyphs of Ancient Kemet (Egypt). It is a healing practice focused on spinal alignment, deep abdominal breathing, energy flow, and meditative self-discovery.
+          <h2 class="section-title" style="text-align:left;">Are you living in survival mode?</h2>
+          <p style="font-size:19px;line-height:1.75;">
+            Many of us have learned how to survive. Few of us were taught how to regulate.
           </p>
-        </div>
-
-        <div class="story-cards-grid">
-          <!-- Card 1 -->
-          <div class="story-card reveal-on-scroll delay-1">
-            <div class="story-card-icon" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-              </svg>
-            </div>
-            <span class="story-card-tag">Ankh &amp; Spinal Alignment</span>
-            <h3>Geometric Postures</h3>
-            <p>
-              Emphasizes precise anatomical alignment modeled after the sacred geometry of Kemetic deities. Postures naturally realign the vertebrae and decompress spinal nerves.
-            </p>
-          </div>
-
-          <!-- Card 2 -->
-          <div class="story-card reveal-on-scroll delay-2">
-            <div class="story-card-icon" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9.59 4.59A2 2 0 0 1 11 4h2a2 2 0 0 1 2 2v2a2 2 0 0 1-.59 1.41L9.59 14.41A2 2 0 0 0 9 15.83V18a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2.17a2 2 0 0 0-.59-1.42L9.59 4.59z"/>
-                <path d="M6 8h.01M18 16h.01"/>
-              </svg>
-            </div>
-            <span class="story-card-tag">Life Force &amp; Breath</span>
-            <h3>The Sesh Flow Method</h3>
-            <p>
-              Rule of Four breathing — inhalation, retention, exhalation, retention — activates the parasympathetic nervous system to release deep-seated stress and restore vitality.
-            </p>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="story-card reveal-on-scroll delay-3">
-            <div class="story-card-icon" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                <polyline points="2 17 12 22 22 17"/>
-                <polyline points="2 12 12 17 22 12"/>
-              </svg>
-            </div>
-            <span class="story-card-tag">Nile Valley Heritage</span>
-            <h3>Ancestral Wisdom</h3>
-            <p>
-              Reconnects modern practitioners with ancient African healing philosophy. A gentle, restorative flow suitable for all ages, body types, and experience levels.
-            </p>
-          </div>
+          <p style="font-size:19px;line-height:1.75;">
+            When the nervous system spends years adapting to stress, trauma, overwork, grief, racism, caregiving, or constant responsibility, the body can forget what safety feels like.
+          </p>
+          <p style="font-size:19px;line-height:1.75;font-family:var(--font-display);font-style:italic;color:var(--moss);">
+            Healing isn't about becoming someone new. It's about helping your body remember what safety feels like.
+          </p>
+          <a href="about.html#nervous-system" class="hm-readmore" style="margin-top:8px;">
+            Learn About Nervous System Healing
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </a>
         </div>
 
       </div>
     </section>
 
     <!-- =====================================================================
+         1B. INTRODUCING BEYOND RESILIENCE — FLAGSHIP WORKBOOK
+    ====================================================================== -->
+    <section id="beyond-resilience" aria-label="Beyond Resilience" style="background:var(--card-tint);border-top:1px solid var(--sand);border-bottom:1px solid var(--sand);">
+      <div class="container" style="display:grid;grid-template-columns:340px 1fr;gap:56px;align-items:center;padding-top:96px;padding-bottom:96px;">
+
+        <!-- Workbook cover placeholder — real cover art in progress -->
+        <div class="reveal-on-scroll" style="aspect-ratio:3/4;background:var(--ink);border-radius:var(--radius-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;position:relative;">
+          <p style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.17em;text-transform:uppercase;color:var(--sand);margin-bottom:20px;">Coming Soon</p>
+          <p style="font-family:var(--font-display);font-size:32px;font-style:italic;color:var(--papyrus);line-height:1.25;">Beyond<br>Resilience</p>
+          <p style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;color:var(--sage);margin-top:20px;">THE WORKBOOK</p>
+        </div>
+
+        <div class="reveal-on-scroll delay-1">
+          <p class="hm-eyebrow" style="margin-bottom:10px;">Introducing Beyond Resilience</p>
+          <h2 style="font-family:var(--font-display);font-size:clamp(30px,3.5vw,46px);line-height:1.1;margin-bottom:8px;">Beyond Resilience</h2>
+          <p style="font-family:var(--font-display);font-style:italic;font-size:21px;color:var(--moss);margin-bottom:22px;">Becoming stronger in the places we've been broken.</p>
+          <p style="font-size:16px;line-height:1.75;margin-bottom:14px;">
+            More than a workbook. Beyond Resilience is a healing framework that combines historical knowledge, nervous system education, ancient somatic practices, reflection, ancestral wisdom, and practical tools to help people move beyond surviving and begin living with greater connection, regulation, and purpose.
+          </p>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;">
+            <a href="shop.html" class="hm-book-btn">
+              Buy the Workbook
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
+            <a href="services.html" class="hm-book-btn" style="background:var(--moss);">
+              Join the Program
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    <style>
+      @media (max-width: 760px) {
+        #beyond-resilience .container { grid-template-columns: 1fr !important; padding-top: 56px !important; padding-bottom: 56px !important; }
+      }
+    </style>
+
+    <!-- =====================================================================
          THE FOUR PILLARS SECTION
     ====================================================================== -->
-    <section class="pillar-band" aria-label="The Four Pillars of Practice">
+    <section class="pillar-band" aria-label="My Healing Philosophy">
       <div class="container">
         
         <div style="text-align: center; max-width: 900px; margin: 0 auto 48px;" class="reveal-on-scroll">
-          <div class="section-badge">Core Foundation</div>
-          <h2 class="section-title" style="color: var(--papyrus);">The Four Pillars</h2>
+          <div class="section-badge">My Healing Philosophy</div>
+          <h2 class="section-title" style="color: var(--papyrus);">Acknowledge. Reclaim. Strengthen.</h2>
           <p style="opacity: 0.85; margin: 0;">
-            Every session at Empowered Me Wellness integrates four essential pillars for holistic mind-body rejuvenation.
+            Three principles guide every session, program, and page of Beyond Resilience.
           </p>
         </div>
 
         <div class="grid-3">
           <div class="tile reveal-on-scroll delay-1">
-            <span class="pillar-num">01 / BREATH</span>
-            <h3>Rhythmic Breathing</h3>
-            <p>Controlled, intentional abdominal breathing that oxygenates cells and stills the mind.</p>
+            <span class="pillar-num">01 / REGULATE</span>
+            <h3>Regulate</h3>
+            <p>Before we can thrive, our nervous system needs safety.</p>
           </div>
           <div class="tile reveal-on-scroll delay-2">
-            <span class="pillar-num">02 / MOVEMENT</span>
-            <h3>Kemetic Stretching</h3>
-            <p>Slow, deliberate movement sequences designed to open joints and lengthen muscle tissues.</p>
+            <span class="pillar-num">02 / RECONNECT</span>
+            <h3>Reconnect</h3>
+            <p>Healing happens when we reconnect with our bodies, our stories, and our communities.</p>
           </div>
           <div class="tile reveal-on-scroll delay-3">
-            <span class="pillar-num">03 / STILLNESS</span>
-            <h3>Deep Relaxation</h3>
-            <p>Guided quietude to recalibrate the nervous system and clear mental fatigue.</p>
-          </div>
-        </div>
-
-        <div style="margin-top: 24px; text-align: center;" class="reveal-on-scroll delay-4">
-          <div class="tile" style="max-width: 600px; margin: 0 auto;">
-            <span class="pillar-num">04 / INTENTION</span>
-            <h3>Positive Affirmations</h3>
-            <p>Closing each session with grounded, empowering truths to reinforce confidence, calm, and clarity.</p>
+            <span class="pillar-num">03 / RESTORE</span>
+            <h3>Restore</h3>
+            <p>Lasting change comes from practices that honor both science and ancestral wisdom.</p>
           </div>
         </div>
 
@@ -917,172 +1262,115 @@
     <!-- =====================================================================
          2. INTERACTIVE PROGRAM SHOWCASE & CLASS PREVIEW
     ====================================================================== -->
-    <section aria-label="Program Showcase &amp; Class Preview" style="background: var(--papyrus);">
+    <section class="full-bleed-section" aria-label="How We Work Together" style="background: var(--papyrus);">
       <div class="container">
 
         <div style="text-align: center; max-width: 900px; margin: 0 auto 40px;" class="reveal-on-scroll">
-          <div class="section-badge">Our Offerings</div>
-          <h2 class="section-title">Explore Our Programs &amp; Manual</h2>
+          <div class="section-badge">How We Work Together</div>
+          <h2 class="section-title">Paths to healing, built around you</h2>
           <p style="opacity: 0.85; margin: 0;">
-            Designed for individuals, children, and families seeking authentic wellness, mental clarity, and body balance.
+            Whether you're healing individually, raising a family, or leading a team — there's a path here for you.
           </p>
         </div>
 
-        <!-- Filter / Category Tabs -->
-        <div class="program-nav-tabs reveal-on-scroll" role="tablist" aria-label="Program filter categories">
-          <button class="program-tab-btn active" data-category="all" role="tab" aria-selected="true">All Offerings</button>
-          <button class="program-tab-btn" data-category="yoga" role="tab" aria-selected="false">Kemetic Yoga</button>
-          <button class="program-tab-btn" data-category="youth" role="tab" aria-selected="false">Kid's Yoga</button>
-          <button class="program-tab-btn" data-category="coaching" role="tab" aria-selected="false">Manual &amp; Coaching</button>
-        </div>
-
-        <!-- Program Grid -->
+        <!-- Service Grid -->
         <div class="program-grid" id="program-cards-container">
 
-          <!-- Program 1: Kemetic Yoga -->
-          <div class="program-card reveal-on-scroll delay-1" data-category="yoga">
+          <!-- 1: Individual Healing -->
+          <div class="program-card reveal-on-scroll delay-1">
             <div>
               <div class="program-header">
-                <span class="program-pill">Adults &amp; All Levels</span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--clay)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                <span class="program-pill">1-on-1</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--moss)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
               </div>
-              <h3>Kemetic Yoga Sessions</h3>
+              <h3>Individual Healing</h3>
               <p>
-                Experience ancestral postures, slow geometric transitions, and deep abdominal breathing. Realign your spine and cultivate inner peace.
+                Private nervous system coaching and yoga therapy — tailored to where you are and where you're headed.
               </p>
               <ul class="program-highlights">
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  Weekly group &amp; private sessions
-                </li>
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  Hamilton studio &amp; outdoor pop-ups
-                </li>
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  Beginner-friendly &amp; deeply relaxing
-                </li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Customized nervous system coaching</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>In-person (Bermuda) or virtual (global)</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Flexible scheduling &amp; direct mentorship</li>
               </ul>
             </div>
             <div class="program-footer">
-              <div class="program-price">$30 <span>/ class</span></div>
-              <a href="schedule.html" class="btn-link-action">
-                View Schedule &rarr;
-              </a>
+              <a href="contact.html" class="btn-link-action">Book a Consultation &rarr;</a>
             </div>
           </div>
 
-          <!-- Program 2: Kid's Yoga -->
-          <div class="program-card reveal-on-scroll delay-2" data-category="youth">
+          <!-- 2: Beyond Resilience Program -->
+          <div class="program-card reveal-on-scroll delay-2">
             <div>
               <div class="program-header">
-                <span class="program-pill" style="color: var(--clay);">Ages 4 – 12</span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--clay)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                </svg>
-              </div>
-              <h3>Kid's Mindfulness &amp; Movement</h3>
-              <p>
-                Playful, age-appropriate sessions building body awareness, emotional regulation, focus, and healthy stress coping mechanisms.
-              </p>
-              <ul class="program-highlights">
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  Interactive storytelling &amp; breath games
-                </li>
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  Small group sizes for personal care
-                </li>
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  After-school &amp; weekend series
-                </li>
-              </ul>
-            </div>
-            <div class="program-footer">
-              <div class="program-price">$25 <span>/ session</span></div>
-              <a href="services.html" class="btn-link-action">
-                Learn More &rarr;
-              </a>
-            </div>
-          </div>
-
-          <!-- Program 3: Mindfulness Manual -->
-          <div class="program-card reveal-on-scroll delay-3" data-category="coaching">
-            <div>
-              <div class="program-header">
-                <span class="program-pill" style="color: var(--ochre);">Digital Guide</span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--clay)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <span class="program-pill" style="color: var(--clay);">Group or Individual</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--moss)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
                   <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                 </svg>
               </div>
-              <h3>Inner Calm Mindfulness Manual</h3>
+              <h3>Beyond Resilience Program</h3>
               <p>
-                A comprehensive self-guided manual for parents, educators, and individuals seeking practical daily mindfulness exercises.
+                Group or individual healing experiences built around the Beyond Resilience workbook and framework.
               </p>
               <ul class="program-highlights">
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  Instant PDF download with exercises
-                </li>
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  Guided breathwork &amp; reflection prompts
-                </li>
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  Family-friendly calming strategies
-                </li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Structured, workbook-guided sessions</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Somatic practice &amp; ancestral wisdom</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Open to groups and individuals</li>
               </ul>
             </div>
             <div class="program-footer">
-              <div class="program-price">$35 <span>one-time</span></div>
-              <a href="shop.html" class="btn-link-action">
-                Shop Guide &rarr;
-              </a>
+              <a href="#beyond-resilience" class="btn-link-action">Join the Program &rarr;</a>
             </div>
           </div>
 
-          <!-- Program 4: Private Coaching -->
-          <div class="program-card reveal-on-scroll delay-4" data-category="coaching">
+          <!-- 3: Corporate Wellness -->
+          <div class="program-card reveal-on-scroll delay-3">
             <div>
               <div class="program-header">
-                <span class="program-pill">1-on-1 Personalized</span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--clay)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                  <circle cx="12" cy="7" r="4"/>
+                <span class="program-pill" style="color: var(--ochre);">Organizations</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--moss)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/>
                 </svg>
               </div>
-              <h3>Private 1-on-1 Wellness Coaching</h3>
+              <h3>Corporate Wellness</h3>
               <p>
-                Tailored wellness mentorship combining Kemetic movement therapy, personalized breathwork, and lifestyle alignment.
+                Burnout prevention, stress management, and a healthier workplace culture — built for teams.
               </p>
               <ul class="program-highlights">
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  Customized posture &amp; breath plan
-                </li>
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  In-person (Bermuda) or Virtual (Global)
-                </li>
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  Flexible scheduling &amp; direct mentorship
-                </li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Burnout prevention workshops</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Team stress management sessions</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Culture &amp; leadership consulting</li>
               </ul>
             </div>
             <div class="program-footer">
-              <div class="program-price">$90 <span>/ session</span></div>
-              <a href="contact.html" class="btn-link-action">
-                Inquire Private &rarr;
-              </a>
+              <a href="contact.html" class="btn-link-action">Inquire for Your Team &rarr;</a>
+            </div>
+          </div>
+
+          <!-- 4: Youth & Family Programs -->
+          <div class="program-card reveal-on-scroll delay-4">
+            <div>
+              <div class="program-header">
+                <span class="program-pill">Youth &amp; Families</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--moss)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+              </div>
+              <h3>Youth &amp; Family Programs</h3>
+              <p>
+                Trauma-informed emotional wellness and emotional intelligence programs for young people and the families raising them.
+              </p>
+              <ul class="program-highlights">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Trauma-informed &amp; age-appropriate</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Emotional regulation &amp; connection</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Small groups, school &amp; community based</li>
+              </ul>
+            </div>
+            <div class="program-footer">
+              <a href="services.html" class="btn-link-action">Learn More &rarr;</a>
             </div>
           </div>
 
@@ -1098,59 +1386,56 @@
       <div class="container">
         <div class="bio-grid">
           
-          <div class="bio-image-wrapper reveal-on-scroll">
-            <img 
-              src="assets/hero-portrait-placeholder.png" 
-              alt="Latoya Bridgewater, Certified Kemetic Yoga Teacher and Founder of Empowered Me Wellness" 
-              class="bio-portrait"
-              width="380" 
-              height="480"
-              loading="lazy"
-            >
-            <div class="bio-badge">Founder &amp; Educator</div>
+          <!-- Left: Arched Graphic Monogram & Portrait Frame -->
+          <div class="bio-arch-card reveal-on-scroll" style="position: relative; overflow: hidden; border-radius: 200px 200px 20px 20px; box-shadow: 0 16px 40px rgba(36,28,19,0.12); min-height: 440px; background: var(--ink);">
+            <img src="assets/latoya.jpg" alt="Latoya Bridgewater writing in her journal under a tree in Bermuda" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            <span class="bio-arch-vertical-text" style="position: absolute; bottom: 16px; right: 16px; background: rgba(36,28,19,0.75); backdrop-filter: blur(8px); color: var(--papyrus); padding: 6px 14px; border-radius: 20px; font-size: 11px; letter-spacing: 0.1em;">BREATH &nbsp;&middot;&nbsp; PRESENCE</span>
           </div>
 
+          <!-- Right: Editorial Content -->
           <div class="bio-content reveal-on-scroll delay-2">
-            <div class="section-badge">Behind The Practice</div>
-            <h2>Latoya Bridgewater</h2>
-            <div class="bio-subtitle">Certified Kemetic Yoga Instructor &amp; Mindfulness Specialist</div>
+            <div class="section-badge" style="letter-spacing: 0.12em;">YOUR GUIDE</div>
+            <h2 class="meet-latoya-title">Meet <em>Latoya.</em></h2>
 
             <blockquote class="bio-quote">
-              "Mindfulness and Kemetic movement are not just practices; they are pathways back to your highest self and ancestral stillness."
+              "My work is an invitation to slow down enough to hear yourself again."
             </blockquote>
 
             <p class="bio-text">
-              Based in Hamilton, Bermuda, Latoya has spent over eight years guiding individuals, children, and families toward holistic wellbeing. Her teaching integrates the ancient wisdom of Kemetic Yoga with modern mindfulness techniques, creating an inviting space where all bodies can find balance, strength, and calm.
+              Latoya Bridgewater is a Kemetic yoga, kid's yoga, and mindfulness teacher based in Hamilton, Bermuda. She believes wellness should feel like coming home — warm, accessible, and rooted in who you are.
+            </p>
+            <p class="bio-text">
+              Her signature practice blends ancient wisdom with the needs of modern life to help individuals, families, and organizations regulate the nervous system and move from survival into true thriving.
             </p>
 
-            <div class="bio-stats-row">
+            <div class="bio-stats-row" style="margin: 28px 0 32px;">
               <div class="bio-stat-item">
                 <strong>8+</strong>
-                <span>Years Teaching</span>
+                <span>Years in Practice</span>
               </div>
               <div class="bio-stat-item">
                 <strong>200+</strong>
-                <span>Students Guided</span>
+                <span>People Guided</span>
               </div>
               <div class="bio-stat-item">
-                <strong>100%</strong>
-                <span>Breath-Led</span>
+                <strong>Beyond Resilience</strong>
+                <span>Original Framework</span>
               </div>
               <div class="bio-stat-item">
                 <strong>Bermuda</strong>
-                <span>Studio Base</span>
+                <span>Based &amp; Rooted</span>
               </div>
             </div>
 
-            <div class="bio-signature-block">
-              <!-- Stylized SVG Signature -->
-              <svg class="bio-signature-svg" viewBox="0 0 280 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Latoya Bridgewater signature">
-                <path d="M10 40 C 25 10, 35 15, 45 45 M35 30 C 50 25, 70 20, 85 35 M95 15 L 95 45 M95 30 C 110 25, 125 35, 140 25 M150 20 C 165 40, 180 15, 195 40 M210 25 C 225 20, 240 30, 260 22"/>
-              </svg>
-              <div style="font-family: var(--font-mono); font-size: 12px; opacity: 0.7;">
-                Latoya Bridgewater<br>Founder, Empowered Me Wellness
-              </div>
+            <div>
+              <a href="services.html" class="hm-book-btn" style="background:var(--leaf);border-color:var(--leaf);font-family:var(--font-mono);letter-spacing:0.08em;font-size:14px;text-transform:uppercase;">
+                Book With Latoya
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+                </svg>
+              </a>
             </div>
+
           </div>
 
         </div>
@@ -1158,63 +1443,85 @@
     </section>
 
     <!-- =====================================================================
-         5. INTERACTIVE TESTIMONIALS CAROUSEL (WITH API FALLBACK)
+         4B. YOGA THERAPY — ONE TOOL AMONG MANY, NOT THE HEADLINE
     ====================================================================== -->
-    <section aria-label="Testimonials" style="background: var(--papyrus);">
+    <section class="full-bleed-section" aria-label="Yoga Therapy as a Tool for Healing" style="background: var(--card-tint); border-top: 1px solid var(--sand); border-bottom: 1px solid var(--sand); padding: 80px 24px;">
+      <div class="container" style="max-width: 780px; text-align: center;">
+        <div class="reveal-on-scroll">
+          <div class="section-badge" style="justify-content:center;">One Tool We Use</div>
+          <h2 class="section-title">Yoga therapy as a tool for healing</h2>
+          <p style="font-size: 17px; line-height: 1.75; opacity: 0.9;">
+            Movement can help regulate the nervous system, release stored tension, and reconnect us to ourselves. Rather than focusing on perfect poses, our sessions focus on awareness, breath, safety, and healing.
+          </p>
+          <a href="services.html" class="hm-readmore" style="margin-top:8px;">
+            See how yoga therapy fits in
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         4C. RESOURCES TEASER
+    ====================================================================== -->
+    <section aria-label="Resources" style="background: var(--papyrus);">
+      <div class="container">
+        <div style="text-align: center; max-width: 900px; margin: 0 auto 40px;" class="reveal-on-scroll">
+          <div class="section-badge">Resources</div>
+          <h2 class="section-title">Tools for the days between sessions</h2>
+        </div>
+        <div class="grid-3" style="grid-template-columns: repeat(4, 1fr);">
+          <a href="blog.html" class="tile reveal-on-scroll delay-1" style="text-decoration:none;color:inherit;display:block;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--moss)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-bottom:10px;"><path d="M4 19.5V6a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v12.5"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H19"/><path d="M6 6h11"/><path d="M6 10h11"/></svg>
+            <h3 style="font-size:18px;">Blog</h3>
+            <p style="font-size:14px;">Reflections on nervous system healing and everyday regulation.</p>
+          </a>
+          <div class="tile reveal-on-scroll delay-2" style="opacity:0.6;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--moss)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-bottom:10px;"><path d="M6 3v18l15-9L6 3z"/></svg>
+            <h3 style="font-size:18px;">Videos</h3>
+            <p style="font-size:14px;">Coming soon.</p>
+          </div>
+          <div class="tile reveal-on-scroll delay-3" style="opacity:0.6;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--moss)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-bottom:10px;"><path d="M12 2a5 5 0 0 0-5 5c0 3 5 10 5 10s5-7 5-10a5 5 0 0 0-5-5z"/><circle cx="12" cy="7" r="2"/></svg>
+            <h3 style="font-size:18px;">Breathing Exercises</h3>
+            <p style="font-size:14px;">Coming soon.</p>
+          </div>
+          <div class="tile reveal-on-scroll delay-4" style="opacity:0.6;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--moss)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-bottom:10px;"><circle cx="11" cy="11" r="7"/><line x1="16.65" y1="16.65" x2="21" y2="21"/></svg>
+            <h3 style="font-size:18px;">Nervous System Quiz</h3>
+            <p style="font-size:14px;">Coming soon.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <style>
+      @media (max-width: 760px) {
+        section[aria-label="Resources"] .grid-3 { grid-template-columns: 1fr 1fr !important; }
+     }
+    </style>
+
+    <!-- =====================================================================
+         5. COMMUNITY REFLECTIONS & TESTIMONIALS (WITH PAGINATION)
+    ====================================================================== -->
+    <section class="community-section full-bleed-section" aria-label="Testimonials & Reflections">
       <div class="container">
         
-        <div style="text-align: center; max-width: 900px; margin: 0 auto 48px;" class="reveal-on-scroll">
-          <div class="section-badge">Client Reflections</div>
-          <h2 class="section-title">What Our Community Says</h2>
-          <p style="opacity: 0.85; margin: 0;">
-            Hear how Kemetic Yoga and mindfulness have transformed daily life for our Bermuda students.
-          </p>
+        <div style="text-align: center;" class="reveal-on-scroll">
+          <div class="section-badge" style="letter-spacing: 0.12em;">FROM THE COMMUNITY</div>
+          <h2 class="community-title">Room to <em>exhale.</em></h2>
         </div>
 
-        <div id="testimonials-block" class="reveal-on-scroll delay-1">
-          <div class="testimonial-carousel-wrapper">
-            
-            <div class="testimonial-card-frame" id="testimonial-card-active">
-              <div>
-                <div class="testimonial-stars" aria-label="5 out of 5 stars">
-                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                </div>
-                <div class="testimonial-quote-text" id="t-quote-text">
-                  "This practice changed how my whole family starts the day. Latoya’s gentle Kemetic yoga sessions brought a sense of peaceful grounding we didn't know we were missing."
-                </div>
-              </div>
+        <!-- 3-Column Testimonials Grid -->
+        <div class="community-grid" id="community-grid-container">
+          <!-- Dynamically populated by JS (3 cards per page) -->
+        </div>
 
-              <div class="testimonial-author-meta">
-                <div class="author-avatar-chip" id="t-avatar-chip">ST</div>
-                <div class="author-details">
-                  <h4 id="t-author-name">Sarah T.</h4>
-                  <p id="t-author-role">Kemetic Yoga Practitioner, Hamilton</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Controls -->
-            <div class="carousel-controls">
-              <button class="carousel-btn" id="t-prev-btn" aria-label="Previous testimonial">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-              </button>
-              
-              <div class="carousel-dots" id="t-carousel-dots">
-                <span class="carousel-dot active" data-index="0" aria-label="Testimonial 1"></span>
-                <span class="carousel-dot" data-index="1" aria-label="Testimonial 2"></span>
-                <span class="carousel-dot" data-index="2" aria-label="Testimonial 3"></span>
-              </div>
-
-              <button class="carousel-btn" id="t-next-btn" aria-label="Next testimonial">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </button>
-            </div>
-
-          </div>
+        <!-- Pagination Controls -->
+        <div class="community-pagination" id="community-pagination-container">
+          <!-- Dynamically populated by JS -->
         </div>
 
       </div>
@@ -1223,14 +1530,14 @@
     <!-- =====================================================================
          4. ANIMATED FAQ ACCORDION SECTION
     ====================================================================== -->
-    <section aria-label="Frequently Asked Questions" style="background: #EBE0C9; border-top: 1px solid var(--sand); border-bottom: 1px solid var(--sand);">
+    <section class="full-bleed-section" aria-label="Frequently Asked Questions" style="background: #EBE0C9; border-top: 1px solid var(--sand); border-bottom: 1px solid var(--sand); padding: 90px 24px;">
       <div class="container">
         
         <div style="text-align: center; max-width: 900px; margin: 0 auto 48px;" class="reveal-on-scroll">
           <div class="section-badge">Got Questions?</div>
           <h2 class="section-title">Frequently Asked Questions</h2>
           <p style="opacity: 0.85; margin: 0;">
-            Everything you need to know about getting started with Kemetic Yoga &amp; Empowered Me Wellness.
+            Everything you need to know about starting your healing work with Empowered Me Wellness.
           </p>
         </div>
 
@@ -1239,14 +1546,14 @@
           <!-- FAQ Item 1 -->
           <div class="faq-item reveal-on-scroll delay-1">
             <button class="faq-button" aria-expanded="false" aria-controls="faq-ans-1">
-              What makes Kemetic Yoga different from other yoga styles?
+              What is nervous system regulation, really?
               <span class="faq-icon" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </button>
             <div class="faq-answer" id="faq-ans-1">
               <p>
-                Kemetic Yoga originates from ancient Nile Valley civilization. It places a distinct emphasis on geometric spinal alignment, slow controlled movement transitions, and the "Rule of Four" abdominal breathing method to activate deep nervous system relaxation.
+                It's the practice of helping your body remember what safety feels like, even after years of adapting to stress, trauma, or constant responsibility. We use evidence-informed, culturally grounded practices — including somatic work and yoga therapy — to help your nervous system settle, not just your thoughts.
               </p>
             </div>
           </div>
@@ -1254,14 +1561,14 @@
           <!-- FAQ Item 2 -->
           <div class="faq-item reveal-on-scroll delay-2">
             <button class="faq-button" aria-expanded="false" aria-controls="faq-ans-2">
-              Do I need prior yoga experience or high flexibility to attend?
+              Do I need any prior experience with yoga or somatic work to start?
               <span class="faq-icon" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </button>
             <div class="faq-answer" id="faq-ans-2">
               <p>
-                Not at all! Kemetic Yoga is accessible to everyone regardless of age, body type, or flexibility level. Every pose can be adapted, and our focus is on breath and alignment rather than strenuous flexibility.
+                No. Every session meets you where you are. The focus is on awareness, breath, and safety — not performance or flexibility — so there's no prior experience required.
               </p>
             </div>
           </div>
@@ -1269,14 +1576,14 @@
           <!-- FAQ Item 3 -->
           <div class="faq-item reveal-on-scroll delay-3">
             <button class="faq-button" aria-expanded="false" aria-controls="faq-ans-3">
-              What ages are eligible for Kid's Yoga sessions?
+              What ages are eligible for Youth &amp; Family Programs?
               <span class="faq-icon" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </button>
             <div class="faq-answer" id="faq-ans-3">
               <p>
-                Our Kid's Yoga sessions are specially designed for children aged 4 to 12. Classes incorporate playful movement, storytelling, and calming exercises that help children manage emotions and build focus.
+                Our Youth &amp; Family Programs are trauma-informed and age-appropriate, designed for children and the families raising them. Sessions incorporate playful movement, storytelling, and calming exercises that help children manage emotions and build focus.
               </p>
             </div>
           </div>
@@ -1284,14 +1591,14 @@
           <!-- FAQ Item 4 -->
           <div class="faq-item reveal-on-scroll delay-4">
             <button class="faq-button" aria-expanded="false" aria-controls="faq-ans-4">
-              Where are classes held in Bermuda?
+              Where do sessions take place in Bermuda?
               <span class="faq-icon" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </button>
             <div class="faq-answer" id="faq-ans-4">
               <p>
-                Our regular studio sessions take place in Hamilton, Bermuda. We also host outdoor beach and park sessions throughout the island during warm weather, as well as virtual 1-on-1 private coaching sessions.
+                Individual sessions and select programs take place in Hamilton, Bermuda, with outdoor sessions offered seasonally. Individual healing sessions and corporate wellness engagements are also available virtually, worldwide.
               </p>
             </div>
           </div>
@@ -1299,14 +1606,14 @@
           <!-- FAQ Item 5 -->
           <div class="faq-item reveal-on-scroll delay-4">
             <button class="faq-button" aria-expanded="false" aria-controls="faq-ans-5">
-              How do I get the Inner Calm Mindfulness Manual?
+              How do I get the Beyond Resilience workbook?
               <span class="faq-icon" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </button>
             <div class="faq-answer" id="faq-ans-5">
               <p>
-                You can purchase the digital manual directly in our online Shop. Once checkout is complete, you will receive an immediate download link to access the full PDF guide on any device.
+                Beyond Resilience will be available directly through our online Shop. Join the newsletter below to be the first to know when it launches.
               </p>
             </div>
           </div>
@@ -1317,36 +1624,80 @@
     </section>
 
     <!-- =====================================================================
-         7. NEWSLETTER & COMMUNITY SECTION
+         6. CTA BRAND BANNER (START YOUR WELLNESS JOURNEY)
     ====================================================================== -->
-    <section aria-label="Newsletter Subscription" style="background: var(--papyrus);">
-      <div class="container">
-        <div class="newsletter-card reveal-on-scroll">
-          <div class="section-badge">Stay Connected</div>
-          <h2 style="font-size: 32px; margin-bottom: 12px;">Join Our Inner Calm Community</h2>
-          <p class="mono" style="max-width: 680px; margin: 0 auto 24px; opacity: 0.85;">
-            Receive session schedules, wellness tips, and Kemetic posture notes directly to your inbox.
-          </p>
+    <section class="green-banner-section" aria-label="Start Your Journey" style="background:#4B6B3E;">
+      <!-- Original Hero Leaf SVGs -->
+      <div class="hm-leaves" aria-hidden="true">
+        <svg class="hm-leaf hm-leaf-1" viewBox="0 0 64 96" fill="none" xmlns="http://www.w3.org/2000/svg" style="top:15%; left:6%; width:64px; color:#ffffff; opacity:0.18;">
+          <path d="M32 4C50 20 58 42 44 68C36 82 24 90 10 92C10 70 14 46 24 28C27 20 30 12 32 4Z" fill="currentColor"/>
+          <path d="M32 8C30 30 24 54 12 88" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg class="hm-leaf hm-leaf-2" viewBox="0 0 64 96" fill="none" xmlns="http://www.w3.org/2000/svg" style="bottom:12%; right:6%; width:72px; color:#ffffff; opacity:0.18;">
+          <path d="M32 4C50 20 58 42 44 68C36 82 24 90 10 92C10 70 14 46 24 28C27 20 30 12 32 4Z" fill="currentColor"/>
+          <path d="M32 8C30 30 24 54 12 88" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
 
-          <form id="newsletter-form" style="max-width: 640px; margin: 0 auto;">
-            <!-- Honeypot anti-bot input -->
-            <input type="text" name="hp_website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
-
-            <div class="newsletter-input-group">
-              <input 
-                type="email" 
-                id="newsletter-email" 
-                placeholder="Enter your email address..." 
-                required
-                aria-label="Email address"
-              >
-              <button type="submit" class="btn" style="margin-top: 0; padding: 12px 24px; white-space: nowrap;">
-                Subscribe
-              </button>
-            </div>
-          </form>
-          <p class="mono" id="newsletter-msg" style="margin-top: 16px; font-weight: 500; min-height: 20px;"></p>
+      <div style="position:relative; z-index:2; max-width:860px; margin:0 auto;" class="reveal-on-scroll">
+        <div class="green-banner-badge">YOUR NEXT BREATH</div>
+        <h2 class="green-banner-title">Start your wellness <em>journey.</em></h2>
+        <p class="green-banner-subtitle">
+          Come as you are. Leave with a little more of yourself.
+        </p>
+        <div>
+          <a href="schedule.html" class="newsletter-banner-btn" style="display:inline-flex; align-items:center; gap:8px; text-decoration:none;">
+            Book a Class
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+            </svg>
+          </a>
         </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         7. NEWSLETTER BANNER (STAY CLOSE TO THIS WORK)
+    ====================================================================== -->
+    <section class="green-banner-section" aria-label="Newsletter Subscription" style="background:#3D6B35; border-top:1px solid rgba(255,255,255,0.15);">
+      <!-- Original Hero Leaf SVGs -->
+      <div class="hm-leaves" aria-hidden="true">
+        <svg class="hm-leaf hm-leaf-1" viewBox="0 0 64 96" fill="none" xmlns="http://www.w3.org/2000/svg" style="top:18%; left:6%; width:64px; color:#ffffff; opacity:0.18;">
+          <path d="M32 4C50 20 58 42 44 68C36 82 24 90 10 92C10 70 14 46 24 28C27 20 30 12 32 4Z" fill="currentColor"/>
+          <path d="M32 8C30 30 24 54 12 88" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg class="hm-leaf hm-leaf-2" viewBox="0 0 64 96" fill="none" xmlns="http://www.w3.org/2000/svg" style="bottom:15%; right:6%; width:72px; color:#ffffff; opacity:0.18;">
+          <path d="M32 4C50 20 58 42 44 68C36 82 24 90 10 92C10 70 14 46 24 28C27 20 30 12 32 4Z" fill="currentColor"/>
+          <path d="M32 8C30 30 24 54 12 88" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div style="position:relative; z-index:2; max-width:860px; margin:0 auto;" class="reveal-on-scroll">
+        <div class="green-banner-badge">STAY CONNECTED</div>
+        <h2 class="green-banner-title">Stay close to <em>this work.</em></h2>
+        <p class="green-banner-subtitle">
+          Receive nervous system healing tips, program updates, and early access to Beyond Resilience — directly to your inbox.
+        </p>
+
+        <form id="newsletter-form" style="max-width: 580px; margin: 0 auto;">
+          <!-- Honeypot anti-bot input -->
+          <input type="text" name="hp_website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+          <div class="newsletter-banner-form">
+            <input 
+              type="email" 
+              id="newsletter-email" 
+              class="newsletter-banner-input"
+              placeholder="Enter your email address..." 
+              required
+              aria-label="Email address"
+            >
+            <button type="submit" class="newsletter-banner-btn">
+              Subscribe
+            </button>
+          </div>
+        </form>
+        <p class="mono" id="newsletter-msg" style="margin-top: 18px; font-weight: 500; min-height: 20px; color: var(--sand);"></p>
       </div>
     </section>
 
@@ -1385,34 +1736,8 @@
     })();
 
     /* -----------------------------------------------------------------------
-       2. Interactive Program Showcase Category Filter Tabs
+       2. (Program category filter tabs removed — static 4-card grid now)
     ----------------------------------------------------------------------- */
-    (function initProgramTabs() {
-      const tabBtns = document.querySelectorAll(".program-tab-btn");
-      const programCards = document.querySelectorAll(".program-card");
-
-      tabBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-          tabBtns.forEach(b => {
-            b.classList.remove("active");
-            b.setAttribute("aria-selected", "false");
-          });
-          btn.classList.add("active");
-          btn.setAttribute("aria-selected", "true");
-
-          const category = btn.getAttribute("data-category");
-
-          programCards.forEach(card => {
-            const cardCat = card.getAttribute("data-category");
-            if (category === "all" || cardCat === category) {
-              card.style.display = "flex";
-            } else {
-              card.style.display = "none";
-            }
-          });
-        });
-      });
-    })();
 
     /* -----------------------------------------------------------------------
        3. Animated FAQ Accordion Interaction
@@ -1442,91 +1767,133 @@
     })();
 
     /* -----------------------------------------------------------------------
-       4. Interactive Testimonials Carousel with API Fallback
+       4. Interactive Community Testimonials Grid with Pagination & API Fallback
     ----------------------------------------------------------------------- */
-    (function initTestimonialsCarousel() {
+    (function initTestimonialsGrid() {
       const defaultTestimonials = [
         {
-          quote: "This practice changed how my whole family starts the day. Latoya’s gentle Kemetic yoga sessions brought a sense of peaceful grounding we didn't know we were missing.",
+          quote: "I arrived carrying the whole week in my shoulders. I left feeling like I had found space inside myself again. The breathing is the part I return to every day.",
+          author: "Maya R.",
+          location: "— Hamilton, Bermuda",
+          initial: "M"
+        },
+        {
+          quote: "My daughter asks when yoga day is now. She is more focused, more patient, and has a little toolkit for big feelings that actually works.",
+          author: "Alicia P.",
+          location: "— Hamilton, Bermuda",
+          initial: "A"
+        },
+        {
+          quote: "There is something deeply grounding about this practice. It has changed how I move through stress — not by avoiding it, but by meeting it with breath.",
+          author: "Daniel C.",
+          location: "— Hamilton, Bermuda",
+          initial: "D"
+        },
+        {
+          quote: "This isn't generic wellness advice. It's practical, culturally grounded, and it actually changed how I move through stress day to day.",
           author: "Sarah T.",
-          role: "Kemetic Yoga Practitioner, Hamilton",
-          initials: "ST"
+          location: "— Paget, Bermuda",
+          initial: "S"
         },
         {
-          quote: "My 8-year-old son looks forward to Kid's Yoga every single week. He has learned breathing techniques that help him stay calm during school exams!",
+          quote: "My 8-year-old son looks forward to his sessions every single week. He has learned tools that help him stay calm during school exams.",
           author: "Marcus B.",
-          role: "Parent, Devonshire",
-          initials: "MB"
+          location: "— Warwick, Bermuda",
+          initial: "M"
         },
         {
-          quote: "The Inner Calm Mindfulness Manual is a gem! Practical, beautifully designed, and deeply insightful for maintaining mental clarity in daily life.",
+          quote: "Latoya creates a space where you feel seen, safe, and truly supported. Her framework transformed our family's daily routine.",
           author: "Elena R.",
-          role: "Mindfulness Manual Reader",
-          initials: "ER"
+          location: "— Devonshire, Bermuda",
+          initial: "E"
         }
       ];
 
-      let testimonialsData = [...defaultTestimonials];
-      let currentIndex = 0;
+      let items = [...defaultTestimonials];
+      let currentPage = 1;
+      const itemsPerPage = 3;
 
-      const quoteEl = document.getElementById("t-quote-text");
-      const nameEl = document.getElementById("t-author-name");
-      const roleEl = document.getElementById("t-author-role");
-      const avatarEl = document.getElementById("t-avatar-chip");
-      const prevBtn = document.getElementById("t-prev-btn");
-      const nextBtn = document.getElementById("t-next-btn");
-      const dotsContainer = document.getElementById("t-carousel-dots");
+      const gridEl = document.getElementById("community-grid-container");
+      const paginationEl = document.getElementById("community-pagination-container");
 
-      function updateSlide(index) {
-        if (!testimonialsData.length) return;
-        currentIndex = (index + testimonialsData.length) % testimonialsData.length;
-        const data = testimonialsData[currentIndex];
+      function renderPage(page) {
+        currentPage = page;
+        const totalPages = Math.ceil(items.length / itemsPerPage) || 1;
+        const start = (currentPage - 1) * itemsPerPage;
+        const pageItems = items.slice(start, start + itemsPerPage);
 
-        quoteEl.textContent = `"${data.quote}"`;
-        nameEl.textContent = data.author;
-        roleEl.textContent = data.role;
-        avatarEl.textContent = data.initials || data.author.slice(0, 2).toUpperCase();
-
-        const dots = dotsContainer.querySelectorAll(".carousel-dot");
-        dots.forEach((dot, idx) => {
-          dot.classList.toggle("active", idx === currentIndex);
-        });
-      }
-
-      function renderDots() {
-        dotsContainer.innerHTML = testimonialsData.map((_, idx) => `
-          <span class="carousel-dot ${idx === 0 ? "active" : ""}" data-index="${idx}" aria-label="Testimonial ${idx + 1}"></span>
+        // Render 3 Cards
+        gridEl.innerHTML = pageItems.map(item => `
+          <div class="community-card">
+            <div>
+              <div class="community-stars" aria-label="5 out of 5 stars">★★★★★</div>
+              <blockquote class="community-quote">
+                "${item.quote}"
+              </blockquote>
+            </div>
+            <div class="community-author-row">
+              <div class="community-avatar">${item.initial || item.author.charAt(0)}</div>
+              <div class="community-author-meta">
+                <h4>${item.author}</h4>
+                <p>${item.location || '— Hamilton, Bermuda'}</p>
+              </div>
+            </div>
+          </div>
         `).join("");
 
-        dotsContainer.querySelectorAll(".carousel-dot").forEach(dot => {
-          dot.addEventListener("click", (e) => {
-            const idx = parseInt(e.target.getAttribute("data-index"), 10);
-            updateSlide(idx);
+        // Render Pagination Controls
+        if (totalPages <= 1) {
+          paginationEl.innerHTML = "";
+          return;
+        }
+
+        let navHtml = `
+          <button class="community-page-btn" ${currentPage === 1 ? "disabled" : ""} id="c-prev-btn">&larr; Prev</button>
+        `;
+
+        for (let i = 1; i <= totalPages; i++) {
+          navHtml += `
+            <button class="community-page-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i}</button>
+          `;
+        }
+
+        navHtml += `
+          <button class="community-page-btn" ${currentPage === totalPages ? "disabled" : ""} id="c-next-btn">Next &rarr;</button>
+        `;
+
+        paginationEl.innerHTML = navHtml;
+
+        // Bind Pagination Clicks
+        const prevBtn = document.getElementById("c-prev-btn");
+        const nextBtn = document.getElementById("c-next-btn");
+        if (prevBtn) prevBtn.addEventListener("click", () => renderPage(currentPage - 1));
+        if (nextBtn) nextBtn.addEventListener("click", () => renderPage(currentPage + 1));
+
+        paginationEl.querySelectorAll(".community-page-btn[data-page]").forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            const p = parseInt(e.target.dataset.page, 10);
+            renderPage(p);
           });
         });
       }
 
-      prevBtn.addEventListener("click", () => updateSlide(currentIndex - 1));
-      nextBtn.addEventListener("click", () => updateSlide(currentIndex + 1));
+      renderPage(1);
 
-      renderDots();
-
-      // Fetch dynamic testimonials from API if available
+      // Fetch dynamic testimonials from backend API if available
       (async () => {
         try {
           const apiTestimonials = await api("/testimonials");
           if (Array.isArray(apiTestimonials) && apiTestimonials.length > 0) {
-            testimonialsData = apiTestimonials.map(t => ({
+            items = apiTestimonials.map(t => ({
               quote: escapeHtml(t.content),
               author: escapeHtml(t.author_name),
-              role: t.role ? escapeHtml(t.role) : "Verified Client",
-              initials: escapeHtml(t.author_name).split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
+              location: t.role ? `— ${escapeHtml(t.role)}` : "— Hamilton, Bermuda",
+              initial: escapeHtml(t.author_name).charAt(0).toUpperCase()
             }));
-            renderDots();
-            updateSlide(0);
+            renderPage(1);
           }
-        } catch (err) {
-          // Keep default fallback testimonials intact
+        } catch (_) {
+          // Keep default community testimonials
         }
       })();
     })();

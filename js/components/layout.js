@@ -13,14 +13,21 @@ const FROND_ICON = `
 </svg>`;
 
 const NAV_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/schedule", label: "Schedule" },
-  { href: "/shop", label: "Shop" },
-  { href: "/testimonials", label: "Testimonials" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact" },
+  { href: "/index.html", label: "Home" },
+  { 
+    href: "/about.html", 
+    label: "About",
+    children: [
+      { href: "/about.html", label: "Latoya's Story & Bio" },
+      { href: "/index.html#nervous-system-healing", label: "Nervous System Healing" },
+      { href: "/index.html#beyond-resilience", label: "Beyond Resilience" }
+    ]
+  },
+  { href: "/services.html", label: "Work With Me" },
+  { href: "/blog.html", label: "Resources" },
+  { href: "/shop.html", label: "Shop" },
+  { href: "/schedule.html", label: "Events" },
+  { href: "/contact.html", label: "Contact" },
 ];
 
 function currentPage() {
@@ -30,25 +37,65 @@ function currentPage() {
 }
 
 /** Build the nav HTML string for a given user (or null for guest) */
-function _buildNavHtml(page, linksArray, user) {
-  const links = linksArray.map(
-    (l) => `<li><a href="${l.href}" class="${(l.href === "/" ? page === "" : l.href.replace(/^\//, "") === page) ? "active" : ""}"> ${l.label}</a></li>`
-  ).join("");
+function _isActiveLink(href, page) {
+  // Normalize the href the same way currentPage() normalizes the URL:
+  // strip leading slash, drop any #fragment, strip .html extension.
+  const pathPart = href.replace(/^\//, "").split("#")[0].replace(/\.html$/, "");
+  const hashPart = href.includes("#") ? href.split("#")[1] : "";
 
-  const mobileLinks = linksArray.map(
-    (l) => `<a href="${l.href}" class="${(l.href === "/" ? page === "" : l.href.replace(/^\//, "") === page) ? "active" : ""}"> ${l.label}</a>`
-  ).join("");
+  const isIndex = pathPart === "index" || pathPart === "";
+  const isCurrentPage = isIndex ? (page === "" || page === "index") : (pathPart === page);
+
+  // If there's a hash in the link, only mark active if we're actually on that hash
+  if (hashPart) {
+      return isCurrentPage && window.location.hash === "#" + hashPart;
+  }
+
+  return isCurrentPage;
+}
+
+function _buildNavHtml(page, linksArray, user) {
+  const links = linksArray.map((l) => {
+    const isActive = _isActiveLink(l.href, page);
+    if (l.children && l.children.length > 0) {
+      const childLinks = l.children.map(
+        (c) => `<a href="${c.href}" class="${_isActiveLink(c.href, page) ? "active" : ""}">${c.label}</a>`
+      ).join("");
+      return `
+        <li class="hn-has-dropdown">
+          <a href="${l.href}" class="${isActive ? "active" : ""}">
+            ${l.label}
+            <svg class="hn-chevron-down" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          <div class="hn-nav-dropdown">
+            ${childLinks}
+          </div>
+        </li>`;
+    }
+    return `<li><a href="${l.href}" class="${isActive ? "active" : ""}"> ${l.label}</a></li>`;
+  }).join("");
+
+  const mobileLinks = linksArray.map((l) => {
+    const isActive = _isActiveLink(l.href, page);
+    if (l.children && l.children.length > 0) {
+      const childrenHtml = l.children.map(
+        (c) => `<a href="${c.href}" class="hn-mobile-sublink ${_isActiveLink(c.href, page) ? "active" : ""}">${c.label}</a>`
+      ).join("");
+      return `<a href="${l.href}" class="${isActive ? "active" : ""}">${l.label}</a>${childrenHtml}`;
+    }
+    return `<a href="${l.href}" class="${isActive ? "active" : ""}">${l.label}</a>`;
+  }).join("");
 
   // Determine CTA
   let ctaHtml = `
-    <a href="/schedule" class="hn-cta">
+    <a href="/schedule.html" class="hn-cta">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <rect x="3" y="4" width="18" height="18" rx="2"/>
         <line x1="16" y1="2" x2="16" y2="6"/>
         <line x1="8" y1="2" x2="8" y2="6"/>
         <line x1="3" y1="10" x2="21" y2="10"/>
       </svg>
-      Book a Class
+      Book a Consultation
     </a>
   `;
 
@@ -74,28 +121,28 @@ function _buildNavHtml(page, linksArray, user) {
           </div>
           <div class="hn-dropdown-divider"></div>
           <div class="hn-dropdown-links">
-            <a href="/dashboard" class="hn-dropdown-item" role="menuitem">
+            <a href="/dashboard.html" class="hn-dropdown-item" role="menuitem">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
               Dashboard
             </a>
-            <a href="/profile" class="hn-dropdown-item" role="menuitem">
+            <a href="/profile.html" class="hn-dropdown-item" role="menuitem">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               Personal Information
             </a>
-            <a href="/my-bookings" class="hn-dropdown-item" role="menuitem">
+            <a href="/my-bookings.html" class="hn-dropdown-item" role="menuitem">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               My Bookings
             </a>
-            <a href="/my-orders" class="hn-dropdown-item" role="menuitem">
+            <a href="/my-orders.html" class="hn-dropdown-item" role="menuitem">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
               My Orders
             </a>
-            <a href="/account-settings" class="hn-dropdown-item" role="menuitem">
+            <a href="/account-settings.html" class="hn-dropdown-item" role="menuitem">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               Account Settings
             </a>
             ${user.role === 'admin' ? `
-            <a href="/admin-overview" class="hn-dropdown-item" style="color:var(--clay);" role="menuitem">
+            <a href="/admin-overview.html" class="hn-dropdown-item" style="color:var(--clay);" role="menuitem">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               Admin Panel
             </a>` : ''}
@@ -111,15 +158,15 @@ function _buildNavHtml(page, linksArray, user) {
   }
 
   const mobileSuffix = user
-    ? `<a href="/profile" style="display:block;padding:10px 0;border-bottom:1px solid var(--sand);color:var(--ink);">Personal Information</a>
+    ? `<a href="/profile.html" style="display:block;padding:10px 0;border-bottom:1px solid var(--sand);color:var(--ink);">Personal Information</a>
        <button id="hn-mobile-logout-btn" style="width: 100%; text-align: left; background: none; border: none; padding: 12px 0; color: #c0392b; font-family: var(--font-body); font-size: 16px; font-weight: 600; cursor: pointer;">Log Out</button>`
-    : `<a href="/schedule" style="color: var(--clay); font-weight: 600;">Book a Class &rarr;</a>`;
+    : `<a href="/schedule.html" style="color: var(--clay); font-weight: 600;">Book a Consultation &rarr;</a>`;
 
   return `
     <nav class="hero-nav-sticky" aria-label="Main navigation">
       <!-- Brand -->
-      <a href="/" class="hn-brand" aria-label="Empowered Me Wellness — Home">
-        <img src="/assets/brand/logo-transparent.png" alt="Empowered Me Wellness" style="height: 40px; width: auto; display: block; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.05));" />
+      <a href="/index.html" class="hn-brand" aria-label="Empowered Me Wellness — Home">
+        <img src="/assets/brand/logo-transparent.png" alt="Empowered Me Wellness" style="height: 68px; width: auto; display: block; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.05));" />
       </a>
 
       <!-- Desktop nav links -->
@@ -178,9 +225,9 @@ function _attachNavListeners(el, user) {
         await AuthAPI.logout();
         localStorage.removeItem("csrf_access");
         localStorage.removeItem("csrf_refresh");
-        window.location.href = "/";
+        window.location.href = "/index.html";
       } catch (err) {
-        window.location.href = "/";
+        window.location.href = "/index.html";
       }
     };
 
@@ -190,29 +237,32 @@ function _attachNavListeners(el, user) {
     if (mobileLogoutBtn) mobileLogoutBtn.addEventListener("click", handleLogout);
   }
 
-  el.addEventListener("click", (e) => {
-    // 1. Hamburger button click
-    const btn = e.target.closest(".hn-hamburger");
-    if (btn) {
-      const menu = el.querySelector(".hn-mobile-menu");
-      if (menu) {
-        const isOpen = menu.classList.toggle("open");
-        btn.setAttribute("aria-expanded", String(isOpen));
+  if (!el.dataset.hasNavListeners) {
+    el.dataset.hasNavListeners = "true";
+    el.addEventListener("click", (e) => {
+      // 1. Hamburger button click
+      const btn = e.target.closest(".hn-hamburger");
+      if (btn) {
+        const menu = el.querySelector(".hn-mobile-menu");
+        if (menu) {
+          const isOpen = menu.classList.toggle("open");
+          btn.setAttribute("aria-expanded", String(isOpen));
+        }
+        return;
       }
-      return;
-    }
 
-    // 2. Mobile menu link click
-    const link = e.target.closest(".hn-mobile-menu a");
-    if (link) {
-      const menu = el.querySelector(".hn-mobile-menu");
-      if (menu) {
-        menu.classList.remove("open");
-        const hBtn = el.querySelector(".hn-hamburger");
-        if (hBtn) hBtn.setAttribute("aria-expanded", "false");
+      // 2. Mobile menu link click
+      const link = e.target.closest(".hn-mobile-menu a");
+      if (link) {
+        const menu = el.querySelector(".hn-mobile-menu");
+        if (menu) {
+          menu.classList.remove("open");
+          const hBtn = el.querySelector(".hn-hamburger");
+          if (hBtn) hBtn.setAttribute("aria-expanded", "false");
+        }
       }
-    }
-  });
+    });
+  }
 }
 
 async function renderHeader() {
@@ -223,7 +273,7 @@ async function renderHeader() {
 
   // ── STEP 1: Render guest nav IMMEDIATELY (no network wait) ──────────────
   // This means the navbar is visible the instant the script runs.
-  const guestLinks = [...NAV_LINKS, { href: "/login", label: "Log In" }];
+  const guestLinks = [...NAV_LINKS, { href: "/login.html", label: "Log In" }];
   el.innerHTML = _buildNavHtml(page, guestLinks, null);
   _attachNavListeners(el, null);
 
@@ -270,9 +320,9 @@ async function renderHeader() {
   let linksArray = [...NAV_LINKS];
   linksArray = linksArray.filter(l => l.href !== "/contact");
   if (user.role === "admin") {
-    linksArray.push({ href: "/admin-overview", label: "Admin Panel" });
+    linksArray.push({ href: "/admin-overview.html", label: "Admin Panel" });
   } else {
-    linksArray.push({ href: "/dashboard", label: "Dashboard" });
+    linksArray.push({ href: "/dashboard.html", label: "Dashboard" });
   }
 
   // Replace the nav entirely with the authenticated version
@@ -291,25 +341,26 @@ function renderFooter() {
     <footer class="site-footer">
       <div class="footer-cols">
         <div>
-          <a href="/" class="brand-lockup" style="display:inline-block; text-decoration:none;">
-            <img src="/assets/brand/logo-transparent.png" alt="Empowered Me Wellness" style="height: 60px; width: auto; display: block;" />
+          <a href="/index.html" class="brand-lockup" style="display:inline-block; text-decoration:none;">
+            <img src="/assets/brand/logo-inverted.png" alt="Empowered Me Wellness" style="height: 96px; width: auto; display: block;" />
           </a>
           <p class="mono">Hamilton, Bermuda</p>
         </div>
         <div>
           <h3>Explore</h3>
-          <a href="/services">Services</a>
-          <a href="/schedule">Schedule</a>
-          <a href="/shop">Shop</a>
-          <a href="/blog">Blog</a>
+          <a href="/index.html#beyond-resilience">Beyond Resilience</a>
+          <a href="/services.html">Work With Me</a>
+          <a href="/schedule.html">Events</a>
+          <a href="/shop.html">Shop</a>
+          <a href="/blog.html">Resources</a>
         </div>
         <div>
           <h3>Legal</h3>
-          <a href="/privacy-policy">Privacy Policy</a>
-          <a href="/terms">Terms &amp; Conditions</a>
-          <a href="/refund-policy">Refund Policy</a>
-          <a href="/cookie-notice">Cookie Notice</a>
-          <a href="/admin-login" style="margin-top:10px; opacity:0.6; font-size:12px;">Admin Portal</a>
+          <a href="/privacy-policy.html">Privacy Policy</a>
+          <a href="/terms.html">Terms &amp; Conditions</a>
+          <a href="/refund-policy.html">Refund Policy</a>
+          <a href="/cookie-notice.html">Cookie Notice</a>
+          <a href="/admin-login.html" style="margin-top:10px; opacity:0.6; font-size:12px;">Admin Portal</a>
         </div>
         <div>
           <h3>Contact</h3>

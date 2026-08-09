@@ -8,14 +8,15 @@
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lato:wght@300;400;700;900&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/polish.css">
 </head>
 <body>
   <div id="site-header"></div>
   <main>
-    <section class="page-hero"><h1>Blog</h1></section>
+    <section class="page-hero"><h1>Blog CMS</h1></section>
     <div id="admin-nav"></div>
 
     <div class="admin-container">
@@ -34,12 +35,31 @@
         </div>
       </div>
 
-      <div class="section-block">
-        <h2>All Posts</h2>
-        <table class="admin-table" id="posts-table">
-          <thead><tr><th>Title</th><th>Status</th><th></th></tr></thead>
-          <tbody></tbody>
-        </table>
+      <div class="section-block" style="margin-top:50px;">
+        <h2>All Blog Posts</h2>
+        
+        <!-- Search & Filter Controls Toolbar -->
+        <div class="admin-toolbar">
+          <div class="admin-toolbar-group">
+            <div class="admin-search-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="search-input" class="admin-search-input" placeholder="Search by post title, excerpt, or content..." oninput="applyFilters()">
+            </div>
+            <select id="status-filter" class="admin-filter-select" onchange="applyFilters()">
+              <option value="all">All Statuses</option>
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+            </select>
+          </div>
+          <div class="admin-count-badge" id="count-badge">Loading posts...</div>
+        </div>
+
+        <div class="table-scroll">
+          <table class="admin-table" id="posts-table">
+            <thead><tr><th>Title</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </main>
@@ -47,7 +67,9 @@
   <script src="js/components/layout.js"></script>
   <script src="js/components/admin-nav.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/components/modal.js"></script>
   <script>
+    let rawPosts = [];
     let editingId = null;
 
     function resetForm() {
@@ -58,11 +80,37 @@
     }
 
     async function loadPosts() {
-      const posts = await AdminAPI.listPosts();
-      const tbody = document.querySelector("#posts-table tbody");
+      try {
+        rawPosts = await AdminAPI.listPosts();
+        applyFilters();
+      } catch (err) {
+        document.querySelector("#posts-table tbody").innerHTML = `<tr><td colspan="3" style="text-align:center; padding:24px 16px;"><span class="mono" style="opacity:0.7;">Couldn't load posts.</span></td></tr>`;
+      }
+    }
 
-      if (posts.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="mono">No posts yet.</td></tr>`;
+    function applyFilters() {
+      const q = document.getElementById("search-input").value.toLowerCase().trim();
+      const statusFilter = document.getElementById("status-filter").value;
+
+      const filtered = rawPosts.filter(p => {
+        const matchQuery = !q || 
+          (p.title && p.title.toLowerCase().includes(q)) ||
+          (p.excerpt && p.excerpt.toLowerCase().includes(q)) ||
+          (p.content && p.content.toLowerCase().includes(q));
+        const matchStatus = statusFilter === "all" || p.status === statusFilter;
+        return matchQuery && matchStatus;
+      });
+
+      document.getElementById("count-badge").textContent = `Showing ${filtered.length} of ${rawPosts.length} posts`;
+      renderTable(filtered);
+    }
+
+    function renderTable(posts) {
+      const tbody = document.querySelector("#posts-table tbody");
+      if (!posts || posts.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:32px 16px; opacity:0.7;">
+          <span class="mono">No matching posts found</span>
+        </td></tr>`;
         return;
       }
 
@@ -70,12 +118,12 @@
         .map(
           (p) => `
         <tr>
-          <td>${p.title}</td>
+          <td><strong>${escapeHtml(p.title)}</strong></td>
           <td><span class="badge ${p.status === "published" ? "approved" : ""}">${p.status}</span></td>
           <td>
-            <button class="btn btn-tiny" data-edit="${p.id}">Edit</button>
-            <button class="btn btn-tiny" data-toggle-publish="${p.id}" data-status="${p.status}">${p.status === "published" ? "Unpublish" : "Publish"}</button>
-            <button class="btn btn-tiny" data-delete="${p.id}">Delete</button>
+            <button class="btn btn-tiny btn-outline" data-edit="${p.id}">Edit</button>
+            <button class="btn btn-tiny btn-outline" data-toggle-publish="${p.id}" data-status="${p.status}">${p.status === "published" ? "Unpublish" : "Publish"}</button>
+            <button class="btn btn-tiny btn-destructive" data-delete="${p.id}">Delete</button>
           </td>
         </tr>
       `
@@ -83,9 +131,9 @@
         .join("");
 
       tbody.querySelectorAll("[data-edit]").forEach((btn) =>
-        btn.addEventListener("click", async () => {
-          const posts = await AdminAPI.listPosts();
-          const post = posts.find((p) => p.id === btn.dataset.edit);
+        btn.addEventListener("click", () => {
+          const post = rawPosts.find((p) => String(p.id) === String(btn.dataset.edit));
+          if (!post) return;
           editingId = post.id;
           document.getElementById("form-heading").textContent = `Editing: ${post.title}`;
           document.getElementById("post-title").value = post.title;
@@ -106,7 +154,8 @@
 
       tbody.querySelectorAll("[data-delete]").forEach((btn) =>
         btn.addEventListener("click", async () => {
-          if (!confirm("Delete this post permanently?")) return;
+          const ok = await EMWModal.confirm("This can't be undone.", { title: "Delete this post permanently?", confirmLabel: "Delete", danger: true });
+          if (!ok) return;
           await AdminAPI.deletePost(btn.dataset.delete);
           loadPosts();
         })

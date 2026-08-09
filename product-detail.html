@@ -8,9 +8,10 @@
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lato:wght@300;400;700;900&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/polish.css">
   <link rel="stylesheet" href="css/book-3d.css">
 </head>
 <body>
@@ -66,7 +67,10 @@
           </div>
         ` : ''}
         <h1>${escapeHtml(product.name)}</h1>
-        <p class="mono" style="color:var(--clay);font-size:20px;">$${product.price}</p>
+        ${product.is_coming_soon
+          ? ''
+          : `<p class="mono" style="color:var(--clay);font-size:20px;">$${product.price}</p>`
+        }
         ${product.description ? `<p>${escapeHtml(product.description)}</p>` : ""}
       `;
 
@@ -76,107 +80,167 @@
       metaDesc.content = product.description || `${product.name} — available now from Empowered Me Wellness.`;
       document.head.appendChild(metaDesc);
 
-      const buyBtn = document.getElementById("buy-btn");
-      buyBtn.style.display = "inline-block";
-      buyBtn.style.width = "auto";
-      buyBtn.addEventListener("click", () => {
-        window.location.href = `checkout.html?product_id=${productId}`;
-      });
+      if (product.is_coming_soon) {
+        // --- COMING SOON STATE ---
+        const buyBtn = document.getElementById("buy-btn");
+        buyBtn.style.display = "none";
 
-      // Load Reviews
-      const reviewsSection = document.createElement("div");
-      reviewsSection.style.marginTop = "60px";
-      reviewsSection.style.borderTop = "1px solid var(--sand)";
-      reviewsSection.style.paddingTop = "40px";
-      
-      reviewsSection.innerHTML = `
-        <h3 style="font-family: var(--font-display); font-size: 24px; margin-bottom: 24px;">Reviews</h3>
-        <div id="reviews-list">
-          <p class="mono" style="opacity:0.6;">Loading reviews...</p>
-        </div>
-        
-        <div style="margin-top: 40px; background: var(--sand); padding: 24px; border-radius: 12px;">
-          <h4 style="font-family: var(--font-body); margin-top:0; margin-bottom: 16px;">Write a Review</h4>
-          <form id="review-form">
-            <div style="margin-bottom:12px;">
-              <label for="r-name" class="mono" style="display:block; font-size:12px; margin-bottom:6px;">Name</label>
-              <input type="text" id="r-name" required placeholder="Your name" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:var(--font-body);">
-            </div>
-            <div style="margin-bottom:12px;">
-              <label for="r-rating" class="mono" style="display:block; font-size:12px; margin-bottom:6px;">Rating</label>
-              <select id="r-rating" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:var(--font-body);">
-                <option value="5">★★★★★ (5/5)</option>
-                <option value="4">★★★★☆ (4/5)</option>
-                <option value="3">★★★☆☆ (3/5)</option>
-                <option value="2">★★☆☆☆ (2/5)</option>
-                <option value="1">★☆☆☆☆ (1/5)</option>
-              </select>
-            </div>
-            <div style="margin-bottom:16px;">
-              <label for="r-content" class="mono" style="display:block; font-size:12px; margin-bottom:6px;">Review</label>
-              <textarea id="r-content" required placeholder="What did you think of this product?" rows="3" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:var(--font-body);"></textarea>
-            </div>
-            <button type="submit" class="btn btn-small" id="r-submit-btn">Submit Review</button>
-            <p id="r-error" class="error-msg" style="display:none; margin-top:10px;"></p>
-            <p id="r-success" class="mono" style="display:none; margin-top:10px; color:var(--clay);">Thanks! Your review has been submitted for approval.</p>
+        const csSection = document.createElement("div");
+        csSection.style.cssText = "margin-top:32px; padding:28px; background:#fff; border:1px solid var(--sand); border-left:3px solid var(--ochre); border-radius:14px;";
+        csSection.innerHTML = `
+          <span style="display:inline-block;background:var(--ochre);color:#fff;padding:5px 16px;border-radius:14px;font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Coming Soon</span>
+          ${product.release_date ? `<p class="mono" style="font-size:13px;opacity:0.7;margin:0 0 16px;">Expected release: ${escapeHtml(product.release_date)}</p>` : ''}
+          <p style="margin:0 0 20px;line-height:1.6;">This title is currently in development. Enter your email below to be notified when it becomes available.</p>
+          <form id="pd-notify-form" style="display:flex;gap:8px;max-width:420px;flex-wrap:wrap;">
+            <input type="email" id="pd-notify-email" placeholder="Your email address" required style="flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--sand);border-radius:8px;font-family:var(--font-body);font-size:14px;background:var(--papyrus);">
+            <button type="submit" id="pd-notify-btn" style="padding:10px 20px;background:var(--ochre);color:#fff;border:none;border-radius:8px;font-family:var(--font-mono);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;width:auto;margin:0;transition:opacity 0.2s;">Notify Me</button>
           </form>
-        </div>
-      `;
-      document.querySelector(".container").appendChild(reviewsSection);
+          <p id="pd-notify-msg" class="mono" style="font-size:12px;margin-top:10px;display:none;"></p>
+        `;
+        document.querySelector(".container").appendChild(csSection);
 
-      const renderStars = (rating) => "★".repeat(rating) + "☆".repeat(5 - rating);
+        // Notify Me handler
+        document.getElementById("pd-notify-form").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const input = document.getElementById("pd-notify-email");
+          const btn = document.getElementById("pd-notify-btn");
+          const msgEl = document.getElementById("pd-notify-msg");
+          btn.disabled = true;
+          btn.textContent = "Sending...";
+          msgEl.style.display = "none";
 
-      async function loadReviews() {
-        try {
-          const reviews = await ProductsAPI.listReviews(productId);
-          const listEl = document.getElementById("reviews-list");
-          if (!reviews || reviews.length === 0) {
-            listEl.innerHTML = `<p class="mono" style="opacity:0.6;">No reviews yet. Be the first to review!</p>`;
-            return;
+          try {
+            await ProductsAPI.notifyMe(productId, input.value.trim());
+            msgEl.textContent = "You're on the list! We'll notify you when this is available.";
+            msgEl.style.color = "var(--moss)";
+            msgEl.style.display = "block";
+            input.value = "";
+          } catch (err) {
+            msgEl.textContent = (err && err.message) || "Something went wrong. Please try again.";
+            msgEl.style.color = "var(--destructive)";
+            msgEl.style.display = "block";
+          } finally {
+            btn.disabled = false;
+            btn.textContent = "Notify Me";
           }
-          listEl.innerHTML = reviews.map(r => `
-            <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid rgba(0,0,0,0.05);">
-              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 8px;">
-                <strong style="font-family:var(--font-body);">${escapeHtml(r.author_name)}</strong>
-                <span style="color:#d4a017; letter-spacing:2px; font-size:14px;">${renderStars(r.rating)}</span>
-              </div>
-              <p style="font-family:var(--font-body); margin:0; line-height:1.5; opacity:0.8;">${escapeHtml(r.content)}</p>
-            </div>
-          `).join("");
-        } catch (err) {
-          document.getElementById("reviews-list").innerHTML = `<p class="mono" style="opacity:0.6;">Failed to load reviews.</p>`;
-        }
-      }
-      loadReviews();
+        });
 
-      const rForm = document.getElementById("review-form");
-      rForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const errEl = document.getElementById("r-error");
-        const sucEl = document.getElementById("r-success");
-        const btn = document.getElementById("r-submit-btn");
+        // Show reviews (read-only) but not the review form
+        const reviewsSection = document.createElement("div");
+        reviewsSection.style.marginTop = "60px";
+        reviewsSection.style.borderTop = "1px solid var(--sand)";
+        reviewsSection.style.paddingTop = "40px";
+        reviewsSection.innerHTML = `
+          <h3 style="font-family: var(--font-display); font-size: 24px; margin-bottom: 24px;">Reviews</h3>
+          <p class="mono" style="opacity:0.6;">Reviews will be available after this product is released.</p>
+        `;
+        document.querySelector(".container").appendChild(reviewsSection);
+
+      } else {
+        // --- LIVE PRODUCT STATE ---
+        const buyBtn = document.getElementById("buy-btn");
+        buyBtn.style.display = "inline-block";
+        buyBtn.style.width = "auto";
+        buyBtn.addEventListener("click", () => {
+          window.location.href = `checkout.html?product_id=${productId}`;
+        });
+
+        // Load Reviews
+        const reviewsSection = document.createElement("div");
+        reviewsSection.style.marginTop = "60px";
+        reviewsSection.style.borderTop = "1px solid var(--sand)";
+        reviewsSection.style.paddingTop = "40px";
         
-        errEl.style.display = "none";
-        sucEl.style.display = "none";
-        btn.disabled = true;
+        reviewsSection.innerHTML = `
+          <h3 style="font-family: var(--font-display); font-size: 24px; margin-bottom: 24px;">Reviews</h3>
+          <div id="reviews-list">
+            <p class="mono" style="opacity:0.6;">Loading reviews...</p>
+          </div>
+          
+          <div style="margin-top: 40px; background: var(--sand); padding: 24px; border-radius: 12px;">
+            <h4 style="font-family: var(--font-body); margin-top:0; margin-bottom: 16px;">Write a Review</h4>
+            <form id="review-form">
+              <div style="margin-bottom:12px;">
+                <label for="r-name" class="mono" style="display:block; font-size:12px; margin-bottom:6px;">Name</label>
+                <input type="text" id="r-name" required placeholder="Your name" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:var(--font-body);">
+              </div>
+              <div style="margin-bottom:12px;">
+                <label for="r-rating" class="mono" style="display:block; font-size:12px; margin-bottom:6px;">Rating</label>
+                <select id="r-rating" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:var(--font-body);">
+                  <option value="5">★★★★★ (5/5)</option>
+                  <option value="4">★★★★☆ (4/5)</option>
+                  <option value="3">★★★☆☆ (3/5)</option>
+                  <option value="2">★★☆☆☆ (2/5)</option>
+                  <option value="1">★☆☆☆☆ (1/5)</option>
+                </select>
+              </div>
+              <div style="margin-bottom:16px;">
+                <label for="r-content" class="mono" style="display:block; font-size:12px; margin-bottom:6px;">Review</label>
+                <textarea id="r-content" required placeholder="What did you think of this product?" rows="3" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:var(--font-body);"></textarea>
+              </div>
+              <button type="submit" class="btn btn-small" id="r-submit-btn">Submit Review</button>
+              <p id="r-error" class="error-msg" style="display:none; margin-top:10px;"></p>
+              <p id="r-success" class="mono" style="display:none; margin-top:10px; color:var(--clay);">Thanks! Your review has been submitted for approval.</p>
+            </form>
+          </div>
+        `;
+        document.querySelector(".container").appendChild(reviewsSection);
 
-        try {
-          await ProductsAPI.submitReview(productId, {
-            author_name: document.getElementById("r-name").value,
-            rating: parseInt(document.getElementById("r-rating").value, 10),
-            content: document.getElementById("r-content").value
-          });
-          rForm.reset();
-          sucEl.style.display = "block";
-        } catch (err) {
-          errEl.textContent = err.message || "Something went wrong.";
-          errEl.style.display = "block";
-        } finally {
-          btn.disabled = false;
+        const renderStars = (rating) => "\u2605".repeat(rating) + "\u2606".repeat(5 - rating);
+
+        async function loadReviews() {
+          try {
+            const reviews = await ProductsAPI.listReviews(productId);
+            const listEl = document.getElementById("reviews-list");
+            if (!reviews || reviews.length === 0) {
+              listEl.innerHTML = `<p class="mono" style="opacity:0.6;">No reviews yet. Be the first to review!</p>`;
+              return;
+            }
+            listEl.innerHTML = reviews.map(r => `
+              <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid rgba(0,0,0,0.05);">
+                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 8px;">
+                  <strong style="font-family:var(--font-body);">${escapeHtml(r.author_name)}</strong>
+                  <span style="color:#d4a017; letter-spacing:2px; font-size:14px;">${renderStars(r.rating)}</span>
+                </div>
+                <p style="font-family:var(--font-body); margin:0; line-height:1.5; opacity:0.8;">${escapeHtml(r.content)}</p>
+              </div>
+            `).join("");
+          } catch (err) {
+            document.getElementById("reviews-list").innerHTML = `<p class="mono" style="opacity:0.6;">Failed to load reviews.</p>`;
+          }
         }
-      });
+        loadReviews();
+
+        const rForm = document.getElementById("review-form");
+        rForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const errEl = document.getElementById("r-error");
+          const sucEl = document.getElementById("r-success");
+          const btn = document.getElementById("r-submit-btn");
+          
+          errEl.style.display = "none";
+          sucEl.style.display = "none";
+          btn.disabled = true;
+
+          try {
+            await ProductsAPI.submitReview(productId, {
+              author_name: document.getElementById("r-name").value,
+              rating: parseInt(document.getElementById("r-rating").value, 10),
+              content: document.getElementById("r-content").value
+            });
+            rForm.reset();
+            sucEl.style.display = "block";
+          } catch (err) {
+            errEl.textContent = err.message || "Something went wrong.";
+            errEl.style.display = "block";
+          } finally {
+            btn.disabled = false;
+          }
+        });
+      }
 
     })();
   </script>
 </body>
 </html>
+

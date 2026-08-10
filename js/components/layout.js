@@ -218,11 +218,11 @@ function _attachNavListeners(el, user) {
       try {
         await AuthAPI.logout();
       } catch (err) {
-        // Ignore API logout errors if token was already expired
+        // Ignore error — clear local storage anyway
       } finally {
         localStorage.removeItem("csrf_access");
         localStorage.removeItem("csrf_refresh");
-        window.location.href = "login.html";
+        window.location.href = "index.html";
       }
     };
 

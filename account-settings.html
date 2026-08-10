@@ -46,8 +46,15 @@
       await requireAuth();
 
       document.getElementById("logout-btn").addEventListener("click", async () => {
-        await AuthAPI.logout();
-        window.location.href = "/login.html";
+        try {
+          await AuthAPI.logout();
+        } catch (err) {
+          // Ignore error — clear local storage anyway
+        } finally {
+          localStorage.removeItem("csrf_access");
+          localStorage.removeItem("csrf_refresh");
+          window.location.href = "login.html";
+        }
       });
 
       document.getElementById("delete-btn").addEventListener("click", async () => {

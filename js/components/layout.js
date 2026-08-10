@@ -217,11 +217,12 @@ function _attachNavListeners(el, user) {
     const handleLogout = async () => {
       try {
         await AuthAPI.logout();
+      } catch (err) {
+        // Ignore API logout errors if token was already expired
+      } finally {
         localStorage.removeItem("csrf_access");
         localStorage.removeItem("csrf_refresh");
-        window.location.href = "/index.html";
-      } catch (err) {
-        window.location.href = "/index.html";
+        window.location.href = "login.html";
       }
     };
 

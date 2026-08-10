@@ -276,15 +276,22 @@
       listEl.innerHTML = posts
         .map(
           (p) => `
-        <a class="post-card" href="blog-post.html?slug=${p.slug}">
-          <div>
-            <span class="post-tag">Article</span>
-            <h3>${p.title}</h3>
-            ${p.excerpt ? `<p class="excerpt">${p.excerpt}</p>` : '<p class="excerpt">Explore foundational principles and practical guidance in this wellness journal entry.</p>'}
-          </div>
-          <div class="post-meta">
-            <span>${new Date(p.published_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-            <span class="read-more-link">Read Story &rarr;</span>
+        <a class="post-card" href="blog-post.html?slug=${p.slug}" style="overflow:hidden; padding:0;">
+          ${p.cover_image_url ? `
+            <div style="width:100%; height:200px; overflow:hidden; border-bottom:1px solid var(--sand);">
+              <img src="${p.cover_image_url}" alt="${escapeHtml(p.title)}" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.5s ease;">
+            </div>
+          ` : ""}
+          <div style="padding:28px; flex:1; display:flex; flex-direction:column; justify-space-between;">
+            <div>
+              <span class="post-tag">Article</span>
+              <h3>${escapeHtml(p.title)}</h3>
+              ${p.excerpt ? `<p class="excerpt">${escapeHtml(p.excerpt)}</p>` : '<p class="excerpt">Explore foundational principles and practical guidance in this wellness journal entry.</p>'}
+            </div>
+            <div class="post-meta" style="margin-top:auto;">
+              <span>${p.published_at ? new Date(p.published_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Draft'}</span>
+              <span class="read-more-link">Read Story &rarr;</span>
+            </div>
           </div>
         </a>
       `

@@ -82,10 +82,29 @@
       }
 
       infoEl.innerHTML = `
-        <h1>${session.title}</h1>
-        <p class="mono">${formatDateTime(session.start_time)} · ${session.location}</p>
-        ${session.description ? `<p>${session.description}</p>` : ""}
-        <p class="mono">${session.spots_remaining} of ${session.capacity} spots remaining</p>
+        <div style="display:flex; gap:32px; align-items:flex-start; flex-wrap:wrap; margin-bottom:24px;">
+          ${session.image_url ? `
+            <div style="width: 320px; max-width: 100%; flex-shrink: 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--sand); box-shadow: 0 8px 24px rgba(36,28,19,0.08);">
+              <img src="${session.image_url}" alt="${escapeHtml(session.title)}" style="width: 100%; height: auto; display: block; object-fit: cover;">
+            </div>
+          ` : ""}
+          <div style="flex: 1; min-width: 280px;">
+            <div class="section-badge" style="letter-spacing:0.1em; margin-bottom:8px;">${session.class_category || 'EVENT & SESSION'}</div>
+            <h1 style="margin:0 0 12px; font-size:clamp(2rem, 4vw, 2.8rem);">${escapeHtml(session.title)}</h1>
+            <div style="font-size:1.5rem; font-weight:700; color:var(--clay); margin-bottom:16px; font-family:var(--font-mono);">
+              ${session.price ? `$${parseFloat(session.price).toFixed(2)}` : '<span style="color:var(--moss);">Free Session</span>'}
+            </div>
+            <p class="mono" style="font-size:14px; opacity:0.85; margin-bottom:16px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              ${formatDateTime(session.start_time)} &middot; ${escapeHtml(session.location)}
+            </p>
+            ${session.description ? `<p style="font-size:1.05rem; line-height:1.65; color:var(--ink); opacity:0.9; margin-bottom:20px;">${escapeHtml(session.description)}</p>` : ""}
+            <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(241,232,214,0.5); border:1px solid var(--sand); padding:8px 16px; border-radius:20px; font-family:var(--font-mono); font-size:13px;">
+              <span style="width:8px; height:8px; border-radius:50%; background:${session.is_full ? '#c0392b' : 'var(--moss)'};"></span>
+              <span>${session.spots_remaining} of ${session.capacity} spots remaining</span>
+            </div>
+          </div>
+        </div>
       `;
 
       document.title = `${session.title} — Empowered Me Wellness`;

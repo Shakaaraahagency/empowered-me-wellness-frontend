@@ -49,10 +49,15 @@
         document.head.appendChild(canonical);
 
         contentEl.innerHTML = `
-          <h1>${post.title}</h1>
-          <p class="mono" style="margin-bottom:24px;">${new Date(post.published_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}</p>
-          <div>${post.content}</div>
-          <p style="margin-top:40px;"><a href="blog.html">&larr; Back to Blog</a></p>
+          ${post.cover_image_url ? `
+            <div style="width:100%; height:340px; border-radius:16px; overflow:hidden; margin-bottom:32px; box-shadow:0 8px 24px rgba(36,28,19,0.08);">
+              <img src="${post.cover_image_url}" alt="${escapeHtml(post.title)}" style="width:100%; height:100%; object-fit:cover; display:block;">
+            </div>
+          ` : ""}
+          <h1 style="font-size:clamp(2.2rem, 4vw, 3.2rem); margin-bottom:12px;">${escapeHtml(post.title)}</h1>
+          <p class="mono" style="margin-bottom:32px; opacity:0.75; font-size:14px;">${post.published_at ? new Date(post.published_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : 'Draft'}</p>
+          <div class="blog-body" style="font-size:1.1rem; line-height:1.8; color:var(--ink);">${post.content}</div>
+          <p style="margin-top:50px;"><a href="blog.html" class="btn btn-small btn-outline" style="text-decoration:none;">&larr; Back to Journal</a></p>
         `;
       } catch (err) {
         contentEl.innerHTML = `<p class="mono">This post couldn't be found.</p><p><a href="blog.html">Back to Blog</a></p>`;

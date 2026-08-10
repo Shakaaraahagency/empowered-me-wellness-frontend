@@ -25,9 +25,37 @@
         <div class="inline-form">
           <form id="post-form">
             <input type="hidden" id="post-id">
+
+            <!-- Cover Image Upload -->
+            <div id="cover-upload-zone" style="border: 2px dashed var(--sand); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 14px; cursor: pointer; transition: all 0.25s ease; background: rgba(241,232,214,0.15);" onclick="document.getElementById('cover-image-input').click()">
+              <input type="file" id="cover-image-input" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;">
+              <div id="cover-upload-content">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--clay)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <p class="mono" style="font-size:13px; margin:0; opacity:0.7;">Upload cover image (optional)</p>
+                <p class="mono" style="font-size:11px; margin:4px 0 0; opacity:0.5;">PNG, JPG, WEBP, GIF — max 5MB</p>
+              </div>
+              <div id="cover-preview" style="display:none;">
+                <img id="cover-preview-img" src="" alt="Cover image preview" style="max-width:100%; max-height:200px; border-radius:8px; object-fit:cover;">
+                <p class="mono" style="font-size:12px; margin:8px 0 0; color:var(--moss);">Cover image uploaded <button type="button" onclick="removeCoverImage(event)" style="background:none; border:none; color:#c0392b; cursor:pointer; font-size:12px; text-decoration:underline;">Remove</button></p>
+              </div>
+            </div>
+            <input type="hidden" id="cover-image-url">
+            <p class="mono" id="cover-upload-error" style="display:none; color:#c0392b; font-size:13px;"></p>
+
             <input type="text" id="post-title" placeholder="Title" required>
             <textarea id="post-excerpt" placeholder="Short excerpt (shown in the blog listing)" rows="2" style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;margin-bottom:10px;"></textarea>
-            <textarea id="post-content" placeholder="Full post content (HTML allowed)" rows="8" required style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;margin-bottom:10px;"></textarea>
+            <textarea id="post-content" placeholder="Full post content (HTML allowed)" rows="8" required style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;margin-bottom:4px;"></textarea>
+
+            <!-- Inline Media Insert Button -->
+            <div style="display:flex; gap:8px; margin-bottom:14px;">
+              <button type="button" id="insert-media-btn" class="btn btn-small btn-outline" style="color:var(--ink); border-color:var(--sand); background:transparent; font-size:13px; padding:8px 16px;" onclick="document.getElementById('inline-media-input').click()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:-2px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                Insert Image or Video
+              </button>
+              <input type="file" id="inline-media-input" accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime" style="display:none;">
+              <span class="mono" id="inline-upload-status" style="font-size:12px; align-self:center; opacity:0.6;"></span>
+            </div>
+
             <button type="submit" class="btn btn-small">Save Draft</button>
             <button type="button" id="cancel-edit" class="btn btn-small btn-outline" style="display:none;color:var(--ink);border-color:var(--ink);background:transparent;">Cancel Edit</button>
             <p class="error-msg" id="post-error"></p>
@@ -140,6 +168,17 @@
           document.getElementById("post-excerpt").value = post.excerpt || "";
           document.getElementById("post-content").value = post.content;
           document.getElementById("cancel-edit").style.display = "inline-block";
+          // Populate cover image if exists
+          if (post.cover_image_url) {
+            document.getElementById("cover-image-url").value = post.cover_image_url;
+            document.getElementById("cover-upload-content").style.display = "none";
+            document.getElementById("cover-preview").style.display = "block";
+            document.getElementById("cover-preview-img").src = post.cover_image_url;
+          } else {
+            document.getElementById("cover-image-url").value = "";
+            document.getElementById("cover-upload-content").style.display = "block";
+            document.getElementById("cover-preview").style.display = "none";
+          }
           window.scrollTo({ top: 0, behavior: "smooth" });
         })
       );
@@ -168,15 +207,93 @@
 
       document.getElementById("cancel-edit").addEventListener("click", resetForm);
 
+      // Cover image upload handler
+      const coverInput = document.getElementById("cover-image-input");
+      const coverZone = document.getElementById("cover-upload-zone");
+
+      coverInput.addEventListener("change", async () => {
+        const file = coverInput.files[0];
+        if (!file) return;
+        const errEl = document.getElementById("cover-upload-error");
+        errEl.style.display = "none";
+        if (file.size > 5 * 1024 * 1024) {
+          errEl.textContent = "Image must be under 5MB.";
+          errEl.style.display = "block";
+          return;
+        }
+        try {
+          coverZone.style.opacity = "0.5";
+          coverZone.style.pointerEvents = "none";
+          const formData = new FormData();
+          formData.append("file", file);
+          const result = await AdminAPI.uploadBlogMedia(formData);
+          document.getElementById("cover-image-url").value = result.url;
+          document.getElementById("cover-upload-content").style.display = "none";
+          document.getElementById("cover-preview").style.display = "block";
+          document.getElementById("cover-preview-img").src = result.url;
+        } catch (err) {
+          errEl.textContent = err.message || "Cover upload failed.";
+          errEl.style.display = "block";
+        } finally {
+          coverZone.style.opacity = "1";
+          coverZone.style.pointerEvents = "auto";
+        }
+      });
+
+      // Cover drag and drop
+      coverZone.addEventListener("dragover", (e) => { e.preventDefault(); coverZone.style.borderColor = "var(--clay)"; });
+      coverZone.addEventListener("dragleave", () => { coverZone.style.borderColor = "var(--sand)"; });
+      coverZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        coverZone.style.borderColor = "var(--sand)";
+        if (e.dataTransfer.files.length) {
+          coverInput.files = e.dataTransfer.files;
+          coverInput.dispatchEvent(new Event("change"));
+        }
+      });
+
+      // Inline media insert handler
+      const inlineInput = document.getElementById("inline-media-input");
+      inlineInput.addEventListener("change", async () => {
+        const file = inlineInput.files[0];
+        if (!file) return;
+        const statusEl = document.getElementById("inline-upload-status");
+        statusEl.textContent = "Uploading...";
+        statusEl.style.color = "var(--clay)";
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+          const result = await AdminAPI.uploadBlogMedia(formData);
+          const contentEl = document.getElementById("post-content");
+          const cursorPos = contentEl.selectionStart || contentEl.value.length;
+          let insertHtml;
+          if (result.type === "video") {
+            insertHtml = `\n<video controls style="max-width:100%; border-radius:12px; margin:16px 0;">\n  <source src="${result.url}" type="video/mp4">\n  Your browser does not support the video tag.\n</video>\n`;
+          } else {
+            insertHtml = `\n<img src="${result.url}" alt="${result.filename}" style="max-width:100%; border-radius:12px; margin:16px 0;">\n`;
+          }
+          contentEl.value = contentEl.value.slice(0, cursorPos) + insertHtml + contentEl.value.slice(cursorPos);
+          statusEl.textContent = `${result.type === "video" ? "Video" : "Image"} inserted`;
+          statusEl.style.color = "var(--moss)";
+          setTimeout(() => { statusEl.textContent = ""; }, 3000);
+        } catch (err) {
+          statusEl.textContent = err.message || "Upload failed.";
+          statusEl.style.color = "#c0392b";
+        }
+        inlineInput.value = "";
+      });
+
       document.getElementById("post-form").addEventListener("submit", async (e) => {
         e.preventDefault();
         const errorEl = document.getElementById("post-error");
         errorEl.style.display = "none";
 
+        const coverUrl = document.getElementById("cover-image-url").value.trim();
         const payload = {
           title: document.getElementById("post-title").value.trim(),
           excerpt: document.getElementById("post-excerpt").value.trim(),
           content: document.getElementById("post-content").value.trim(),
+          cover_image_url: coverUrl || null,
         };
 
         try {

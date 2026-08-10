@@ -203,6 +203,22 @@ const AdminAPI = {
   deleteClass: (id) => api(`/admin/classes/${id}`, { method: "DELETE" }),
 
   listSessions: () => api("/admin/sessions"),
+  uploadSessionImage: async (formData) => {
+    const headers = {};
+    const csrf = localStorage.getItem("csrf_access");
+    if (csrf) headers["X-CSRF-TOKEN"] = csrf;
+    const response = await fetch(`${API_URL}/admin/sessions/upload-image`, {
+      method: "POST",
+      headers,
+      credentials: "include",
+      body: formData,
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw { message: data?.error?.message || "Image upload failed.", code: data?.error?.code || "upload_failed" };
+    }
+    return data;
+  },
   createSession: (payload) => api("/admin/sessions", { method: "POST", body: payload }),
   updateSession: (id, payload) => api(`/admin/sessions/${id}`, { method: "PATCH", body: payload }),
   cancelSession: (id) => api(`/admin/sessions/${id}/cancel`, { method: "PATCH" }),
@@ -288,6 +304,22 @@ const AdminAPI = {
     api(`/admin/contact-messages/${id}`, { method: "PATCH", body: { status } }),
 
   listPosts: () => api("/admin/blog"),
+  uploadBlogMedia: async (formData) => {
+    const headers = {};
+    const csrf = localStorage.getItem("csrf_access");
+    if (csrf) headers["X-CSRF-TOKEN"] = csrf;
+    const response = await fetch(`${API_URL}/admin/blog/upload-media`, {
+      method: "POST",
+      headers,
+      credentials: "include",
+      body: formData,
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw { message: data?.error?.message || "Media upload failed.", code: data?.error?.code || "upload_failed" };
+    }
+    return data;
+  },
   createPost: (payload) => api("/admin/blog", { method: "POST", body: payload }),
   updatePost: (id, payload) => api(`/admin/blog/${id}`, { method: "PATCH", body: payload }),
   deletePost: (id) => api(`/admin/blog/${id}`, { method: "DELETE" }),

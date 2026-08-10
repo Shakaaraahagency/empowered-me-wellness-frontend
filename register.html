@@ -152,12 +152,15 @@
 
   <main class="auth-wrap">
     <div class="auth-card">
-      <a href="index.html" class="auth-brand" style="display:flex; align-items:center; gap:12px; margin-bottom:28px;">
-        <img src="assets/brand/logo-transparent.png" alt="Empowered Me Wellness" style="height: 54px; width: auto; display: block;">
-      </a>
-
-      <h1>Create your account</h1>
-      <p class="auth-sub">Join the Empowered Me Wellness community</p>
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:32px; flex-wrap:wrap;">
+        <a href="index.html" style="flex-shrink:0;">
+          <img src="assets/brand/logo-transparent.png" alt="Empowered Me Wellness" style="height: 54px; width: auto; display: block;">
+        </a>
+        <div style="border-left:1px solid var(--sand); padding-left:16px;">
+          <h1 style="font-family:var(--font-display); font-size:clamp(1.4rem, 3.5vw, 1.8rem); color:var(--ink); margin:0 0 2px; line-height:1.2;">Create account</h1>
+          <p class="auth-sub" style="margin:0; font-size:13px; font-family:var(--font-mono); opacity:0.75;">Join our wellness community</p>
+        </div>
+      </div>
 
       <form id="register-form" novalidate>
         <label for="full_name">Full name</label>

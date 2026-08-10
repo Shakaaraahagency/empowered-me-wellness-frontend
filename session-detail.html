@@ -156,7 +156,7 @@
           const bookingData = res.booking || res;
           sessionStorage.setItem("emw_last_booking", JSON.stringify(bookingData));
 
-          if (res.checkout_url) {
+          if (res.checkout_url && res.checkout_url.includes("checkout.stripe.com")) {
             window.location.href = res.checkout_url;
           } else {
             window.location.href = `booking-confirmation.html?id=${bookingData.id}`;

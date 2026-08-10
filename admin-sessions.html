@@ -78,21 +78,14 @@
               <input type="number" id="session-capacity" placeholder="Capacity" value="12" min="1">
             </div>
 
-            <!-- Event Pricing Selector -->
-            <div class="inline-form-row" style="margin-bottom:14px; background:rgba(241,232,214,0.25); padding:12px 14px; border-radius:10px; border:1px solid var(--sand);">
-              <div style="flex:1;">
-                <label style="font-family:var(--font-mono); font-size:12px; color:var(--clay); display:block; margin-bottom:4px; font-weight:700;">EVENT TYPE</label>
-                <select id="session-pricing-type" style="width:100%; padding:10px; border:1px solid var(--sand); border-radius:8px; background:#fff;" onchange="togglePriceInput(this.value)">
-                  <option value="free">Free Event (No Ticket Fee)</option>
-                  <option value="paid">Paid Event (Requires Ticket Amount)</option>
-                </select>
-              </div>
-              <div id="price-input-wrap" style="display:none; flex:1;">
-                <label style="font-family:var(--font-mono); font-size:12px; color:var(--clay); display:block; margin-bottom:4px; font-weight:700;">TICKET PRICE ($)</label>
-                <div style="display:flex; align-items:center; gap:6px;">
-                  <span class="mono" style="font-weight:700; color:var(--clay); font-size:16px;">$</span>
-                  <input type="number" id="session-price" placeholder="10.00" step="0.01" min="0" style="width:100%; margin-bottom:0;">
-                </div>
+            <!-- Pricing / Event Type Selector -->
+            <div class="inline-form-row" style="margin-bottom:12px;">
+              <select id="session-price-type" style="padding:10px; border:1px solid var(--sand); border-radius:8px;" onchange="togglePriceInput()">
+                <option value="free">Free Event</option>
+                <option value="paid">Paid Event</option>
+              </select>
+              <div id="session-price-wrap" style="display:none; flex:1;">
+                <input type="number" id="session-price" placeholder="Price ($)" step="0.01" min="0" value="10.00" style="width:100%;">
               </div>
             </div>
 
@@ -136,13 +129,22 @@
 
         <div class="table-scroll">
           <table class="admin-table" id="sessions-table">
-            <thead><tr><th>Image</th><th>Title</th><th>Price</th><th>When</th><th>Spots</th><th>Status</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Image</th><th>Title</th><th>When</th><th>Price</th><th>Spots</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
       </div>
     </div>
   </main>
+
+  <script>
+    function togglePriceInput() {
+      const type = document.getElementById("session-price-type").value;
+      const wrap = document.getElementById("session-price-wrap");
+      wrap.style.display = type === "paid" ? "block" : "none";
+    }
+  </script>
+
   <div id="site-footer"></div>
   <script src="js/components/layout.js"></script>
   <script src="js/components/admin-nav.js"></script>
@@ -246,17 +248,6 @@
 
       document.getElementById("session-count-badge").textContent = `Showing ${filtered.length} of ${rawSessions.length} sessions`;
       renderSessionsTable(filtered);
-     function togglePriceInput(val) {
-      const wrap = document.getElementById("price-input-wrap");
-      const input = document.getElementById("session-price");
-      if (val === "paid") {
-        wrap.style.display = "flex";
-        input.required = true;
-      } else {
-        wrap.style.display = "none";
-        input.required = false;
-        input.value = "";
-      }
     }
 
     function renderSessionsTable(sessions) {
@@ -272,8 +263,8 @@
         <tr>
           <td>${s.image_url ? `<img src="${s.image_url}" alt="" style="width:56px; height:56px; object-fit:cover; border-radius:8px; border:1px solid var(--sand);">` : `<span class="mono" style="font-size:11px; opacity:0.4;">—</span>`}</td>
           <td><strong>${escapeHtml(s.title)}</strong></td>
-          <td>${s.price ? `<strong style="color:var(--clay); font-family:var(--font-mono);">$${parseFloat(s.price).toFixed(2)}</strong>` : `<span class="badge approved" style="font-size:11px; background:rgba(92,107,62,0.15); color:var(--moss);">Free</span>`}</td>
           <td class="mono" style="font-size:13px;">${formatDateTime(s.start_time)}</td>
+          <td><span class="mono" style="font-size:13px; font-weight:600;">${s.price ? `$${parseFloat(s.price).toFixed(2)}` : '<span style="color:var(--moss);">Free</span>'}</span></td>
           <td>${s.spots_remaining}/${s.capacity}</td>
           <td><span class="badge ${s.status === "cancelled" ? "cancelled" : s.status === "closed" ? "new" : "approved"}">${s.status}</span></td>
           <td>${s.status === "scheduled" ? `<button class="btn btn-tiny btn-destructive" data-cancel-session="${s.id}">Cancel</button>` : ""}</td>
@@ -368,31 +359,33 @@
         try {
           const classId = document.getElementById("session-class").value;
           const imageUrl = document.getElementById("session-image-url").value;
-          const pricingType = document.getElementById("session-pricing-type").value;
+          const priceType = document.getElementById("session-price-type").value;
           const priceVal = document.getElementById("session-price").value;
-          const price = (pricingType === "paid" && priceVal) ? parseFloat(priceVal) : null;
 
-          await AdminAPI.createSession({
+          const payload = {
             title: document.getElementById("session-title").value.trim(),
             class_id: classId || null,
             start_time: document.getElementById("session-start").value,
             end_time: document.getElementById("session-end").value,
             location: document.getElementById("session-location").value.trim(),
             capacity: parseInt(document.getElementById("session-capacity").value, 10),
-            price: price,
             image_url: imageUrl || null,
-          });
+            price: priceType === "paid" && priceVal ? parseFloat(priceVal) : null,
+          };
+
+          await AdminAPI.createSession(payload);
           document.getElementById("session-form").reset();
           document.getElementById("session-image-url").value = "";
           document.getElementById("image-upload-content").style.display = "block";
           document.getElementById("image-preview").style.display = "none";
-          togglePriceInput("free");
+          document.getElementById("session-price-type").value = "free";
+          togglePriceInput();
           loadSessions();
         } catch (err) {
           errorEl.textContent = err.message;
           errorEl.style.display = "block";
         }
-      });     });
+      });
     })();
   </script>
 </body>

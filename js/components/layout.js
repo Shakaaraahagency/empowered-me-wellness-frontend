@@ -4,13 +4,7 @@
  * One place to change the nav instead of editing six HTML files.
  */
 
-const FROND_ICON = `
-<svg viewBox="-90 -145 180 155" width="34" height="29" aria-hidden="true">
-  <path d="M 0,0 Q -49.4,-32.5 -73.6,-81.7 Q -27.1,-52.5 0,0 Z" fill="#5C6B3E"/>
-  <path d="M 0,0 Q -17,-72.8 0,-140 Q 17,-72.8 0,0 Z" fill="#C08A34"/>
-  <path d="M 0,0 Q 27.1,-52.5 73.6,-81.7 Q 49.4,-32.5 0,0 Z" fill="#5C6B3E"/>
-  <circle cx="0" cy="0" r="9" fill="#241C13"/>
-</svg>`;
+const FROND_ICON = `<img src="/assets/brand/logo-transparent.png" alt="Empowered Me Wellness" style="height: 38px; width: auto; display: inline-block; vertical-align: middle;" />`;
 
 const NAV_LINKS = [
   { href: "/index.html", label: "Home" },

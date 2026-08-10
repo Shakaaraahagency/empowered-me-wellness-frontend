@@ -129,6 +129,11 @@
         // Not logged in — guest fields stay visible, that's fine.
       }
 
+      if (session.price && parseFloat(session.price) > 0) {
+        const priceStr = parseFloat(session.price).toFixed(2);
+        document.getElementById("book-btn").textContent = `Proceed to Payment ($${priceStr})`;
+      }
+
       document.getElementById("book-btn").addEventListener("click", async () => {
         const errorMsg = document.getElementById("error-msg");
         errorMsg.style.display = "none";
@@ -147,15 +152,14 @@
         }
 
         try {
-          const booking = await BookingsAPI.create(payload);
-          // Store booking details locally for the confirmation view
-          sessionStorage.setItem("emw_last_booking", JSON.stringify(booking));
+          const res = await BookingsAPI.create(payload);
+          const bookingData = res.booking || res;
+          sessionStorage.setItem("emw_last_booking", JSON.stringify(bookingData));
 
-          // If a Stripe checkout URL is provided (for paid events), redirect to Stripe!
-          if (booking.checkout_url) {
-            window.location.href = booking.checkout_url;
+          if (res.checkout_url) {
+            window.location.href = res.checkout_url;
           } else {
-            window.location.href = `booking-confirmation.html?id=${booking.id}`;
+            window.location.href = `booking-confirmation.html?id=${bookingData.id}`;
           }
         } catch (err) {
           errorMsg.textContent = err.message;

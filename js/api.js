@@ -172,6 +172,7 @@ const SessionsAPI = {
 
 const BookingsAPI = {
   create: (payload) => api("/bookings", { method: "POST", body: payload }),
+  confirmPayment: (id, payload = {}) => api(`/bookings/${id}/confirm-payment`, { method: "POST", body: payload }),
   mine: () => api("/bookings/mine"),
   get: (id) => api(`/bookings/${id}`),
   cancel: (id) => api(`/bookings/${id}/cancel`, { method: "PATCH" }),

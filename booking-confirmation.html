@@ -54,9 +54,24 @@
     (async () => {
       const params = new URLSearchParams(window.location.search);
       const bookingId = params.get("id");
+      const stripeSessionId = params.get("session_id");
 
-      // 1. Prefer the value just saved by session-detail.html — works for
-      //    guests, who have no auth token to re-fetch with.
+      if (!bookingId) {
+        document.getElementById("confirm-card").innerHTML = `<p class="mono">No booking specified.</p>`;
+        return;
+      }
+
+      // Automatically verify & confirm payment status with backend
+      try {
+        const booking = await BookingsAPI.confirmPayment(bookingId, { session_id: stripeSessionId });
+        sessionStorage.removeItem("emw_last_booking");
+        render(booking);
+        return;
+      } catch (err) {
+        // Fallback: check stored or get booking directly
+      }
+
+      // 1. Prefer stored booking
       const stored = sessionStorage.getItem("emw_last_booking");
       if (stored) {
         const booking = JSON.parse(stored);
@@ -67,9 +82,7 @@
         }
       }
 
-      // 2. Fallback: logged-in user navigating here directly (e.g. from
-      //    their dashboard) — this works because ownership_required will
-      //    confirm they actually own this booking.
+      // 2. Fallback: logged-in user GET lookup
       try {
         const booking = await BookingsAPI.get(bookingId);
         render(booking);

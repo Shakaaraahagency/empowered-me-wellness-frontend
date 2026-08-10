@@ -78,6 +78,24 @@
               <input type="number" id="session-capacity" placeholder="Capacity" value="12" min="1">
             </div>
 
+            <!-- Event Pricing Selector -->
+            <div class="inline-form-row" style="margin-bottom:14px; background:rgba(241,232,214,0.25); padding:12px 14px; border-radius:10px; border:1px solid var(--sand);">
+              <div style="flex:1;">
+                <label style="font-family:var(--font-mono); font-size:12px; color:var(--clay); display:block; margin-bottom:4px; font-weight:700;">EVENT TYPE</label>
+                <select id="session-pricing-type" style="width:100%; padding:10px; border:1px solid var(--sand); border-radius:8px; background:#fff;" onchange="togglePriceInput(this.value)">
+                  <option value="free">Free Event (No Ticket Fee)</option>
+                  <option value="paid">Paid Event (Requires Ticket Amount)</option>
+                </select>
+              </div>
+              <div id="price-input-wrap" style="display:none; flex:1;">
+                <label style="font-family:var(--font-mono); font-size:12px; color:var(--clay); display:block; margin-bottom:4px; font-weight:700;">TICKET PRICE ($)</label>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="mono" style="font-weight:700; color:var(--clay); font-size:16px;">$</span>
+                  <input type="number" id="session-price" placeholder="10.00" step="0.01" min="0" style="width:100%; margin-bottom:0;">
+                </div>
+              </div>
+            </div>
+
             <!-- Event Flyer / Image Upload -->
             <div id="image-upload-zone" style="border: 2px dashed var(--sand); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 14px; cursor: pointer; transition: all 0.25s ease; background: rgba(241,232,214,0.15);" onclick="document.getElementById('session-image-input').click()">
               <input type="file" id="session-image-input" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;">
@@ -118,7 +136,7 @@
 
         <div class="table-scroll">
           <table class="admin-table" id="sessions-table">
-            <thead><tr><th>Image</th><th>Title</th><th>When</th><th>Spots</th><th>Status</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Image</th><th>Title</th><th>Price</th><th>When</th><th>Spots</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -228,12 +246,23 @@
 
       document.getElementById("session-count-badge").textContent = `Showing ${filtered.length} of ${rawSessions.length} sessions`;
       renderSessionsTable(filtered);
+     function togglePriceInput(val) {
+      const wrap = document.getElementById("price-input-wrap");
+      const input = document.getElementById("session-price");
+      if (val === "paid") {
+        wrap.style.display = "flex";
+        input.required = true;
+      } else {
+        wrap.style.display = "none";
+        input.required = false;
+        input.value = "";
+      }
     }
 
     function renderSessionsTable(sessions) {
       const tbody = document.querySelector("#sessions-table tbody");
       if (sessions.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px 16px; opacity:0.7;">
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:32px 16px; opacity:0.7;">
           <span class="mono">No matching sessions found</span>
         </td></tr>`;
         return;
@@ -243,6 +272,7 @@
         <tr>
           <td>${s.image_url ? `<img src="${s.image_url}" alt="" style="width:56px; height:56px; object-fit:cover; border-radius:8px; border:1px solid var(--sand);">` : `<span class="mono" style="font-size:11px; opacity:0.4;">—</span>`}</td>
           <td><strong>${escapeHtml(s.title)}</strong></td>
+          <td>${s.price ? `<strong style="color:var(--clay); font-family:var(--font-mono);">$${parseFloat(s.price).toFixed(2)}</strong>` : `<span class="badge approved" style="font-size:11px; background:rgba(92,107,62,0.15); color:var(--moss);">Free</span>`}</td>
           <td class="mono" style="font-size:13px;">${formatDateTime(s.start_time)}</td>
           <td>${s.spots_remaining}/${s.capacity}</td>
           <td><span class="badge ${s.status === "cancelled" ? "cancelled" : s.status === "closed" ? "new" : "approved"}">${s.status}</span></td>
@@ -338,6 +368,10 @@
         try {
           const classId = document.getElementById("session-class").value;
           const imageUrl = document.getElementById("session-image-url").value;
+          const pricingType = document.getElementById("session-pricing-type").value;
+          const priceVal = document.getElementById("session-price").value;
+          const price = (pricingType === "paid" && priceVal) ? parseFloat(priceVal) : null;
+
           await AdminAPI.createSession({
             title: document.getElementById("session-title").value.trim(),
             class_id: classId || null,
@@ -345,18 +379,20 @@
             end_time: document.getElementById("session-end").value,
             location: document.getElementById("session-location").value.trim(),
             capacity: parseInt(document.getElementById("session-capacity").value, 10),
+            price: price,
             image_url: imageUrl || null,
           });
           document.getElementById("session-form").reset();
           document.getElementById("session-image-url").value = "";
           document.getElementById("image-upload-content").style.display = "block";
           document.getElementById("image-preview").style.display = "none";
+          togglePriceInput("free");
           loadSessions();
         } catch (err) {
           errorEl.textContent = err.message;
           errorEl.style.display = "block";
         }
-      });
+      });     });
     })();
   </script>
 </body>

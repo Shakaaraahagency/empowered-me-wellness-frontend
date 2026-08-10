@@ -133,7 +133,13 @@
         const errorMsg = document.getElementById("error-msg");
         errorMsg.style.display = "none";
 
-        const payload = { session_id: sessionId };
+        const origin = window.location.origin;
+        const payload = {
+          session_id: sessionId,
+          success_url: `${origin}/booking-confirmation.html`,
+          cancel_url: `${origin}/session-detail.html?id=${sessionId}`,
+        };
+
         if (!currentUser) {
           payload.guest_name = document.getElementById("guest_name").value.trim();
           payload.guest_email = document.getElementById("guest_email").value.trim();
@@ -142,11 +148,15 @@
 
         try {
           const booking = await BookingsAPI.create(payload);
-          // Guests have no JWT, so the confirmation page can't re-fetch this
-          // via the (correctly) ownership-checked GET /bookings/:id. Pass it
-          // along directly instead of creating an unauthenticated lookup route.
+          // Store booking details locally for the confirmation view
           sessionStorage.setItem("emw_last_booking", JSON.stringify(booking));
-          window.location.href = `booking-confirmation.html?id=${booking.id}`;
+
+          // If a Stripe checkout URL is provided (for paid events), redirect to Stripe!
+          if (booking.checkout_url) {
+            window.location.href = booking.checkout_url;
+          } else {
+            window.location.href = `booking-confirmation.html?id=${booking.id}`;
+          }
         } catch (err) {
           errorMsg.textContent = err.message;
           errorMsg.style.display = "block";

@@ -136,7 +136,10 @@
 
       document.getElementById("book-btn").addEventListener("click", async () => {
         const errorMsg = document.getElementById("error-msg");
+        const btn = document.getElementById("book-btn");
         errorMsg.style.display = "none";
+        btn.disabled = true;
+        btn.textContent = "Processing…";
 
         const origin = window.location.origin;
         const payload = {
@@ -153,17 +156,29 @@
 
         try {
           const res = await BookingsAPI.create(payload);
+          console.log("[EMW] Booking response:", res);
+
           const bookingData = res.booking || res;
           sessionStorage.setItem("emw_last_booking", JSON.stringify(bookingData));
 
-          if (res.checkout_url && res.checkout_url.includes("checkout.stripe.com")) {
+          if (res.checkout_url) {
+            console.log("[EMW] Redirecting to Stripe:", res.checkout_url);
             window.location.href = res.checkout_url;
           } else {
+            console.log("[EMW] Free session — going to confirmation");
             window.location.href = `booking-confirmation.html?id=${bookingData.id}`;
           }
         } catch (err) {
-          errorMsg.textContent = err.message;
+          console.error("[EMW] Booking error:", err);
+          errorMsg.textContent = err.message || "Something went wrong. Please try again.";
           errorMsg.style.display = "block";
+          btn.disabled = false;
+          // Restore correct button label
+          if (session.price && parseFloat(session.price) > 0) {
+            btn.textContent = `Proceed to Payment ($${parseFloat(session.price).toFixed(2)})`;
+          } else {
+            btn.textContent = "Book This Session";
+          }
         }
       });
     }

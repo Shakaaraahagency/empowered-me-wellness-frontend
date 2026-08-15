@@ -68,7 +68,12 @@
         document.getElementById("guest-email-field").style.display = "block";
       }
 
-      document.getElementById("pay-btn").addEventListener("click", async () => {
+      document.getElementById("pay-btn").addEventListener("click", async (e) => {
+        const btn = e.currentTarget;
+        if (btn.disabled) return; // already in flight -- ignore repeat clicks
+        btn.disabled = true;
+        btn.textContent = "Processing...";
+
         const errorMsg = document.getElementById("error-msg");
         errorMsg.style.display = "none";
 
@@ -97,9 +102,15 @@
             })
           );
           window.location.href = result.checkout_url;
+          // Deliberately not re-enabling the button here -- we're navigating
+          // away to Stripe (or straight to the success page in dev
+          // simulation) either way, so there is no next state for it to be
+          // clickable in.
         } catch (err) {
           errorMsg.textContent = err.message;
           errorMsg.style.display = "block";
+          btn.disabled = false;
+          btn.textContent = "Pay Now";
         }
       });
     })();

@@ -34,6 +34,13 @@
       const stored = sessionStorage.getItem("emw_last_purchase");
       const purchase = stored ? JSON.parse(stored) : null;
 
+      // Falls back to URL params so this page also works when opened cold
+      // from the confirmation email (days later, no sessionStorage) — not
+      // just right after the live Stripe redirect.
+      const guestEmail = purchase?.guest_email || params.get("email");
+      const productIdParam = purchase?.product_id || params.get("product_id");
+      const productNameParam = purchase?.product_name || params.get("product_name");
+
       if (!orderId) {
         cardEl.innerHTML = `<p class="mono">No order specified.</p>`;
         return;
@@ -41,13 +48,13 @@
 
       try {
         let downloadUrl;
-        let productName = purchase?.product_name || "your purchase";
+        let productName = productNameParam || "your purchase";
 
-        if (purchase?.guest_email) {
+        if (guestEmail) {
           const result = await OrdersAPI.guestDownloadLink(
             orderId,
-            purchase.product_id,
-            purchase.guest_email
+            productIdParam,
+            guestEmail
           );
           downloadUrl = result.download_url;
         } else {
@@ -55,7 +62,7 @@
           // actually owns the order.
           const order = await OrdersAPI.get(orderId);
           productName = order.items[0]?.product_name || productName;
-          const productId = purchase?.product_id || order.items[0]?.product_id;
+          const productId = productIdParam || order.items[0]?.product_id;
           const result = await OrdersAPI.downloadLink(orderId, productId);
           downloadUrl = result.download_url;
         }

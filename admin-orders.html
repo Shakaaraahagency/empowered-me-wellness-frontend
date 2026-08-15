@@ -31,10 +31,14 @@
             <option value="all">All Statuses</option>
             <option value="paid">Paid</option>
             <option value="pending">Pending</option>
+            <option value="cancelled">Cancelled</option>
             <option value="refunded">Refunded</option>
           </select>
         </div>
-        <div class="admin-count-badge" id="count-badge">Loading orders...</div>
+        <div class="admin-toolbar-actions">
+          <button id="cleanup-btn" class="btn btn-secondary">Clean up stale orders</button>
+          <div class="admin-count-badge" id="count-badge">Loading orders...</div>
+        </div>
       </div>
 
       <div class="table-scroll">
@@ -48,6 +52,7 @@
   <div id="site-footer"></div>
   <script src="js/components/layout.js"></script>
   <script src="js/components/admin-nav.js"></script>
+  <script src="js/components/modal.js"></script>
   <script src="js/api.js"></script>
   <script>
     let rawOrders = [];
@@ -104,6 +109,35 @@
     (async () => {
       await requireAdmin();
       loadOrders();
+
+      document.getElementById("cleanup-btn").addEventListener("click", async () => {
+        const ok = await EMWModal.confirm(
+          "This cancels orders that have sat unpaid for more than 24 hours (each is double-checked with Stripe first, so anything that actually got paid is left alone).",
+          { title: "Clean up stale pending orders?", confirmLabel: "Clean up", danger: false }
+        );
+        if (!ok) return;
+
+        const btn = document.getElementById("cleanup-btn");
+        btn.disabled = true;
+        const originalLabel = btn.textContent;
+        btn.textContent = "Cleaning up…";
+
+        try {
+          const result = await AdminAPI.cleanupStaleOrders(24);
+          await EMWModal.alert(
+            result.cancelled_count === 0
+              ? "Nothing to clean up — no stale pending orders found."
+              : `Cancelled ${result.cancelled_count} stale pending order${result.cancelled_count === 1 ? "" : "s"}.`,
+            { title: "Cleanup complete" }
+          );
+          loadOrders();
+        } catch (err) {
+          await EMWModal.alert(err.message || "Could not run cleanup.", { title: "Something went wrong" });
+        } finally {
+          btn.disabled = false;
+          btn.textContent = originalLabel;
+        }
+      });
     })();
   </script>
 </body>

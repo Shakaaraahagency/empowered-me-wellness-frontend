@@ -293,6 +293,7 @@ const AdminAPI = {
   releaseProduct: (id, payload) => api(`/admin/products/${id}/release`, { method: "POST", body: payload }),
 
   listOrders: (status) => api(`/admin/orders${status ? `?status=${status}` : ""}`),
+  cleanupStaleOrders: (olderThanHours) => api(`/admin/orders/cleanup-stale`, { method: "POST", body: { older_than_hours: olderThanHours } }),
 
   listTestimonials: () => api("/admin/testimonials"),
   createTestimonial: (payload) => api("/admin/testimonials", { method: "POST", body: payload }),

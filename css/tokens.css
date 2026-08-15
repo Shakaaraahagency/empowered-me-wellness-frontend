@@ -485,6 +485,19 @@ blockquote {
   white-space: nowrap;
 }
 
+.admin-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.admin-toolbar-actions .btn {
+  width: auto;
+  padding: 10px 16px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
 /* ---------- Admin ---------- */
 .admin-container { max-width: 1680px; width: 94%; margin: 0 auto; padding: 0 0 60px; }
 .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 6px; }

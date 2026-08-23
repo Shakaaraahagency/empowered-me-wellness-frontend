@@ -99,7 +99,7 @@
             </svg>
             <div>
               <p class="alert-title">Couldn't load your bookings</p>
-              <p class="alert-body">Check your connection and try again. <button type="button" class="btn-link" onclick="loadBookings()">Retry</button></p>
+              <p class="alert-body">Check your connection and try again. <button type="button" class="btn-link" onclick="this.textContent='Retrying…'; this.disabled=true; setTimeout(loadBookings, 350);">Retry</button></p>
             </div>
           </div>`;
       }

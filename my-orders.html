@@ -102,7 +102,7 @@
             </svg>
             <div>
               <p class="alert-title">Couldn't load your orders</p>
-              <p class="alert-body">Check your connection and try again. <button type="button" class="btn-link" onclick="loadOrders()">Retry</button></p>
+              <p class="alert-body">Check your connection and try again. <button type="button" class="btn-link" onclick="this.textContent='Retrying…'; this.disabled=true; setTimeout(loadOrders, 350);">Retry</button></p>
             </div>
           </div>`;
       }

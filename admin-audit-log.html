@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Log — Empowered Me Wellness</title>
+  <link rel="icon" type="image/png" href="assets/brand/favicon.png">
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lato:wght@300;400;700;900&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/polish.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero">
+      <h1>Activity Log</h1>
+      <p class="mono" style="opacity:0.7;font-size:13px;">Logins, cancellations, and admin actions — most recent first.</p>
+    </section>
+    <div id="admin-nav"></div>
+
+    <div class="admin-container">
+      <!-- Filter Toolbar -->
+      <div class="admin-toolbar">
+        <div class="admin-toolbar-group">
+          <select id="action-filter" class="admin-filter-select" onchange="onFilterChange()">
+            <option value="">All Actions</option>
+          </select>
+        </div>
+        <div class="admin-count-badge" id="count-badge">Loading…</div>
+      </div>
+
+      <div class="table-scroll">
+        <table class="admin-table" id="audit-log-table">
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>Action</th>
+              <th>Who</th>
+              <th>Resource</th>
+              <th>Detail</th>
+              <th>IP</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:24px;">
+        <button class="btn btn-small btn-outline" id="prev-page-btn" onclick="changePage(-1)">Previous</button>
+        <span class="mono" id="page-indicator" style="font-size:13px;"></span>
+        <button class="btn btn-small btn-outline" id="next-page-btn" onclick="changePage(1)">Next</button>
+      </div>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/components/layout.js"></script>
+  <script src="js/components/admin-nav.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    const PER_PAGE = 50;
+    let currentPage = 1;
+    let currentAction = "";
+    let currentTotal = 0;
+
+    // Known actions get a readable label + a badge color; anything new
+    // (added later without updating this page) falls back to a generic
+    // humanized version of the raw string, so this never silently breaks.
+    const ACTION_META = {
+      login_success:              { label: "Login succeeded",        badge: "approved" },
+      login_failed:                { label: "Login failed",           badge: "cancelled" },
+      booking_cancelled:           { label: "Booking cancelled (client)", badge: "cancelled" },
+      booking_cancelled_by_admin:  { label: "Booking cancelled (admin)",  badge: "cancelled" },
+      booking_attendance_marked:   { label: "Attendance marked",      badge: "" },
+      session_created:             { label: "Session created",        badge: "approved" },
+      session_updated:             { label: "Session updated",        badge: "" },
+      session_cancelled:           { label: "Session cancelled",      badge: "cancelled" },
+      class_created:                { label: "Class created",          badge: "approved" },
+      class_updated:                { label: "Class updated",          badge: "" },
+      class_deactivated:            { label: "Class deactivated",      badge: "cancelled" },
+      product_created:              { label: "Product created",        badge: "approved" },
+      product_updated:              { label: "Product updated",        badge: "" },
+      product_deactivated:         { label: "Product deactivated",    badge: "cancelled" },
+      product_released:             { label: "Product released",       badge: "approved" },
+      product_file_uploaded:        { label: "Product file uploaded",  badge: "" },
+      product_cover_uploaded:       { label: "Product cover uploaded", badge: "" },
+      session_image_uploaded:       { label: "Session image uploaded", badge: "" },
+      blog_media_uploaded:          { label: "Blog media uploaded",    badge: "" },
+      blog_post_created:            { label: "Blog post created",      badge: "approved" },
+      blog_post_updated:            { label: "Blog post updated",      badge: "" },
+      blog_post_published:          { label: "Blog post published",    badge: "approved" },
+      blog_post_deleted:           { label: "Blog post deleted",      badge: "cancelled" },
+      testimonial_created:          { label: "Testimonial added",      badge: "approved" },
+      testimonial_updated:          { label: "Testimonial updated",    badge: "" },
+      testimonial_approved:         { label: "Testimonial approved",   badge: "approved" },
+      testimonial_deleted:         { label: "Testimonial deleted",    badge: "cancelled" },
+      review_approval_changed:      { label: "Review approval changed", badge: "" },
+      review_deleted:               { label: "Review deleted",         badge: "cancelled" },
+      contact_message_status_changed: { label: "Message status changed", badge: "" },
+      subscriber_list_exported:     { label: "Subscriber list exported", badge: "" },
+      stale_orders_cleaned_up:      { label: "Stale orders cleaned up", badge: "cancelled" },
+    };
+
+    function actionMeta(action) {
+      if (ACTION_META[action]) return ACTION_META[action];
+      const label = action.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+      return { label, badge: "" };
+    }
+
+    async function loadActionFilterOptions() {
+      try {
+        const { actions } = await AdminAPI.listAuditLogActions();
+        const select = document.getElementById("action-filter");
+        actions.forEach((a) => {
+          const opt = document.createElement("option");
+          opt.value = a;
+          opt.textContent = actionMeta(a).label;
+          select.appendChild(opt);
+        });
+      } catch (err) {
+        // Non-critical — the filter just won't have options. The table
+        // itself still loads independently.
+      }
+    }
+
+    function onFilterChange() {
+      currentAction = document.getElementById("action-filter").value;
+      currentPage = 1;
+      loadAuditLog();
+    }
+
+    function changePage(delta) {
+      const nextPage = currentPage + delta;
+      if (nextPage < 1) return;
+      if ((nextPage - 1) * PER_PAGE >= currentTotal) return;
+      currentPage = nextPage;
+      loadAuditLog();
+    }
+
+    async function loadAuditLog() {
+      const tbody = document.querySelector("#audit-log-table tbody");
+      const countBadge = document.getElementById("count-badge");
+
+      try {
+        const data = await AdminAPI.listAuditLog({
+          page: currentPage,
+          per_page: PER_PAGE,
+          action: currentAction,
+        });
+        currentTotal = data.total;
+        renderTable(data.entries);
+        updatePagination();
+      } catch (err) {
+        tbody.innerHTML = `
+          <tr><td colspan="6" style="text-align:center; padding:24px 16px;">
+            <span class="mono" style="opacity:0.7;">Couldn't load the activity log. <button type="button" class="btn-link" onclick="this.textContent='Retrying…'; this.disabled=true; setTimeout(loadAuditLog, 350);">Retry</button></span>
+          </td></tr>`;
+        countBadge.textContent = "";
+      }
+    }
+
+    function renderTable(entries) {
+      const tbody = document.querySelector("#audit-log-table tbody");
+      const countBadge = document.getElementById("count-badge");
+      countBadge.textContent = `${currentTotal} event${currentTotal === 1 ? "" : "s"}`;
+
+      if (!entries || entries.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px 16px; opacity:0.7;">
+          <svg style="width:28px;height:28px;color:var(--sand);margin-bottom:8px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          <br><span class="mono">No activity recorded${currentAction ? " for this filter" : " yet"}</span>
+        </td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = entries
+        .map((e) => {
+          const meta = actionMeta(e.action);
+          const who = e.user ? `${escapeHtml(e.user.full_name)}<br><span class="mono" style="font-size:11px;opacity:0.7;">${escapeHtml(e.user.email)}</span>` : `<span class="mono" style="opacity:0.6;">—</span>`;
+          const resource = e.resource_type ? `${escapeHtml(e.resource_type)}<br><span class="mono" style="font-size:11px;opacity:0.7;">${escapeHtml((e.resource_id || "").slice(0, 8))}</span>` : "—";
+          return `
+        <tr>
+          <td class="mono" style="font-size:12px;white-space:nowrap;">${new Date(e.created_at).toLocaleString()}</td>
+          <td>${meta.badge ? `<span class="badge ${meta.badge}">${escapeHtml(meta.label)}</span>` : escapeHtml(meta.label)}</td>
+          <td style="font-size:13px;">${who}</td>
+          <td style="font-size:13px;">${resource}</td>
+          <td style="font-size:13px;max-width:220px;">${escapeHtml(e.detail || "—")}</td>
+          <td class="mono" style="font-size:11px;opacity:0.7;">${escapeHtml(e.ip_address || "—")}</td>
+        </tr>`;
+        })
+        .join("");
+    }
+
+    function updatePagination() {
+      const totalPages = Math.max(Math.ceil(currentTotal / PER_PAGE), 1);
+      document.getElementById("page-indicator").textContent = `Page ${currentPage} of ${totalPages}`;
+      document.getElementById("prev-page-btn").disabled = currentPage <= 1;
+      document.getElementById("next-page-btn").disabled = currentPage >= totalPages;
+    }
+
+    (async () => {
+      await requireAdmin();
+      loadActionFilterOptions();
+      loadAuditLog();
+    })();
+  </script>
+</body>
+</html>

@@ -301,6 +301,13 @@ const AdminAPI = {
   deleteTestimonial: (id) => api(`/admin/testimonials/${id}`, { method: "DELETE" }),
 
   listContactMessages: (status) => api(`/admin/contact-messages${status ? `?status=${status}` : ""}`),
+  listAuditLog: (params = {}) => {
+    const qs = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== ""))
+    ).toString();
+    return api(`/admin/audit-log${qs ? `?${qs}` : ""}`);
+  },
+  listAuditLogActions: () => api("/admin/audit-log/actions"),
   updateContactMessageStatus: (id, status) =>
     api(`/admin/contact-messages/${id}`, { method: "PATCH", body: { status } }),
 
@@ -353,7 +360,7 @@ async function requireAdmin() {
   } catch (err) {
     localStorage.removeItem("csrf_access");
     localStorage.removeItem("csrf_refresh");
-    window.location.href = "/admin-login.html";
+    window.location.href = "/login.html";
     throw err;
   }
   if (user.role !== "admin") {

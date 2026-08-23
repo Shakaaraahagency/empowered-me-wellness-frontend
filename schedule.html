@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Schedule & Booking — Empowered Me Wellness</title>
-  <meta name="description" content="Upcoming sessions, programs, and events at Empowered Me Wellness in Hamilton, Bermuda.">
+  <meta name="description" content="Upcoming sessions, programs, and events at Empowered Me Wellness in Hamilton, Caribbean.">
   <link rel="icon" type="image/png" href="assets/brand/favicon.png">
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +16,7 @@
   <link rel="canonical" href="https://empoweredmewellness.com/schedule.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Schedule & Booking — Empowered Me Wellness">
-  <meta property="og:description" content="Upcoming sessions, programs, and events at Empowered Me Wellness in Hamilton, Bermuda.">
+  <meta property="og:description" content="Upcoming sessions, programs, and events at Empowered Me Wellness in Hamilton, Caribbean.">
   <meta property="og:url" content="https://empoweredmewellness.com/schedule.html">
   <meta property="og:image" content="https://empoweredmewellness.com/assets/brand/emw-logo-horizontal.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -220,7 +220,7 @@
         Live Class Calendar
       </div>
       <h1>Upcoming Sessions & Workshops</h1>
-      <p class="lead">Select a session below to reserve your space online. All classes take place in Hamilton, Bermuda unless noted.</p>
+      <p class="lead">Select a session below to reserve your space online. All classes take place in Hamilton, Caribbean unless noted.</p>
     </section>
 
     <section class="container">
@@ -241,7 +241,7 @@
       <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px; text-align: center;">
         <div class="info-item">
           <h4 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--clay); margin: 0 0 8px;">Location</h4>
-          <p style="font-size: 0.95rem; opacity: 0.85; margin: 0; line-height: 1.6;">Hamilton, Bermuda studio space. Exact venue details provided upon booking confirmation.</p>
+          <p style="font-size: 0.95rem; opacity: 0.85; margin: 0; line-height: 1.6;">Hamilton, Caribbean studio space. Exact venue details provided upon booking confirmation.</p>
         </div>
         <div class="info-item">
           <h4 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--clay); margin: 0 0 8px;">Arrival &amp; Mats</h4>
@@ -283,7 +283,7 @@
             </svg>
             <div>
               <p class="alert-title">Couldn't load the schedule</p>
-              <p class="alert-body">Please try again. <button type="button" class="btn-link" onclick="loadSchedule()">Retry</button></p>
+              <p class="alert-body">Please try again. <button type="button" class="btn-link" onclick="this.textContent='Retrying…'; this.disabled=true; setTimeout(loadSchedule, 350);">Retry</button></p>
             </div>
           </div>`;
       }

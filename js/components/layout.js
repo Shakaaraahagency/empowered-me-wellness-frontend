@@ -345,7 +345,7 @@ function renderFooter() {
               <img src="/assets/brand/logo-inverted.png" alt="Empowered Me Wellness" width="129" height="96" style="height: 96px; width: auto; display: block;" loading="lazy" />
             </picture>
           </a>
-          <p class="mono">Hamilton, Bermuda</p>
+          <p class="mono">Hamilton, Caribbean</p>
         </div>
         <div>
           <h3>Explore</h3>
@@ -361,7 +361,7 @@ function renderFooter() {
           <a href="/terms.html">Terms &amp; Conditions</a>
           <a href="/refund-policy.html">Refund Policy</a>
           <a href="/cookie-notice.html">Cookie Notice</a>
-          <a href="/admin-login.html" style="margin-top:10px; opacity:0.6; font-size:12px;">Admin Portal</a>
+          <a href="/login.html" style="margin-top:10px; opacity:0.6; font-size:12px;">Admin Portal</a>
         </div>
         <div>
           <h3>Contact</h3>

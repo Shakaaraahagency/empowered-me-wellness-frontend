@@ -9,6 +9,7 @@ const ADMIN_LINKS = [
   { href: "admin-contact.html", label: "Contact Inbox" },
   { href: "admin-blog.html", label: "Blog" },
   { href: "admin-subscribers.html", label: "Subscribers" },
+  { href: "admin-audit-log.html", label: "Activity Log" },
 ];
 
 function renderAdminNav() {

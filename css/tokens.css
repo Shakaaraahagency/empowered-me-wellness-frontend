@@ -172,7 +172,7 @@ button:hover { opacity: 0.92; }
 .mono { font-family: var(--font-mono); font-size: 13px; opacity: 0.7; }
 
 /* ---------- Layout shell ---------- */
-.container { max-width: 1440px; margin: 0 auto; padding: 0 40px; }
+.container { max-width: 1440px; margin: 0 auto; padding: 0 40px; margin-bottom: 50px; }
 
 .site-header {
   display: flex;

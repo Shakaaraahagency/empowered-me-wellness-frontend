@@ -406,7 +406,7 @@
             </svg>
             <div>
               <p class="alert-title">Couldn't load the shop</p>
-              <p class="alert-body">Please try again. <button type="button" class="btn-link" onclick="loadShop()">Retry</button></p>
+              <p class="alert-body">Please try again. <button type="button" class="btn-link" onclick="this.textContent='Retrying…'; this.disabled=true; setTimeout(loadShop, 350);">Retry</button></p>
             </div>
           </div>`;
       }

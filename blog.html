@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog & Insights — Empowered Me Wellness</title>
-  <meta name="description" content="Reflections on nervous system healing, somatic practice, and everyday regulation from Empowered Me Wellness in Hamilton, Bermuda.">
+  <title>Healing Library — Empowered Me Wellness</title>
+  <meta name="description" content="Reflections on nervous system healing, somatic practice, and everyday regulation from Empowered Me Wellness in Hamilton, Caribbean.">
   <link rel="icon" type="image/png" href="assets/brand/favicon.png">
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,8 +15,8 @@
   <link rel="stylesheet" href="css/polish.css">
   <link rel="canonical" href="https://empoweredmewellness.com/blog.html">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Blog & Insights — Empowered Me Wellness">
-  <meta property="og:description" content="Reflections on nervous system healing, somatic practice, and everyday regulation from Empowered Me Wellness in Hamilton, Bermuda.">
+  <meta property="og:title" content="Healing Library — Empowered Me Wellness">
+  <meta property="og:description" content="Reflections on nervous system healing, somatic practice, and everyday regulation from Empowered Me Wellness in Hamilton, Caribbean.">
   <meta property="og:url" content="https://empoweredmewellness.com/blog.html">
   <meta property="og:image" content="https://empoweredmewellness.com/assets/brand/emw-logo-horizontal.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -198,7 +198,7 @@
         Reflections & Practice Tips
       </div>
       <h1>Wellness Journal</h1>
-      <p class="lead">Insights on nervous system healing, somatic practice, and conscious living from Hamilton, Bermuda.</p>
+      <p class="lead">Insights on nervous system healing, somatic practice, and conscious living from Hamilton, Caribbean.</p>
     </section>
 
     <section class="container">
@@ -251,7 +251,7 @@
             </svg>
             <div>
               <p class="alert-title">Couldn't load the blog</p>
-              <p class="alert-body">Please try again. <button type="button" class="btn-link" onclick="loadBlog()">Retry</button></p>
+              <p class="alert-body">Please try again. <button type="button" class="btn-link" onclick="this.textContent='Retrying…'; this.disabled=true; setTimeout(loadBlog, 350);">Retry</button></p>
             </div>
           </div>`;
       }

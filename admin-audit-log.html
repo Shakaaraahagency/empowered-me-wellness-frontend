@@ -63,7 +63,7 @@
   <script src="js/api.js"></script>
   <script>
     const PER_PAGE = 50;
-    let currentPage = 1;
+    let auditCurrentPage = 1;
     let currentAction = "";
     let currentTotal = 0;
 
@@ -129,15 +129,15 @@
 
     function onFilterChange() {
       currentAction = document.getElementById("action-filter").value;
-      currentPage = 1;
+      auditCurrentPage = 1;
       loadAuditLog();
     }
 
     function changePage(delta) {
-      const nextPage = currentPage + delta;
+      const nextPage = auditCurrentPage + delta;
       if (nextPage < 1) return;
       if ((nextPage - 1) * PER_PAGE >= currentTotal) return;
-      currentPage = nextPage;
+      auditCurrentPage = nextPage;
       loadAuditLog();
     }
 
@@ -147,7 +147,7 @@
 
       try {
         const data = await AdminAPI.listAuditLog({
-          page: currentPage,
+          page: auditCurrentPage,
           per_page: PER_PAGE,
           action: currentAction,
         });
@@ -196,9 +196,9 @@
 
     function updatePagination() {
       const totalPages = Math.max(Math.ceil(currentTotal / PER_PAGE), 1);
-      document.getElementById("page-indicator").textContent = `Page ${currentPage} of ${totalPages}`;
-      document.getElementById("prev-page-btn").disabled = currentPage <= 1;
-      document.getElementById("next-page-btn").disabled = currentPage >= totalPages;
+      document.getElementById("page-indicator").textContent = `Page ${auditCurrentPage} of ${totalPages}`;
+      document.getElementById("prev-page-btn").disabled = auditCurrentPage <= 1;
+      document.getElementById("next-page-btn").disabled = auditCurrentPage >= totalPages;
     }
 
     (async () => {

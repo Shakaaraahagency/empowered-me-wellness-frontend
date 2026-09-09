@@ -4,7 +4,7 @@
  * never silently tracks visitors. Update the Cookie Notice page if you
  * turn this on, since it adds a non-essential cookie category.
  */
-const GA_MEASUREMENT_ID = ""; // e.g. "G-XXXXXXXXXX" — set this to go live
+const GA_MEASUREMENT_ID = "G-1KPY1R3XT3";
 
 if (GA_MEASUREMENT_ID) {
   const script1 = document.createElement("script");

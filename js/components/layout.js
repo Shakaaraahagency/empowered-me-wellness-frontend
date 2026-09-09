@@ -345,7 +345,7 @@ function renderFooter() {
               <img src="/assets/brand/logo-inverted.png" alt="Empowered Me Wellness" width="129" height="96" style="height: 96px; width: auto; display: block;" loading="lazy" />
             </picture>
           </a>
-          <p class="mono">Hamilton, Caribbean</p>
+          <p class="mono">Hamilton, Bermuda</p>
         </div>
         <div>
           <h3>Explore</h3>

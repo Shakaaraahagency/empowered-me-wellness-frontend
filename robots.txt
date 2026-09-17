@@ -19,4 +19,4 @@ Disallow: /order-confirmation.html
 Disallow: /checkout.html
 Disallow: /reset-password.html
 
-Sitemap: https://empoweredmewellness.com/sitemap.xml
+Sitemap: https://www.empoweredmewellness.com/sitemap.xml

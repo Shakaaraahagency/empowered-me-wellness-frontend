@@ -203,10 +203,12 @@
             title: "Deactivate this product?", confirmLabel: "Deactivate", danger: true,
           });
           if (!ok) return;
+          btnLoading(btn);
           try {
             await AdminAPI.deleteProduct(btn.dataset.deactivate);
             loadProducts();
           } catch (err) {
+            btnReset(btn);
             await EMWModal.alert(err.message || "Could not deactivate product.", { title: "Something went wrong" });
           }
         })
@@ -214,10 +216,12 @@
 
       tbody.querySelectorAll("[data-activate]").forEach((btn) =>
         btn.addEventListener("click", async () => {
+          btnLoading(btn);
           try {
             await AdminAPI.updateProduct(btn.dataset.activate, { is_active: true });
             loadProducts();
           } catch (err) {
+            btnReset(btn);
             await EMWModal.alert(err.message || "Could not activate product.", { title: "Something went wrong" });
           }
         })
@@ -284,8 +288,7 @@
           return;
         }
 
-        confirmBtn.disabled = true;
-        confirmBtn.textContent = 'Processing…';
+        btnLoading(confirmBtn, 'Processing…');
 
         try {
           progressDiv.style.display = 'block';
@@ -314,8 +317,7 @@
         } catch (err) {
           errorEl.textContent = err.message || 'Something went wrong. Please try again.';
           errorEl.style.display = 'block';
-          confirmBtn.disabled = false;
-          confirmBtn.textContent = 'Upload & Release';
+          btnReset(confirmBtn);
           progressDiv.style.display = 'none';
           progressFill.style.width = '0%';
           progressFill.classList.remove('is-shimmer');
@@ -358,8 +360,7 @@
           }
         };
 
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Processing…";
+        btnLoading(submitBtn, "Processing…");
 
         try {
           if (fileInput.files.length > 0) {
@@ -389,7 +390,8 @@
           }
 
           setProgress("Saving product", 100);
-          submitBtn.textContent = "Saving product…";
+          // Only update the loading text
+          btnLoading(submitBtn, "Saving product…");
           await AdminAPI.createProduct({
             name: document.getElementById("product-name").value.trim(),
             price: parseFloat(document.getElementById("product-price").value),
@@ -400,6 +402,7 @@
             is_coming_soon: isComingSoon,
             release_date: isComingSoon ? (document.getElementById("product-release-date").value.trim() || null) : null,
           });
+          btnSuccess(submitBtn, "✓ Saved");
           document.getElementById("product-form").reset();
           document.getElementById('release-date-group').style.display = 'none';
           document.getElementById('file-upload-section').style.opacity = '1';
@@ -408,9 +411,8 @@
         } catch (err) {
           errorEl.textContent = err.message;
           errorEl.style.display = "block";
+          btnReset(submitBtn);
         } finally {
-          submitBtn.disabled = false;
-          submitBtn.textContent = "Add Product";
           progressBlock.style.display = "none";
           progressFill.style.width = "0%";
           progressFill.classList.remove("is-shimmer", "is-complete");

@@ -124,6 +124,7 @@
 
       listEl.querySelectorAll("[data-toggle-approve]").forEach((btn) =>
         btn.addEventListener("click", async () => {
+          btnLoading(btn);
           const current = btn.dataset.current === "true";
           await AdminAPI.updateTestimonial(btn.dataset.toggleApprove, { is_approved: !current });
           loadTestimonials();
@@ -133,6 +134,7 @@
         btn.addEventListener("click", async () => {
           const ok = await EMWModal.confirm("This can't be undone.", { title: "Delete this testimonial permanently?", confirmLabel: "Delete", danger: true });
           if (!ok) return;
+          btnLoading(btn);
           await AdminAPI.deleteTestimonial(btn.dataset.delete);
           loadTestimonials();
         })
@@ -145,19 +147,23 @@
 
       document.getElementById("testimonial-form").addEventListener("submit", async (e) => {
         e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
         const errorEl = document.getElementById("t-error");
         errorEl.style.display = "none";
+        btnLoading(submitBtn);
         try {
           await AdminAPI.createTestimonial({
             author_name: document.getElementById("t-author").value.trim(),
             role: document.getElementById("t-role").value.trim(),
             content: document.getElementById("t-content").value.trim(),
           });
+          btnSuccess(submitBtn, "✓ Added");
           document.getElementById("testimonial-form").reset();
           loadTestimonials();
         } catch (err) {
           errorEl.textContent = err.message;
           errorEl.style.display = "block";
+          btnReset(submitBtn);
         }
       });
     })();

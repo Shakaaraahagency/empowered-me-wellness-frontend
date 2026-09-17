@@ -273,7 +273,20 @@ button:hover { opacity: 0.92; }
   border-color: rgba(36,28,19,0.25);
   border-top-color: var(--ink);
 }
+.btn-destructive.is-loading::after {
+  border-color: rgba(255,255,255,0.4);
+  border-top-color: #fff;
+}
 @keyframes btn-spin { to { transform: rotate(360deg); } }
+
+/* Success flash — brief green confirmation after action completes */
+.btn.is-success {
+  background: var(--moss) !important;
+  color: var(--papyrus) !important;
+  border-color: var(--moss) !important;
+  pointer-events: none;
+  transition: background 0.25s ease, color 0.25s ease;
+}
 
 /* Sizes */
 .btn-lg { padding: 14px 32px; font-size: 16px; }

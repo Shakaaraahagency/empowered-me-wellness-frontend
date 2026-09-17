@@ -12,6 +12,9 @@
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/hero.css">
   <link rel="stylesheet" href="css/polish.css">
+  <!-- Quill.js Rich Text Editor -->
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/rich-editor.css">
 </head>
 <body>
   <div id="site-header"></div>
@@ -44,16 +47,52 @@
 
             <input type="text" id="post-title" placeholder="Title" required>
             <textarea id="post-excerpt" placeholder="Short excerpt (shown in the blog listing)" rows="2" style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;margin-bottom:10px;"></textarea>
-            <textarea id="post-content" placeholder="Full post content (HTML allowed)" rows="8" required style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:8px;margin-bottom:4px;"></textarea>
 
-            <!-- Inline Media Insert Button -->
-            <div style="display:flex; gap:8px; margin-bottom:14px;">
-              <button type="button" id="insert-media-btn" class="btn btn-small btn-outline" style="color:var(--ink); border-color:var(--sand); background:transparent; font-size:13px; padding:8px 16px;" onclick="document.getElementById('inline-media-input').click()">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:-2px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                Insert Image or Video
-              </button>
-              <input type="file" id="inline-media-input" accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime" style="display:none;">
-              <span class="mono" id="inline-upload-status" style="font-size:12px; align-self:center; opacity:0.6;"></span>
+            <!-- Rich Text Editor -->
+            <div class="rich-editor-wrap" style="position:relative;">
+              <div id="quill-toolbar">
+                <span class="ql-formats">
+                  <select class="ql-header" title="Heading">
+                    <option value="1">Heading 1</option>
+                    <option value="2">Heading 2</option>
+                    <option value="3">Heading 3</option>
+                    <option selected>Normal</option>
+                  </select>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-bold" title="Bold"></button>
+                  <button class="ql-italic" title="Italic"></button>
+                  <button class="ql-underline" title="Underline"></button>
+                  <button class="ql-strike" title="Strikethrough"></button>
+                </span>
+                <span class="ql-formats">
+                  <select class="ql-color" title="Text Color"></select>
+                  <select class="ql-background" title="Highlight Color"></select>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-list" value="ordered" title="Numbered List"></button>
+                  <button class="ql-list" value="bullet" title="Bullet List"></button>
+                  <select class="ql-align" title="Alignment"></select>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-blockquote" title="Blockquote"></button>
+                  <button class="ql-code-block" title="Code Block"></button>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-link" title="Insert Link"></button>
+                  <button class="ql-image" title="Insert Image"></button>
+                  <button class="ql-video" title="Insert Video"></button>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-clean" title="Clear Formatting"></button>
+                </span>
+              </div>
+              <div id="quill-editor"></div>
+              <!-- Upload overlay -->
+              <div class="editor-upload-overlay" id="editor-upload-overlay">
+                <div class="editor-upload-spinner"></div>
+                <span class="editor-upload-label" id="editor-upload-label">Uploading…</span>
+              </div>
             </div>
 
             <button type="submit" class="btn btn-small">Save Draft</button>
@@ -92,21 +131,183 @@
     </div>
   </main>
   <div id="site-footer"></div>
+  <!-- Video embed modal (used by custom video handler) -->
+  <div class="video-modal-overlay" id="video-modal-overlay">
+    <div class="video-modal">
+      <h3>Insert Video</h3>
+      <p>Upload a video file or paste a YouTube / Vimeo URL</p>
+      <div class="video-modal-tabs">
+        <button type="button" class="video-modal-tab active" data-tab="url">Paste URL</button>
+        <button type="button" class="video-modal-tab" data-tab="upload">Upload File</button>
+      </div>
+      <div class="video-modal-panel active" data-panel="url">
+        <input type="url" id="video-url-input" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+      </div>
+      <div class="video-modal-panel" data-panel="upload">
+        <div class="upload-zone" id="video-upload-zone" onclick="document.getElementById('video-file-input').click()">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--clay)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          <p class="mono" style="font-size:12px; margin:4px 0 0; opacity:0.6;">MP4, WEBM, MOV — max 50MB</p>
+        </div>
+        <input type="file" id="video-file-input" accept="video/mp4,video/webm,video/quicktime" style="display:none;">
+        <p class="mono" id="video-upload-status" style="font-size:12px; min-height:18px;"></p>
+      </div>
+      <div class="video-modal-actions">
+        <button type="button" class="btn btn-small btn-outline" id="video-modal-cancel" style="color:var(--ink);border-color:var(--ink);background:transparent;">Cancel</button>
+        <button type="button" class="btn btn-small" id="video-modal-insert">Insert Video</button>
+      </div>
+    </div>
+  </div>
+
   <script src="js/components/layout.js"></script>
   <script src="js/components/admin-nav.js"></script>
   <script src="js/api.js"></script>
   <script src="js/components/modal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
   <script>
+    /* ================================================================
+       State
+       ================================================================ */
     let rawPosts = [];
     let editingId = null;
+    let quill = null;
 
+    /* ================================================================
+       Quill initialisation
+       ================================================================ */
+    function initQuill() {
+      quill = new Quill("#quill-editor", {
+        theme: "snow",
+        modules: {
+          toolbar: {
+            container: "#quill-toolbar",
+            handlers: {
+              image: imageHandler,
+              video: videoHandler,
+            },
+          },
+        },
+        placeholder: "Start writing your blog post…",
+      });
+    }
+
+    /* ================================================================
+       Custom image handler — uploads via Cloudinary, not base64
+       ================================================================ */
+    function imageHandler() {
+      const input = document.createElement("input");
+      input.setAttribute("type", "file");
+      input.setAttribute("accept", "image/png,image/jpeg,image/webp,image/gif");
+      input.click();
+
+      input.addEventListener("change", async () => {
+        const file = input.files[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+          alert("Image must be under 5 MB.");
+          return;
+        }
+
+        showUploadOverlay("Uploading image…");
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+          const result = await AdminAPI.uploadBlogMedia(formData);
+          const range = quill.getSelection(true);
+          quill.insertEmbed(range.index, "image", result.url, Quill.sources.USER);
+          quill.setSelection(range.index + 1, Quill.sources.SILENT);
+        } catch (err) {
+          alert(err.message || "Image upload failed.");
+        } finally {
+          hideUploadOverlay();
+        }
+      });
+    }
+
+    /* ================================================================
+       Custom video handler — modal with URL paste or file upload
+       ================================================================ */
+    let videoResolve = null;
+    let pendingVideoUrl = null;
+
+    function videoHandler() {
+      openVideoModal();
+    }
+
+    function openVideoModal() {
+      const overlay = document.getElementById("video-modal-overlay");
+      document.getElementById("video-url-input").value = "";
+      document.getElementById("video-upload-status").textContent = "";
+      pendingVideoUrl = null;
+      // Reset to URL tab
+      overlay.querySelectorAll(".video-modal-tab").forEach(t => t.classList.remove("active"));
+      overlay.querySelector('[data-tab="url"]').classList.add("active");
+      overlay.querySelectorAll(".video-modal-panel").forEach(p => p.classList.remove("active"));
+      overlay.querySelector('[data-panel="url"]').classList.add("active");
+      overlay.classList.add("is-open");
+    }
+
+    function closeVideoModal() {
+      document.getElementById("video-modal-overlay").classList.remove("is-open");
+    }
+
+    function extractVideoEmbed(url) {
+      // YouTube
+      let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+      if (m) return `https://www.youtube.com/embed/${m[1]}`;
+      // Vimeo
+      m = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+      if (m) return `https://player.vimeo.com/video/${m[1]}`;
+      // Direct video URL — return as-is
+      if (/\.(mp4|webm|mov)$/i.test(url)) return url;
+      return url;
+    }
+
+    function insertVideoIntoEditor(src) {
+      const range = quill.getSelection(true);
+      quill.insertEmbed(range.index, "video", src, Quill.sources.USER);
+      quill.setSelection(range.index + 1, Quill.sources.SILENT);
+    }
+
+    /* ================================================================
+       Upload overlay helpers
+       ================================================================ */
+    function showUploadOverlay(label) {
+      const el = document.getElementById("editor-upload-overlay");
+      document.getElementById("editor-upload-label").textContent = label || "Uploading…";
+      el.classList.add("is-active");
+    }
+    function hideUploadOverlay() {
+      document.getElementById("editor-upload-overlay").classList.remove("is-active");
+    }
+
+    /* ================================================================
+       Reset form (including Quill)
+       ================================================================ */
     function resetForm() {
       editingId = null;
       document.getElementById("form-heading").textContent = "New Post";
       document.getElementById("post-form").reset();
       document.getElementById("cancel-edit").style.display = "none";
+      // Reset cover image
+      document.getElementById("cover-image-url").value = "";
+      document.getElementById("cover-upload-content").style.display = "block";
+      document.getElementById("cover-preview").style.display = "none";
+      // Clear editor
+      if (quill) quill.setContents([]);
     }
 
+    function removeCoverImage(e) {
+      e.stopPropagation();
+      document.getElementById("cover-image-url").value = "";
+      document.getElementById("cover-upload-content").style.display = "block";
+      document.getElementById("cover-preview").style.display = "none";
+      document.getElementById("cover-image-input").value = "";
+    }
+
+    /* ================================================================
+       Load posts
+       ================================================================ */
     async function loadPosts() {
       try {
         rawPosts = await AdminAPI.listPosts();
@@ -121,7 +322,7 @@
       const statusFilter = document.getElementById("status-filter").value;
 
       const filtered = rawPosts.filter(p => {
-        const matchQuery = !q || 
+        const matchQuery = !q ||
           (p.title && p.title.toLowerCase().includes(q)) ||
           (p.excerpt && p.excerpt.toLowerCase().includes(q)) ||
           (p.content && p.content.toLowerCase().includes(q));
@@ -133,6 +334,9 @@
       renderTable(filtered);
     }
 
+    /* ================================================================
+       Render posts table
+       ================================================================ */
     function renderTable(posts) {
       const tbody = document.querySelector("#posts-table tbody");
       if (!posts || posts.length === 0) {
@@ -158,6 +362,7 @@
         )
         .join("");
 
+      /* Edit button */
       tbody.querySelectorAll("[data-edit]").forEach((btn) =>
         btn.addEventListener("click", () => {
           const post = rawPosts.find((p) => String(p.id) === String(btn.dataset.edit));
@@ -166,8 +371,14 @@
           document.getElementById("form-heading").textContent = `Editing: ${post.title}`;
           document.getElementById("post-title").value = post.title;
           document.getElementById("post-excerpt").value = post.excerpt || "";
-          document.getElementById("post-content").value = post.content;
+
+          // Load content into Quill
+          if (quill) {
+            quill.clipboard.dangerouslyPasteHTML(post.content || "");
+          }
+
           document.getElementById("cancel-edit").style.display = "inline-block";
+
           // Populate cover image if exists
           if (post.cover_image_url) {
             document.getElementById("cover-image-url").value = post.cover_image_url;
@@ -183,31 +394,39 @@
         })
       );
 
+      /* Publish / Unpublish */
       tbody.querySelectorAll("[data-toggle-publish]").forEach((btn) =>
         btn.addEventListener("click", async () => {
+          btnLoading(btn);
           const newStatus = btn.dataset.status === "published" ? "draft" : "published";
           await AdminAPI.updatePost(btn.dataset.togglePublish, { status: newStatus });
           loadPosts();
         })
       );
 
+      /* Delete */
       tbody.querySelectorAll("[data-delete]").forEach((btn) =>
         btn.addEventListener("click", async () => {
           const ok = await EMWModal.confirm("This can't be undone.", { title: "Delete this post permanently?", confirmLabel: "Delete", danger: true });
           if (!ok) return;
+          btnLoading(btn);
           await AdminAPI.deletePost(btn.dataset.delete);
           loadPosts();
         })
       );
     }
 
+    /* ================================================================
+       Bootstrap
+       ================================================================ */
     (async () => {
       await requireAdmin();
+      initQuill();
       loadPosts();
 
       document.getElementById("cancel-edit").addEventListener("click", resetForm);
 
-      // Cover image upload handler
+      /* ---- Cover image upload ---- */
       const coverInput = document.getElementById("cover-image-input");
       const coverZone = document.getElementById("cover-upload-zone");
 
@@ -240,7 +459,7 @@
         }
       });
 
-      // Cover drag and drop
+      /* Cover drag and drop */
       coverZone.addEventListener("dragover", (e) => { e.preventDefault(); coverZone.style.borderColor = "var(--clay)"; });
       coverZone.addEventListener("dragleave", () => { coverZone.style.borderColor = "var(--sand)"; });
       coverZone.addEventListener("drop", (e) => {
@@ -252,49 +471,105 @@
         }
       });
 
-      // Inline media insert handler
-      const inlineInput = document.getElementById("inline-media-input");
-      inlineInput.addEventListener("change", async () => {
-        const file = inlineInput.files[0];
+      /* ---- Video modal wiring ---- */
+      const videoOverlay = document.getElementById("video-modal-overlay");
+
+      // Tab switching
+      videoOverlay.querySelectorAll(".video-modal-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          videoOverlay.querySelectorAll(".video-modal-tab").forEach(t => t.classList.remove("active"));
+          videoOverlay.querySelectorAll(".video-modal-panel").forEach(p => p.classList.remove("active"));
+          tab.classList.add("active");
+          videoOverlay.querySelector(`[data-panel="${tab.dataset.tab}"]`).classList.add("active");
+        });
+      });
+
+      // Video file upload
+      const videoFileInput = document.getElementById("video-file-input");
+      videoFileInput.addEventListener("change", async () => {
+        const file = videoFileInput.files[0];
         if (!file) return;
-        const statusEl = document.getElementById("inline-upload-status");
-        statusEl.textContent = "Uploading...";
+        const statusEl = document.getElementById("video-upload-status");
+        if (file.size > 50 * 1024 * 1024) {
+          statusEl.textContent = "Video must be under 50 MB.";
+          statusEl.style.color = "#c0392b";
+          return;
+        }
+        statusEl.textContent = "Uploading video…";
         statusEl.style.color = "var(--clay)";
         try {
           const formData = new FormData();
           formData.append("file", file);
           const result = await AdminAPI.uploadBlogMedia(formData);
-          const contentEl = document.getElementById("post-content");
-          const cursorPos = contentEl.selectionStart || contentEl.value.length;
-          let insertHtml;
-          if (result.type === "video") {
-            insertHtml = `\n<video controls style="max-width:100%; border-radius:12px; margin:16px 0;">\n  <source src="${result.url}" type="video/mp4">\n  Your browser does not support the video tag.\n</video>\n`;
-          } else {
-            insertHtml = `\n<img src="${result.url}" alt="${result.filename}" style="max-width:100%; border-radius:12px; margin:16px 0;">\n`;
-          }
-          contentEl.value = contentEl.value.slice(0, cursorPos) + insertHtml + contentEl.value.slice(cursorPos);
-          statusEl.textContent = `${result.type === "video" ? "Video" : "Image"} inserted`;
+          pendingVideoUrl = result.url;
+          statusEl.textContent = "Video uploaded — click Insert to add.";
           statusEl.style.color = "var(--moss)";
-          setTimeout(() => { statusEl.textContent = ""; }, 3000);
         } catch (err) {
           statusEl.textContent = err.message || "Upload failed.";
           statusEl.style.color = "#c0392b";
         }
-        inlineInput.value = "";
+        videoFileInput.value = "";
       });
 
+      // Insert button
+      document.getElementById("video-modal-insert").addEventListener("click", () => {
+        const activeTab = videoOverlay.querySelector(".video-modal-tab.active").dataset.tab;
+        let src = null;
+        if (activeTab === "url") {
+          const raw = document.getElementById("video-url-input").value.trim();
+          if (!raw) return;
+          src = extractVideoEmbed(raw);
+        } else {
+          if (!pendingVideoUrl) return;
+          src = pendingVideoUrl;
+        }
+        if (src) {
+          insertVideoIntoEditor(src);
+        }
+        closeVideoModal();
+      });
+
+      // Cancel button
+      document.getElementById("video-modal-cancel").addEventListener("click", closeVideoModal);
+
+      // Close on overlay click
+      videoOverlay.addEventListener("click", (e) => {
+        if (e.target === videoOverlay) closeVideoModal();
+      });
+
+      /* ---- Form submission (reads from Quill) ---- */
       document.getElementById("post-form").addEventListener("submit", async (e) => {
         e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
         const errorEl = document.getElementById("post-error");
         errorEl.style.display = "none";
+        btnLoading(submitBtn);
+
+        // Get HTML from Quill
+        const editorContent = quill.root.innerHTML.trim();
+        // Quill produces "<p><br></p>" when empty
+        const isEmpty = !editorContent || editorContent === "<p><br></p>";
 
         const coverUrl = document.getElementById("cover-image-url").value.trim();
         const payload = {
           title: document.getElementById("post-title").value.trim(),
           excerpt: document.getElementById("post-excerpt").value.trim(),
-          content: document.getElementById("post-content").value.trim(),
+          content: isEmpty ? "" : editorContent,
           cover_image_url: coverUrl || null,
         };
+
+        if (!payload.title) {
+          errorEl.textContent = "Title is required.";
+          errorEl.style.display = "block";
+          btnReset(submitBtn);
+          return;
+        }
+        if (!payload.content) {
+          errorEl.textContent = "Content is required.";
+          errorEl.style.display = "block";
+          btnReset(submitBtn);
+          return;
+        }
 
         try {
           if (editingId) {
@@ -302,11 +577,13 @@
           } else {
             await AdminAPI.createPost(payload);
           }
+          btnSuccess(submitBtn, "✓ Saved");
           resetForm();
           loadPosts();
         } catch (err) {
           errorEl.textContent = err.message;
           errorEl.style.display = "block";
+          btnReset(submitBtn);
         }
       });
     })();

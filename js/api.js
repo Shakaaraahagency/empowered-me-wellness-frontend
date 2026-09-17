@@ -26,6 +26,58 @@ function escapeHtml(str) {
     .replace(/'/g, "&#39;");
 }
 
+/**
+ * Button loading / success / reset helpers.
+ * Use these to give users visual feedback on async actions.
+ *
+ *   btnLoading(btn)            — spinner, disable
+ *   btnReset(btn)              — restore original state
+ *   btnSuccess(btn, text, ms)  — green flash, then auto-reset
+ */
+function btnLoading(btn, loadingText) {
+  if (!btn) return;
+  btn.dataset.originalText = btn.innerHTML;
+  btn.classList.add("is-loading");
+  btn.disabled = true;
+  if (loadingText) {
+    btn.style.color = "";
+    btn.classList.remove("is-loading");
+    btn.innerHTML = loadingText;
+    btn.classList.add("is-loading");
+    btn.style.color = "transparent";
+  }
+}
+
+function btnReset(btn) {
+  if (!btn) return;
+  btn.classList.remove("is-loading", "is-success");
+  btn.disabled = false;
+  btn.style.color = "";
+  if (btn.dataset.originalText !== undefined) {
+    btn.innerHTML = btn.dataset.originalText;
+    delete btn.dataset.originalText;
+  }
+}
+
+function btnSuccess(btn, text, duration) {
+  if (!btn) return;
+  text = text || "✓ Done";
+  duration = duration || 1500;
+  btn.classList.remove("is-loading");
+  btn.style.color = "";
+  btn.disabled = true;
+  btn.innerHTML = text;
+  btn.classList.add("is-success");
+  setTimeout(() => {
+    btn.classList.remove("is-success");
+    btn.disabled = false;
+    if (btn.dataset.originalText !== undefined) {
+      btn.innerHTML = btn.dataset.originalText;
+      delete btn.dataset.originalText;
+    }
+  }, duration);
+}
+
 // Auto-detects dev vs production. Never hardcode a backend URL in two places.
 const _IS_LOCAL = ["localhost", "127.0.0.1"].includes(window.location.hostname);
 const API_URL = _IS_LOCAL
@@ -51,8 +103,10 @@ function absoluteApiUrl(path) {
  *    requests (required because our auth cookies are httpOnly + CSRF-protected)
  *  - always returns parsed JSON, and throws a normalized error object on
  *    non-2xx responses so callers can show `err.message` directly to the user
+ *  - automatically retries once on 401 by refreshing the access token,
+ *    which also syncs a fresh csrf_access into localStorage
  */
-async function api(path, { method = "GET", body = null } = {}) {
+async function api(path, { method = "GET", body = null, _retried = false } = {}) {
   const headers = { "Content-Type": "application/json" };
 
   if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
@@ -69,6 +123,21 @@ async function api(path, { method = "GET", body = null } = {}) {
   });
 
   const data = await response.json().catch(() => ({}));
+
+  // On 401, try a silent token refresh and retry once — unless this IS the
+  // refresh/login call itself, or we already retried to avoid infinite loops.
+  if (
+    response.status === 401 &&
+    !_retried &&
+    !path.startsWith("/auth/login") &&
+    !path.startsWith("/auth/refresh") &&
+    !path.startsWith("/auth/register")
+  ) {
+    const refreshed = await AuthAPI.refresh();
+    if (refreshed) {
+      return api(path, { method, body, _retried: true });
+    }
+  }
 
   if (!response.ok) {
     const message = data?.error?.message || "Something went wrong. Please try again.";
@@ -352,6 +421,8 @@ const NewsletterAPI = {
 /**
  * Redirects to login (or home, if logged in but not admin) unless the
  * current user is an admin. Call at the top of every admin page.
+ * Also starts the background token auto-refresh timer to keep the
+ * session alive for as long as the admin tab is open.
  */
 async function requireAdmin() {
   let user;
@@ -367,5 +438,10 @@ async function requireAdmin() {
     window.location.href = "/index.html";
     throw new Error("not an admin");
   }
+
+  // Keep the token alive for as long as the admin tab is open.
+  startTokenAutoRefresh();
+
   return user;
 }
+

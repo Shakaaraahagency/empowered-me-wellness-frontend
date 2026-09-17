@@ -1,0 +1,623 @@
+/* ================================================================
+   Rich Text Editor — Quill overrides for EMW design system
+   ================================================================ */
+
+/* ---- Editor wrapper ---- */
+.rich-editor-wrap {
+  background: #fff;
+  border: 1px solid var(--sand);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.rich-editor-wrap:focus-within {
+  border-color: var(--clay);
+  box-shadow: 0 0 0 3px rgba(176, 85, 53, 0.10);
+}
+
+/* ---- Toolbar ---- */
+.rich-editor-wrap .ql-toolbar.ql-snow {
+  border: none;
+  border-bottom: 1px solid var(--sand);
+  background: linear-gradient(to bottom, rgba(241,232,214,0.35), rgba(241,232,214,0.08));
+  padding: 8px 10px;
+  font-family: var(--font-body);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.rich-editor-wrap .ql-toolbar .ql-formats {
+  margin-right: 10px;
+  padding-right: 10px;
+  border-right: 1px solid rgba(217,199,160,0.45);
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.rich-editor-wrap .ql-toolbar .ql-formats:last-child {
+  border-right: none;
+  margin-right: 0;
+  padding-right: 0;
+}
+
+/* Toolbar buttons */
+.rich-editor-wrap .ql-toolbar button {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  padding: 4px;
+  margin: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.rich-editor-wrap .ql-toolbar button:hover {
+  background: rgba(176, 85, 53, 0.10);
+}
+
+.rich-editor-wrap .ql-toolbar button.ql-active {
+  background: var(--clay);
+  color: var(--papyrus);
+  border-radius: 5px;
+}
+
+.rich-editor-wrap .ql-toolbar button.ql-active .ql-stroke {
+  stroke: var(--papyrus);
+}
+
+.rich-editor-wrap .ql-toolbar button.ql-active .ql-fill {
+  fill: var(--papyrus);
+}
+
+/* Toolbar SVG icons */
+.rich-editor-wrap .ql-toolbar .ql-stroke {
+  stroke: var(--ink);
+  transition: stroke 0.12s ease;
+}
+
+.rich-editor-wrap .ql-toolbar .ql-fill {
+  fill: var(--ink);
+  transition: fill 0.12s ease;
+}
+
+.rich-editor-wrap .ql-toolbar button:hover .ql-stroke {
+  stroke: var(--clay);
+}
+
+.rich-editor-wrap .ql-toolbar button:hover .ql-fill {
+  fill: var(--clay);
+}
+
+/* Toolbar dropdowns (heading picker, color picker) */
+.rich-editor-wrap .ql-toolbar .ql-picker {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink);
+  height: 32px;
+}
+
+.rich-editor-wrap .ql-toolbar .ql-picker-label {
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 3px 8px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.rich-editor-wrap .ql-toolbar .ql-picker-label:hover {
+  background: rgba(176, 85, 53, 0.08);
+  border-color: rgba(217,199,160,0.5);
+}
+
+.rich-editor-wrap .ql-toolbar .ql-picker-label.ql-active {
+  color: var(--clay);
+}
+
+.rich-editor-wrap .ql-toolbar .ql-picker-options {
+  background: #fff;
+  border: 1px solid var(--sand);
+  border-radius: 6px;
+  box-shadow: 0 8px 28px rgba(36,28,19,0.12);
+  padding: 6px;
+}
+
+.rich-editor-wrap .ql-toolbar .ql-picker-item:hover {
+  color: var(--clay);
+  background: rgba(176, 85, 53, 0.06);
+  border-radius: 4px;
+}
+
+.rich-editor-wrap .ql-toolbar .ql-picker-item.ql-selected {
+  color: var(--clay);
+  font-weight: 600;
+}
+
+/* ---- Editor area ---- */
+.rich-editor-wrap .ql-editor {
+  border: none;
+  min-height: 320px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 20px 24px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--ink);
+}
+
+.rich-editor-wrap .ql-editor.ql-blank::before {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--ink);
+  opacity: 0.4;
+  font-style: normal;
+  left: 24px;
+  right: 24px;
+}
+
+.rich-editor-wrap .ql-container.ql-snow {
+  border: none;
+  font-family: var(--font-body);
+}
+
+/* ---- In-editor content styling ---- */
+.rich-editor-wrap .ql-editor h1 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0.6em 0 0.3em;
+  line-height: 1.2;
+}
+
+.rich-editor-wrap .ql-editor h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0.6em 0 0.3em;
+  line-height: 1.25;
+}
+
+.rich-editor-wrap .ql-editor h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0.5em 0 0.25em;
+  line-height: 1.3;
+}
+
+.rich-editor-wrap .ql-editor blockquote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--clay);
+  border-left: 3px solid var(--sand);
+  padding-left: 16px;
+  margin: 16px 0;
+}
+
+.rich-editor-wrap .ql-editor pre.ql-syntax {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  background: var(--ink);
+  color: var(--papyrus);
+  border-radius: 6px;
+  padding: 16px 20px;
+  overflow-x: auto;
+}
+
+.rich-editor-wrap .ql-editor code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: rgba(217,199,160,0.3);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.rich-editor-wrap .ql-editor a {
+  color: var(--clay);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rich-editor-wrap .ql-editor img {
+  max-width: 100%;
+  border-radius: 10px;
+  margin: 12px 0;
+  display: block;
+}
+
+.rich-editor-wrap .ql-editor iframe {
+  max-width: 100%;
+  border-radius: 10px;
+  margin: 12px 0;
+}
+
+.rich-editor-wrap .ql-editor ul,
+.rich-editor-wrap .ql-editor ol {
+  padding-left: 24px;
+  margin: 8px 0;
+}
+
+.rich-editor-wrap .ql-editor li {
+  margin-bottom: 4px;
+}
+
+/* ---- Upload progress overlay ---- */
+.editor-upload-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(242, 237, 224, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.editor-upload-overlay.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.editor-upload-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--sand);
+  border-top-color: var(--clay);
+  border-radius: 50%;
+  animation: editor-spin 0.7s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes editor-spin {
+  to { transform: rotate(360deg); }
+}
+
+.editor-upload-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink);
+  opacity: 0.7;
+}
+
+/* ---- Video embed modal ---- */
+.video-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(36,28,19,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+
+.video-modal-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-modal {
+  background: var(--papyrus);
+  border-radius: 10px;
+  max-width: 480px;
+  width: 100%;
+  padding: 28px;
+  box-shadow: 0 20px 60px rgba(36,28,19,0.25);
+  transform: translateY(8px) scale(0.98);
+  transition: transform 0.18s ease;
+}
+
+.video-modal-overlay.is-open .video-modal {
+  transform: translateY(0) scale(1);
+}
+
+.video-modal h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  margin: 0 0 6px;
+  color: var(--ink);
+}
+
+.video-modal p {
+  font-size: 13px;
+  opacity: 0.65;
+  margin: 0 0 18px;
+}
+
+.video-modal-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--sand);
+  margin-bottom: 16px;
+}
+
+.video-modal-tab {
+  flex: 1;
+  padding: 10px 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  opacity: 0.55;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: opacity 0.18s, border-color 0.18s;
+  margin: 0;
+  width: auto;
+}
+
+.video-modal-tab:hover {
+  opacity: 0.85;
+}
+
+.video-modal-tab.active {
+  opacity: 1;
+  border-bottom-color: var(--clay);
+  color: var(--clay);
+}
+
+.video-modal-panel {
+  display: none;
+}
+
+.video-modal-panel.active {
+  display: block;
+}
+
+.video-modal input[type="text"],
+.video-modal input[type="url"] {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--sand);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  margin-bottom: 14px;
+  background: #fff;
+}
+
+.video-modal input:focus {
+  border-color: var(--clay);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(176, 85, 53, 0.10);
+}
+
+.video-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.video-modal-actions .btn {
+  padding: 10px 22px;
+  font-size: 14px;
+  width: auto;
+  margin: 0;
+}
+
+.video-modal .upload-zone {
+  border: 2px dashed var(--sand);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 14px;
+}
+
+.video-modal .upload-zone:hover {
+  border-color: var(--clay);
+  background: rgba(176, 85, 53, 0.04);
+}
+
+/* ---- Tooltip for toolbar buttons ---- */
+.rich-editor-wrap .ql-toolbar button[title] {
+  position: relative;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+  .rich-editor-wrap .ql-toolbar.ql-snow {
+    padding: 6px 8px;
+    gap: 1px;
+  }
+
+  .rich-editor-wrap .ql-toolbar .ql-formats {
+    margin-right: 6px;
+    padding-right: 6px;
+  }
+
+  .rich-editor-wrap .ql-toolbar button {
+    width: 28px;
+    height: 28px;
+  }
+
+  .rich-editor-wrap .ql-editor {
+    min-height: 240px;
+    padding: 16px;
+  }
+}
+
+/* ================================================================
+   Blog Body — public-facing rich content rendering
+   ================================================================ */
+.blog-body {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--ink);
+}
+
+.blog-body h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 700;
+  margin: 1.2em 0 0.4em;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.blog-body h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 700;
+  margin: 1em 0 0.35em;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.blog-body h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 600;
+  margin: 0.9em 0 0.3em;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.blog-body p {
+  margin: 0 0 1em;
+}
+
+.blog-body strong {
+  font-weight: 700;
+}
+
+.blog-body em {
+  font-style: italic;
+}
+
+.blog-body u {
+  text-underline-offset: 3px;
+}
+
+.blog-body s {
+  opacity: 0.6;
+}
+
+.blog-body a {
+  color: var(--clay);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.15s;
+}
+
+.blog-body a:hover {
+  opacity: 0.75;
+}
+
+.blog-body blockquote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--clay);
+  border-left: 3px solid var(--sand);
+  padding: 4px 0 4px 20px;
+  margin: 20px 0;
+}
+
+.blog-body pre {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  background: var(--ink);
+  color: var(--papyrus);
+  border-radius: 8px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  margin: 16px 0;
+  line-height: 1.5;
+}
+
+.blog-body code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: rgba(217,199,160,0.3);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.blog-body pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.blog-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 16px 0;
+  display: block;
+  box-shadow: 0 4px 16px rgba(36,28,19,0.06);
+}
+
+.blog-body iframe,
+.blog-body video {
+  max-width: 100%;
+  border-radius: 12px;
+  margin: 16px 0;
+  display: block;
+  box-shadow: 0 4px 16px rgba(36,28,19,0.06);
+}
+
+.blog-body iframe {
+  aspect-ratio: 16 / 9;
+  border: none;
+  width: 100%;
+}
+
+.blog-body ul,
+.blog-body ol {
+  padding-left: 28px;
+  margin: 8px 0 16px;
+}
+
+.blog-body li {
+  margin-bottom: 6px;
+}
+
+.blog-body ul li {
+  list-style: disc;
+}
+
+.blog-body ol li {
+  list-style: decimal;
+}
+
+.blog-body hr {
+  border: none;
+  border-top: 1px solid var(--sand);
+  margin: 28px 0;
+}
+
+/* Quill alignment classes */
+.blog-body .ql-align-center { text-align: center; }
+.blog-body .ql-align-right { text-align: right; }
+.blog-body .ql-align-justify { text-align: justify; }
+
+/* Quill indent classes */
+.blog-body .ql-indent-1 { padding-left: 3em; }
+.blog-body .ql-indent-2 { padding-left: 6em; }
+.blog-body .ql-indent-3 { padding-left: 9em; }

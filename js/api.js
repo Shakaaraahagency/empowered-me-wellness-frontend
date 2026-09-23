@@ -406,11 +406,21 @@ const AdminAPI = {
   listReviews: () => api("/admin/reviews"),
   updateReview: (id, payload) => api(`/admin/reviews/${id}`, { method: "PATCH", body: payload }),
   deleteReview: (id) => api(`/admin/reviews/${id}`, { method: "DELETE" }),
+
+  listVideos: () => api("/admin/videos"),
+  createVideo: (payload) => api("/admin/videos", { method: "POST", body: payload }),
+  updateVideo: (id, payload) => api(`/admin/videos/${id}`, { method: "PATCH", body: payload }),
+  deleteVideo: (id) => api(`/admin/videos/${id}`, { method: "DELETE" }),
 };
 
 const BlogAPI = {
   list: () => api("/blog"),
   get: (slug) => api(`/blog/${slug}`),
+};
+
+const VideosAPI = {
+  list: (category) => api(`/videos${category ? `?category=${category}` : ""}`),
+  get: (id) => api(`/videos/${id}`),
 };
 
 const NewsletterAPI = {

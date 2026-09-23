@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breathing Exercise — Empowered Me Wellness</title>
+  <link rel="icon" type="image/png" href="assets/brand/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lato:wght@300;400;700;900&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--ink); /* Dark, calming background using brand tokens */
+      color: var(--papyrus);
+      font-family: var(--font-body);
+      overflow: hidden;
+      transition: background 1s ease;
+    }
+    
+    .breathe-header {
+      padding: 32px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+    }
+
+    .back-btn {
+      color: var(--papyrus);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-btn:hover {
+      opacity: 1;
+    }
+
+    .brand-title {
+      font-family: var(--font-display); 
+      font-size: 22px; 
+      font-style: italic;
+      color: var(--sand);
+    }
+
+    .breathe-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Ambient glow behind the circle */
+    .ambient-glow {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(140, 112, 48, 0.15) 0%, transparent 70%); /* ochre glow */
+      z-index: 0;
+    }
+
+    .circle-container {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .breathing-circle {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--ochre); /* Main brand color for energy */
+      box-shadow: 0 0 40px 10px rgba(140, 112, 48, 0.4);
+      transition: transform linear; /* Managed dynamically by JS */
+      opacity: 0.9;
+    }
+    
+    .breathing-circle-outline {
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        border: 1px dashed rgba(217, 199, 160, 0.3); /* papyrus */
+    }
+
+    .instruction-text {
+      position: absolute;
+      font-family: var(--font-display);
+      font-size: 42px;
+      text-align: center;
+      z-index: 2;
+      transition: opacity 0.5s ease;
+      font-style: italic;
+      color: var(--ink); /* contrast against the circle */
+    }
+
+    .controls {
+      margin-top: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      z-index: 10;
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    select {
+      appearance: none;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(217, 199, 160, 0.3);
+      color: var(--papyrus);
+      padding: 12px 40px 12px 24px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      border-radius: 30px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    select:hover {
+      border-color: var(--ochre);
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    select option {
+        background: var(--ink);
+        color: var(--papyrus);
+    }
+
+    .select-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--sand);
+    }
+
+    .start-btn {
+      background: var(--clay);
+      color: var(--papyrus);
+      border: none;
+      padding: 14px 40px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: transform 0.25s, background 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 15px rgba(176, 85, 53, 0.3);
+    }
+
+    .start-btn:hover {
+      background: #c3623d; /* slightly lighter clay */
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(176, 85, 53, 0.4);
+    }
+    
+    .timer {
+        font-family: var(--font-mono);
+        font-size: 24px;
+        color: var(--ochre);
+        margin-top: 30px;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        height: 30px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header class="breathe-header">
+    <a href="index.html" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Home
+    </a>
+    <div class="brand-title">EMW Breathing Space</div>
+  </header>
+
+  <div class="breathe-container">
+    <div class="ambient-glow"></div>
+    <div class="circle-container">
+      <div class="breathing-circle-outline"></div>
+      <div class="breathing-circle" id="circle"></div>
+      <div class="instruction-text" id="instruction" style="color: var(--papyrus);">Ready</div>
+    </div>
+    
+    <div class="timer" id="timer">0</div>
+
+    <div class="controls" id="controls">
+      <div class="select-wrapper">
+        <select id="technique">
+          <option value="box">Box Breathing (4-4-4-4)</option>
+          <option value="relax">Relaxing (4-7-8)</option>
+          <option value="coherent">Coherent (5-5)</option>
+        </select>
+        <svg class="select-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <button class="start-btn" id="startBtn">Begin Exercise</button>
+    </div>
+  </div>
+
+  <script>
+    const circle = document.getElementById('circle');
+    const instruction = document.getElementById('instruction');
+    const timerEl = document.getElementById('timer');
+    const startBtn = document.getElementById('startBtn');
+    const techniqueSelect = document.getElementById('technique');
+    const selectWrapper = document.querySelector('.select-wrapper');
+
+    let isPlaying = false;
+    let currentTimeout;
+    let countdownInterval;
+
+    // Breathing patterns [Inhale, Hold, Exhale, Hold] in seconds
+    const patterns = {
+      box: [4, 4, 4, 4],
+      relax: [4, 7, 8, 0],
+      coherent: [5, 0, 5, 0]
+    };
+
+    function setScale(scale, duration) {
+      circle.style.transition = `transform ${duration}s linear, background-color 2s ease`;
+      circle.style.transform = `scale(${scale})`;
+    }
+    
+    function setInstructionColor(scale) {
+        // When circle is expanded (scale 3.2), text should be dark to contrast against the ochre circle
+        if(scale > 1.5) {
+            instruction.style.color = "var(--ink)";
+        } else {
+            instruction.style.color = "var(--papyrus)";
+        }
+    }
+
+    function runPhase(phaseName, duration, nextPhaseFunc, targetScale) {
+      if (!isPlaying) return;
+      instruction.innerText = phaseName;
+      setInstructionColor(targetScale);
+      
+      let timeLeft = duration;
+      timerEl.innerText = timeLeft;
+      
+      countdownInterval = setInterval(() => {
+          timeLeft--;
+          if (timeLeft > 0) {
+              timerEl.innerText = timeLeft;
+          }
+      }, 1000);
+
+      currentTimeout = setTimeout(() => {
+        clearInterval(countdownInterval);
+        if(isPlaying) nextPhaseFunc();
+      }, duration * 1000);
+    }
+
+    function breatheCycle() {
+      if (!isPlaying) return;
+      
+      const pattern = patterns[techniqueSelect.value];
+      const [inTime, hold1Time, outTime, hold2Time] = pattern;
+
+      const expandedScale = 3.2;
+
+      // Phase 1: Inhale
+      setScale(expandedScale, inTime);
+      runPhase('Inhale', inTime, () => {
+        
+        // Phase 2: Hold 1
+        if (hold1Time > 0) {
+          setScale(expandedScale, 0); // maintain scale
+          runPhase('Hold', hold1Time, () => {
+            
+            // Phase 3: Exhale
+            setScale(1, outTime);
+            runPhase('Exhale', outTime, () => {
+               
+               // Phase 4: Hold 2
+               if(hold2Time > 0) {
+                   setScale(1, 0);
+                   runPhase('Hold', hold2Time, () => {
+                       breatheCycle(); // Loop
+                   }, 1);
+               } else {
+                   breatheCycle(); // Loop
+               }
+            }, 1);
+          }, expandedScale);
+        } else {
+            // Skip to Exhale
+            setScale(1, outTime);
+            runPhase('Exhale', outTime, () => {
+                
+                // Phase 4: Hold 2
+               if(hold2Time > 0) {
+                   setScale(1, 0);
+                   runPhase('Hold', hold2Time, () => {
+                       breatheCycle(); // Loop
+                   }, 1);
+               } else {
+                   breatheCycle(); // Loop
+               }
+            }, 1);
+        }
+      }, expandedScale);
+    }
+
+    startBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        // Stop
+        isPlaying = false;
+        clearTimeout(currentTimeout);
+        clearInterval(countdownInterval);
+        startBtn.innerText = 'Begin Exercise';
+        instruction.innerText = 'Ready';
+        instruction.style.color = 'var(--papyrus)';
+        timerEl.style.opacity = '0';
+        selectWrapper.style.display = 'block';
+        setScale(1, 0.5); // Reset size smoothly
+      } else {
+        // Start
+        isPlaying = true;
+        startBtn.innerText = 'Stop';
+        timerEl.style.opacity = '1';
+        selectWrapper.style.display = 'none';
+        breatheCycle();
+      }
+    });
+
+  </script>
+</body>
+</html>

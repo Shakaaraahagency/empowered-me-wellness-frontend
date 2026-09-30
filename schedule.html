@@ -312,7 +312,10 @@
     async function loadSchedule() {
       const listEl = document.getElementById("session-list");
       try {
-        allSessions = await SessionsAPI.list();
+        const rawSessions = await SessionsAPI.list();
+        // Filter out past sessions client-side as a safety net
+        const now = new Date();
+        allSessions = rawSessions.filter(s => new Date(s.start_time) > now);
         renderFilterButtons(allSessions);
         renderSessions(allSessions);
       } catch (err) {

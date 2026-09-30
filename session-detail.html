@@ -113,6 +113,22 @@
       metaDesc.content = session.description || `Book ${session.title} at Empowered Me Wellness.`;
       document.head.appendChild(metaDesc);
 
+      // Check if registration has closed (session date has passed)
+      const sessionStart = new Date(session.start_time);
+      if (sessionStart <= new Date()) {
+        document.getElementById("full-banner").innerHTML = `
+          <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span>Registration for this session has closed.</span>
+          </div>
+          <p style="margin:10px 0 0; font-size:0.9rem; opacity:0.85;">Check the <a href="schedule.html" style="color:var(--papyrus); text-decoration:underline;">schedule</a> for upcoming sessions.</p>
+        `;
+        document.getElementById("full-banner").style.display = "block";
+        return;
+      }
+
       if (session.is_full) {
         document.getElementById("full-banner").style.display = "block";
         return;

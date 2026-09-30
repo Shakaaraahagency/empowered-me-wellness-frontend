@@ -149,6 +149,7 @@
             <select id="session-status-filter" class="admin-filter-select" onchange="applySessionFilters()">
               <option value="all">All Statuses</option>
               <option value="scheduled">Scheduled</option>
+              <option value="elapsed">Elapsed (Past Due)</option>
               <option value="closed">Closed</option>
               <option value="cancelled">Cancelled</option>
             </select>
@@ -268,13 +269,24 @@
       }
     }
 
+    function isSessionElapsed(s) {
+      return s.status === "scheduled" && new Date(s.start_time) <= new Date();
+    }
+
     function applySessionFilters() {
       const q = document.getElementById("session-search").value.toLowerCase().trim();
       const statusFilter = document.getElementById("session-status-filter").value;
 
       const filtered = rawSessions.filter(s => {
         const matchQuery = !q || (s.title && s.title.toLowerCase().includes(q));
-        const matchStatus = statusFilter === "all" || s.status === statusFilter;
+        let matchStatus;
+        if (statusFilter === "elapsed") {
+          matchStatus = isSessionElapsed(s);
+        } else if (statusFilter === "scheduled") {
+          matchStatus = s.status === "scheduled" && !isSessionElapsed(s);
+        } else {
+          matchStatus = statusFilter === "all" || s.status === statusFilter;
+        }
         return matchQuery && matchStatus;
       });
 
@@ -298,7 +310,12 @@
           <td class="mono" style="font-size:13px;">${formatDateTime(s.start_time)}</td>
           <td><span class="mono" style="font-size:13px; font-weight:600;">${s.price ? `$${parseFloat(s.price).toFixed(2)}` : '<span style="color:var(--moss);">Free</span>'}</span></td>
           <td>${s.spots_remaining}/${s.capacity}</td>
-          <td><span class="badge ${s.status === "cancelled" ? "cancelled" : s.status === "closed" ? "new" : "approved"}">${s.status}</span></td>
+          <td>
+            ${isSessionElapsed(s)
+              ? `<span class="badge" style="background:linear-gradient(135deg,#e67e22,#d35400);color:#fff;">Elapsed</span>`
+              : `<span class="badge ${s.status === "cancelled" ? "cancelled" : s.status === "closed" ? "new" : "approved"}">${s.status}</span>`
+            }
+          </td>
           <td>${s.status === "scheduled" ? `<button class="btn btn-tiny btn-destructive" data-cancel-session="${s.id}">Cancel</button>` : ""}</td>
         </tr>
       `).join("");

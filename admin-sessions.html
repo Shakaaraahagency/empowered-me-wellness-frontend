@@ -270,7 +270,7 @@
     }
 
     function isSessionElapsed(s) {
-      return s.status === "scheduled" && new Date(s.start_time) <= new Date();
+      return s.status === "scheduled" && new Date(s.end_time) <= new Date();
     }
 
     function applySessionFilters() {

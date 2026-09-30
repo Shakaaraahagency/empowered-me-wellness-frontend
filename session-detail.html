@@ -113,9 +113,9 @@
       metaDesc.content = session.description || `Book ${session.title} at Empowered Me Wellness.`;
       document.head.appendChild(metaDesc);
 
-      // Check if registration has closed (session date has passed)
-      const sessionStart = new Date(session.start_time);
-      if (sessionStart <= new Date()) {
+      // Check if registration has closed (session has ended)
+      const sessionEnd = new Date(session.end_time);
+      if (sessionEnd <= new Date()) {
         document.getElementById("full-banner").innerHTML = `
           <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

@@ -313,9 +313,9 @@
       const listEl = document.getElementById("session-list");
       try {
         const rawSessions = await SessionsAPI.list();
-        // Filter out past sessions client-side as a safety net
+        // Filter out sessions that have fully ended (client-side safety net)
         const now = new Date();
-        allSessions = rawSessions.filter(s => new Date(s.start_time) > now);
+        allSessions = rawSessions.filter(s => new Date(s.end_time) > now);
         renderFilterButtons(allSessions);
         renderSessions(allSessions);
       } catch (err) {

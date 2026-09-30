@@ -5,8 +5,8 @@
 /* --- Hero Section --- */
 .testimonial-hero {
   position: relative;
-  background-color: var(--ink); /* Dark theme per screenshot */
-  color: var(--papyrus);
+  background-color: var(--papyrus); 
+  color: var(--ink);
   padding: 120px 24px 80px;
   min-height: 70vh;
   display: flex;
@@ -14,6 +14,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  border-bottom: 1px solid var(--sand);
 }
 
 .hero-text {
@@ -25,8 +26,8 @@
 
 .hero-badge {
   display: inline-block;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--papyrus);
+  background-color: rgba(168, 86, 48, 0.08);
+  color: var(--clay);
   padding: 6px 16px;
   border-radius: 20px;
   font-family: var(--font-mono);
@@ -34,16 +35,16 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(168, 86, 48, 0.2);
 }
 
 .hero-headline {
   font-family: var(--font-display);
   font-size: clamp(40px, 6vw, 64px);
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1.1;
   margin-bottom: 24px;
-  color: var(--papyrus);
+  color: var(--ink);
 }
 
 .hero-subtext {
@@ -52,14 +53,15 @@
   line-height: 1.6;
   opacity: 0.8;
   margin-bottom: 40px;
+  color: var(--ink);
 }
 
 .hero-cta {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  background-color: var(--papyrus);
-  color: var(--ink);
+  background-color: var(--ink);
+  color: var(--papyrus);
   padding: 14px 28px;
   border-radius: 30px;
   font-family: var(--font-body);

@@ -361,6 +361,7 @@ function renderFooter() {
           <a href="/terms.html">Terms &amp; Conditions</a>
           <a href="/refund-policy.html">Refund Policy</a>
           <a href="/cookie-notice.html">Cookie Notice</a>
+          <a href="/sitemap.xml">Sitemap</a>
           <a href="/login.html" style="margin-top:10px; opacity:0.6; font-size:12px;">Admin Portal</a>
         </div>
         <div>

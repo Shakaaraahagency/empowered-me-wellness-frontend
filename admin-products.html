@@ -45,8 +45,26 @@
           </div>
 
           <div id="file-upload-section" style="background:var(--papyrus);padding:14px;border:1px solid var(--sand);border-radius:10px;margin-bottom:14px;">
-            <label for="product-file" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Upload E-Book File (PDF, EPUB, MOBI)</label>
-            <input type="file" id="product-file" accept=".pdf,.epub,.mobi" style="width:100%;padding:6px;background:#fff;border:1px solid var(--sand);border-radius:6px;">
+            <label style="display:block;font-size:13px;font-weight:600;margin-bottom:8px;">E-Book File (PDF, EPUB, MOBI)</label>
+            <div id="upload-method-toggle" style="display:flex;gap:0;margin-bottom:10px;border:1px solid var(--sand);border-radius:8px;overflow:hidden;">
+              <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;cursor:pointer;font-size:13px;background:var(--moss);color:#fff;transition:all 0.2s;" id="method-upload-label">
+                <input type="radio" name="upload-method" value="upload" checked style="display:none;" onchange="toggleUploadMethod()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload File
+              </label>
+              <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;cursor:pointer;font-size:13px;background:#fff;color:var(--charcoal);transition:all 0.2s;" id="method-link-label">
+                <input type="radio" name="upload-method" value="link" style="display:none;" onchange="toggleUploadMethod()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                Use Download Link
+              </label>
+            </div>
+            <div id="file-input-wrap">
+              <input type="file" id="product-file" accept=".pdf,.epub,.mobi" style="width:100%;padding:6px;background:#fff;border:1px solid var(--sand);border-radius:6px;">
+            </div>
+            <div id="link-input-wrap" style="display:none;">
+              <input type="url" id="product-file-url" placeholder="https://www.mediafire.com/file/..." style="width:100%;padding:10px;background:#fff;border:1px solid var(--sand);border-radius:6px;font-size:14px;">
+              <p class="mono" style="font-size:11px;color:var(--ochre);margin-top:6px;">Upload your file to MediaFire (or similar), then paste the download link here.</p>
+            </div>
             <p id="file-not-required-note" class="mono" style="display:none;font-size:11px;color:var(--ochre);margin-top:6px;">File not required for coming-soon products. You can upload it later when the product is ready.</p>
           </div>
           
@@ -104,6 +122,30 @@
   <script src="js/components/modal.js"></script>
   <script>
     let rawProducts = [];
+
+    function toggleUploadMethod() {
+      const method = document.querySelector('input[name="upload-method"]:checked').value;
+      const fileWrap = document.getElementById('file-input-wrap');
+      const linkWrap = document.getElementById('link-input-wrap');
+      const uploadLabel = document.getElementById('method-upload-label');
+      const linkLabel = document.getElementById('method-link-label');
+
+      if (method === 'upload') {
+        fileWrap.style.display = 'block';
+        linkWrap.style.display = 'none';
+        uploadLabel.style.background = 'var(--moss)';
+        uploadLabel.style.color = '#fff';
+        linkLabel.style.background = '#fff';
+        linkLabel.style.color = 'var(--charcoal)';
+      } else {
+        fileWrap.style.display = 'none';
+        linkWrap.style.display = 'block';
+        linkLabel.style.background = 'var(--moss)';
+        linkLabel.style.color = '#fff';
+        uploadLabel.style.background = '#fff';
+        uploadLabel.style.color = 'var(--charcoal)';
+      }
+    }
 
     function toggleComingSoon() {
       const isCS = document.getElementById('product-coming-soon').checked;
@@ -174,12 +216,19 @@
           } else {
             statusBadge = `<span class="badge approved">active</span>`;
           }
+          // Show file source info
+          let fileInfo = 'None';
+          if (p.file_path) {
+            fileInfo = escapeHtml(p.file_path);
+          } else if (p.file_url) {
+            fileInfo = `<span title="${escapeHtml(p.file_url)}" style="color:var(--moss);">🔗 External Link</span>`;
+          }
           return `
           <tr>
             <td><strong>${escapeHtml(p.name)}</strong></td>
             <td style="text-transform: capitalize;">${escapeHtml(p.category || 'ebook')}</td>
             <td><strong>$${p.price}</strong></td>
-            <td class="mono" style="font-size:12px; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(p.file_path || 'None')}</td>
+            <td class="mono" style="font-size:12px; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${fileInfo}</td>
             <td>${statusBadge}</td>
             <td class="mono" style="font-size:12px;">${p.release_date ? escapeHtml(p.release_date) : '—'}</td>
             <td>
@@ -234,6 +283,30 @@
       );
     }
 
+    function toggleReleaseMethod() {
+      const method = document.querySelector('input[name="release-method"]:checked').value;
+      const fileWrap = document.getElementById('release-file-wrap');
+      const linkWrap = document.getElementById('release-link-wrap');
+      const uploadLabel = document.getElementById('release-method-upload-label');
+      const linkLabel = document.getElementById('release-method-link-label');
+
+      if (method === 'upload') {
+        fileWrap.style.display = 'block';
+        linkWrap.style.display = 'none';
+        uploadLabel.style.background = 'var(--moss)';
+        uploadLabel.style.color = '#fff';
+        linkLabel.style.background = '#fff';
+        linkLabel.style.color = 'var(--charcoal)';
+      } else {
+        fileWrap.style.display = 'none';
+        linkWrap.style.display = 'block';
+        linkLabel.style.background = 'var(--moss)';
+        linkLabel.style.color = '#fff';
+        uploadLabel.style.background = '#fff';
+        uploadLabel.style.color = 'var(--charcoal)';
+      }
+    }
+
     function openReleaseModal(productId, productName) {
       const existing = document.getElementById('release-modal-overlay');
       if (existing) existing.remove();
@@ -244,11 +317,29 @@
       overlay.innerHTML = `
         <div style="background:var(--papyrus);border-radius:14px;padding:32px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
           <h3 style="margin:0 0 6px;font-family:var(--font-display);">Release Product</h3>
-          <p style="margin:0 0 20px;font-size:14px;color:#666;">Upload the file for <strong>${productName}</strong> to make it available for purchase. All "Notify Me" subscribers will be emailed.</p>
+          <p style="margin:0 0 20px;font-size:14px;color:#666;">Upload the file for <strong>${productName}</strong> or paste a download link to make it available for purchase. All "Notify Me" subscribers will be emailed.</p>
           
           <div style="background:#fff;padding:14px;border:1px solid var(--sand);border-radius:10px;margin-bottom:16px;">
-            <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Product File (PDF, EPUB, MOBI)</label>
-            <input type="file" id="release-file-input" accept=".pdf,.epub,.mobi" style="width:100%;padding:6px;border:1px solid var(--sand);border-radius:6px;">
+            <label style="display:block;font-size:13px;font-weight:600;margin-bottom:8px;">Product File</label>
+            <div style="display:flex;gap:0;margin-bottom:10px;border:1px solid var(--sand);border-radius:8px;overflow:hidden;">
+              <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;cursor:pointer;font-size:13px;background:var(--moss);color:#fff;transition:all 0.2s;" id="release-method-upload-label">
+                <input type="radio" name="release-method" value="upload" checked style="display:none;" onchange="toggleReleaseMethod()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload File
+              </label>
+              <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;cursor:pointer;font-size:13px;background:#fff;color:var(--charcoal);transition:all 0.2s;" id="release-method-link-label">
+                <input type="radio" name="release-method" value="link" style="display:none;" onchange="toggleReleaseMethod()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                Use Link
+              </label>
+            </div>
+            <div id="release-file-wrap">
+              <input type="file" id="release-file-input" accept=".pdf,.epub,.mobi" style="width:100%;padding:6px;border:1px solid var(--sand);border-radius:6px;">
+            </div>
+            <div id="release-link-wrap" style="display:none;">
+              <input type="url" id="release-file-url" placeholder="https://www.mediafire.com/file/..." style="width:100%;padding:10px;border:1px solid var(--sand);border-radius:6px;font-size:14px;">
+              <p class="mono" style="font-size:11px;color:var(--ochre);margin-top:6px;">Paste the MediaFire (or similar) download link.</p>
+            </div>
           </div>
 
           <div id="release-progress" style="display:none;margin-bottom:16px;">
@@ -262,7 +353,7 @@
 
           <div style="display:flex;gap:10px;justify-content:flex-end;">
             <button type="button" class="btn btn-outline btn-small" id="release-cancel-btn">Cancel</button>
-            <button type="button" class="btn btn-small" id="release-confirm-btn" style="background:var(--moss);">Upload &amp; Release</button>
+            <button type="button" class="btn btn-small" id="release-confirm-btn" style="background:var(--moss);">Release Product</button>
           </div>
         </div>
       `;
@@ -272,7 +363,9 @@
       overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
 
       document.getElementById('release-confirm-btn').addEventListener('click', async () => {
+        const releaseMethod = document.querySelector('input[name="release-method"]:checked').value;
         const fileInput = document.getElementById('release-file-input');
+        const linkInput = document.getElementById('release-file-url');
         const errorEl = document.getElementById('release-error');
         const confirmBtn = document.getElementById('release-confirm-btn');
         const progressDiv = document.getElementById('release-progress');
@@ -282,29 +375,50 @@
 
         errorEl.style.display = 'none';
 
-        if (!fileInput.files.length) {
+        if (releaseMethod === 'upload' && !fileInput.files.length) {
           errorEl.textContent = 'Please select a file to upload.';
           errorEl.style.display = 'block';
           return;
+        }
+        if (releaseMethod === 'link') {
+          const url = (linkInput.value || '').trim();
+          if (!url) {
+            errorEl.textContent = 'Please paste a download link.';
+            errorEl.style.display = 'block';
+            return;
+          }
+          if (!url.startsWith('https://') && !url.startsWith('http://')) {
+            errorEl.textContent = 'Please provide a valid URL starting with https://';
+            errorEl.style.display = 'block';
+            return;
+          }
         }
 
         btnLoading(confirmBtn, 'Processing…');
 
         try {
-          progressDiv.style.display = 'block';
-          progressLabel.textContent = 'Uploading file';
-          const formData = new FormData();
-          formData.append('file', fileInput.files[0]);
-          const uploadRes = await AdminAPI.uploadProductFileWithProgress(formData, (pct) => {
-            progressFill.style.width = pct + '%';
-            progressPct.textContent = pct + '%';
-          });
+          let releasePayload = {};
 
+          if (releaseMethod === 'upload') {
+            progressDiv.style.display = 'block';
+            progressLabel.textContent = 'Uploading file';
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            const uploadRes = await AdminAPI.uploadProductFileWithProgress(formData, (pct) => {
+              progressFill.style.width = pct + '%';
+              progressPct.textContent = pct + '%';
+            });
+            releasePayload.file_path = uploadRes.file_path;
+          } else {
+            releasePayload.file_url = linkInput.value.trim();
+          }
+
+          progressDiv.style.display = 'block';
           progressLabel.textContent = 'Releasing product & sending notifications';
           progressFill.style.width = '100%';
           progressFill.classList.add('is-shimmer');
 
-          const result = await AdminAPI.releaseProduct(productId, { file_path: uploadRes.file_path });
+          const result = await AdminAPI.releaseProduct(productId, releasePayload);
 
           overlay.remove();
 
@@ -362,8 +476,12 @@
 
         btnLoading(submitBtn, "Processing…");
 
+        const isComingSoon = document.getElementById('product-coming-soon').checked;
+        const uploadMethod = document.querySelector('input[name="upload-method"]:checked').value;
+        let fileUrl = null;
+
         try {
-          if (fileInput.files.length > 0) {
+          if (uploadMethod === 'upload' && fileInput.files.length > 0) {
             setProgress("Uploading PDF", 0);
             const formData = new FormData();
             formData.append("file", fileInput.files[0]);
@@ -372,12 +490,18 @@
             );
             filePath = uploadRes.file_path;
             setProgress("Uploading PDF", 100);
+          } else if (uploadMethod === 'link') {
+            fileUrl = (document.getElementById('product-file-url').value || '').trim();
+            if (!isComingSoon && !fileUrl) {
+              throw new Error("Please paste a download link.");
+            }
+            if (fileUrl && !fileUrl.startsWith('https://') && !fileUrl.startsWith('http://')) {
+              throw new Error("Please provide a valid URL starting with https://");
+            }
           }
 
-          const isComingSoon = document.getElementById('product-coming-soon').checked;
-
-          if (!isComingSoon && !filePath) {
-            throw new Error("Please select a PDF file to upload.");
+          if (!isComingSoon && !filePath && !fileUrl) {
+            throw new Error("Please upload a file or paste a download link.");
           }
 
           if (coverInput.files.length > 0) {
@@ -397,6 +521,7 @@
             price: parseFloat(document.getElementById("product-price").value),
             category: document.getElementById("product-category").value,
             file_path: filePath,
+            file_url: fileUrl,
             cover_image_url: coverImageUrl,
             description: document.getElementById("product-description").value.trim(),
             is_coming_soon: isComingSoon,
@@ -407,6 +532,8 @@
           document.getElementById('release-date-group').style.display = 'none';
           document.getElementById('file-upload-section').style.opacity = '1';
           document.getElementById('file-not-required-note').style.display = 'none';
+          // Reset the upload method toggle to defaults
+          toggleUploadMethod();
           loadProducts();
         } catch (err) {
           errorEl.textContent = err.message;

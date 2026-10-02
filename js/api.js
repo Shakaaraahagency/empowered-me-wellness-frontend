@@ -109,11 +109,16 @@ function absoluteApiUrl(path) {
 async function api(path, { method = "GET", body = null, _retried = false } = {}) {
   const headers = { "Content-Type": "application/json" };
 
+  const isRefresh = path.startsWith("/auth/refresh");
+
   if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
-    const isRefresh = path.startsWith("/auth/refresh");
     const csrf = localStorage.getItem(isRefresh ? "csrf_refresh" : "csrf_access");
     if (csrf) headers["X-CSRF-TOKEN"] = csrf;
   }
+
+  // Bearer token fallback for mobile browsers that block cross-origin cookies
+  const token = localStorage.getItem(isRefresh ? "refresh_token" : "access_token");
+  if (token) headers["Authorization"] = `Bearer ${token}`;
 
   const response = await fetch(`${API_URL}${path}`, {
     method,
@@ -145,6 +150,8 @@ async function api(path, { method = "GET", body = null, _retried = false } = {})
     throw { message, code, status: response.status };
   }
 
+  if (data.access_token) localStorage.setItem("access_token", data.access_token);
+  if (data.refresh_token) localStorage.setItem("refresh_token", data.refresh_token);
   if (data.csrf_access) localStorage.setItem("csrf_access", data.csrf_access);
   if (data.csrf_refresh) localStorage.setItem("csrf_refresh", data.csrf_refresh);
 
@@ -196,6 +203,8 @@ async function requireAuth() {
   } catch (err) {
     localStorage.removeItem("csrf_access");
     localStorage.removeItem("csrf_refresh");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     // We don't try to clear cookies manually since they are cross-origin anyway.
     // The backend clears them on logout.
     window.location.href = "login.html";
@@ -220,6 +229,8 @@ function startTokenAutoRefresh() {
       // Refresh token has expired — full session over, send to login.
       localStorage.removeItem("csrf_access");
       localStorage.removeItem("csrf_refresh");
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
       window.location.href = "login.html";
     }
   };
@@ -276,6 +287,8 @@ const AdminAPI = {
     const headers = {};
     const csrf = localStorage.getItem("csrf_access");
     if (csrf) headers["X-CSRF-TOKEN"] = csrf;
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
     const response = await fetch(`${API_URL}/admin/sessions/upload-image`, {
       method: "POST",
       headers,
@@ -302,6 +315,8 @@ const AdminAPI = {
     const headers = {};
     const csrf = localStorage.getItem("csrf_access");
     if (csrf) headers["X-CSRF-TOKEN"] = csrf;
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
     const response = await fetch(`${API_URL}/admin/products/upload`, {
       method: "POST",
       headers,
@@ -323,6 +338,8 @@ const AdminAPI = {
       xhr.withCredentials = true;
       const csrf = localStorage.getItem("csrf_access");
       if (csrf) xhr.setRequestHeader("X-CSRF-TOKEN", csrf);
+      const accessToken = localStorage.getItem("access_token");
+      if (accessToken) xhr.setRequestHeader("Authorization", `Bearer ${accessToken}`);
 
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
@@ -344,6 +361,8 @@ const AdminAPI = {
     const headers = {};
     const csrf = localStorage.getItem("csrf_access");
     if (csrf) headers["X-CSRF-TOKEN"] = csrf;
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
     const response = await fetch(`${API_URL}/admin/products/upload-cover`, {
       method: "POST",
       headers,
@@ -385,6 +404,8 @@ const AdminAPI = {
     const headers = {};
     const csrf = localStorage.getItem("csrf_access");
     if (csrf) headers["X-CSRF-TOKEN"] = csrf;
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
     const response = await fetch(`${API_URL}/admin/blog/upload-media`, {
       method: "POST",
       headers,
@@ -441,6 +462,8 @@ async function requireAdmin() {
   } catch (err) {
     localStorage.removeItem("csrf_access");
     localStorage.removeItem("csrf_refresh");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     window.location.href = "/login.html";
     throw err;
   }
